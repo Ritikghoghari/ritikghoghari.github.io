@@ -45,41 +45,24 @@
   </head>
   <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <!-- Navbar -->
+    <nav class="navbar">
       <div class="container-fluid">
-        <a class="navbar-brand" href="">Ritik Portfolio</a>
-        <!-- <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-          aria-controls="navbarNav"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button> -->
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav">
-            <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="#home"
-                >Home</a
-              >
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#about">About</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#portfolio">Portfoilo</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#certifications">Certificate</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#contact">Contact Us</a>
-            </li>
-          </ul>
-        </div>
+        <a class="navbar-brand" href="#">Ritik Portfolio</a>
+        <button class="navbar-toggler" type="button">&#9776;</button>
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+          <li class="nav-item">
+            <a class="nav-link" href="#portfolio">Projects</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#certifications">Certificate</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#contact">Contact</a>
+          </li>
+        </ul>
       </div>
     </nav>
 
@@ -377,7 +360,7 @@
           <div class="row">
             <div class="col-md-12">
               <h2 class="wow bounce">PORTFOLIO</h2>
-              <p class="section-subtitle">
+              <p class="section-subtitle" style="font-size: larger">
                 Explore my latest projects and work.
               </p>
             </div>
@@ -396,8 +379,9 @@
                 <div class="portfolio-overlay">
                   <div class="overlay-content">
                     <h4>Book Data Analysis</h4>
-                    <br />
-                    <br />
+                    <!-- <p>
+                      Analyze book sales data to uncover trends and insights.
+                    </p> -->
                     <a
                       href="https://github.com/Ritikghoghari/Book-Sales-Data-Analyst-EDA-"
                       target="_blank"
@@ -421,8 +405,10 @@
                 <div class="portfolio-overlay">
                   <div class="overlay-content">
                     <h4>Airbnb Analysis</h4>
-                    <br />
-                    <br />
+                    <!-- <p>
+                      Analyze Airbnb data to understand market trends and
+                      pricing strategies.
+                    </p> -->
                     <a
                       href="https://github.com/Ritikghoghari/Airbnb-EDA---Analysis"
                       target="_blank"
@@ -435,20 +421,21 @@
               </div>
             </div>
 
-            <!-- Add more projects here -->
             <!-- Project 3 -->
-            <div class="portfolio-item wow fadeIn" data-wow-delay="0.6s">
+            <div class="portfolio-item wow fadeIn" data-wow-delay="0.9s">
               <div class="portfolio-item-inner">
                 <img
                   src="images/HR9999.jpg"
-                  alt="Airbnb Analysis"
+                  alt="HR Data Analysis"
                   class="img-responsive"
                 />
                 <div class="portfolio-overlay">
                   <div class="overlay-content">
                     <h4>HR Data Analysis</h4>
-                    <br />
-                    <br />
+                    <!-- <p>
+                      Analyze HR data to improve employee retention and
+                      performance.
+                    </p> -->
                     <a
                       href="https://github.com/Ritikghoghari/HR-Data-Analysis-Project---Power-BI-Dashboard"
                       target="_blank"
@@ -461,20 +448,17 @@
               </div>
             </div>
 
-            <!-- Add more projects here -->
             <!-- Project 4 -->
-            <div class="portfolio-item wow fadeIn" data-wow-delay="0.6s">
+            <div class="portfolio-item wow fadeIn" data-wow-delay="1.2s">
               <div class="portfolio-item-inner">
                 <img
                   src="images/home3.jpg"
-                  alt="Airbnb Analysis"
+                  alt="Bank Customer Churn Analysis"
                   class="img-responsive"
                 />
                 <div class="portfolio-overlay">
                   <div class="overlay-content">
-                    <h4>Bank Customer Churn Analysis Power BI Dashboard</h4>
-                    <br />
-                    <br />
+                    <h4>Bank Customer Churn Analysis</h4>
                     <!-- <p>
                       Understand customer behavior and predict churn with
                       data-driven insights.
@@ -498,86 +482,45 @@
       <!-- Start Certifications -->
       <div id="certifications" class="section">
         <div class="container">
-          <div class="row">
-            <div class="col-md-12">
-              <h2 class="wow bounce">CERTIFICATIONS</h2>
+          <h2>Certifications</h2>
+          <div class="certifications-container">
+            <div class="certification-card">
+              <img
+                src="images/certificate1.jpg"
+                alt="Certification 1"
+                class="certification-image"
+              />
+              <h4>Certification Title 1</h4>
+              <p>Description of the certification.</p>
+              <a
+                href="images/Certificate1.jpg"
+                class="btn btn-primary"
+                target="_blank"
+                >View Certificate</a
+              >
             </div>
-
-            <!-- Certification 1 -->
-            <div class="col-md-4 col-xs-6 wow fadeIn" data-wow-delay="0.6s">
-              <div class="certification-thumb">
-                <img
-                  src="images/Certificate1.jpg"
-                  class="img-responsive"
-                  alt="Certification 1"
-                />
-                <div class="certification-overlay">
-                  <h4>Python Fundamentals For Beginners Certificate</h4>
-                  <h5>Offered by: Great Learning</h5>
-                  <a
-                    href="https://olympus.mygreatlearning.com/courses/12682/certificate?pb_id=581"
-                    target="_blank"
-                    class="cert-btn"
-                  >
-                    <i class="fa fa-external-link"></i> View Certificate
-                  </a>
-                </div>
-              </div>
+            <!-- Certificate 2 -->
+            <div class="certification-card">
+              <img
+                src="images/Internship_Certificate.jpg"
+                alt="Certification 2"
+                class="certification-image"
+              />
+              <h4>Certification Title 2</h4>
+              <p>Offered By : Forage</p>
+              <a
+                href="images/Internship_Certificate.jpg"
+                class="btn btn-primary"
+                target="_blank"
+                >View Certificate</a
+              >
             </div>
-
-            <!-- Certification 2 -->
-            <div class="col-md-4 col-xs-6 wow fadeIn" data-wow-delay="0.6s">
-              <div class="certification-thumb">
-                <img
-                  src="images/Internship_Certificate.jpg"
-                  class="img-responsive"
-                  alt="Certification 2"
-                />
-                <div class="certification-overlay">
-                  <h4>Internship Certificate</h4>
-                  <h4>
-                    Accenture North America Data Analytics and Visualization Job
-                    Simulation
-                  </h4>
-                  <h5>Offered by: Forage</h5>
-                  <a
-                    href="https://forage-uploads-prod.s3.amazonaws.com/completion-certificates/Accenture%20North%20America/hzmoNKtzvAzXsEqx8_Accenture%20North%20America_xoq478ENTtvWh4hsd_1729371598843_completion_certificate.pdf"
-                    target="_blank"
-                    class="cert-btn"
-                  >
-                    <i class="fa fa-external-link"></i> View Certificate
-                  </a>
-                </div>
-              </div>
-            </div>
-
-            <!-- Certification 3 -->
-            <!-- <div class="col-md-4 col-xs-6 wow fadeIn" data-wow-delay="0.6s">
-              <div class="certification-thumb">
-                <img
-                  src="./images/Certificate1.jpg"
-                  class="img-responsive"
-                  alt="Certification 2"
-                />
-                <div class="certification-overlay">
-                  <h4>Machine Learning</h4>
-                  <h5>Offered by: Stanford University</h5>
-                  <a
-                    href="https://www.coursera.org/yourcertificate"
-                    target="_blank"
-                    class="cert-btn"
-                  >
-                    <i class="fa fa-external-link"></i> View Certificate
-                  </a>
-                </div>
-              </div>
-            </div> -->
+            <!-- Add more certification cards as needed -->
           </div>
         </div>
       </div>
-      <!-- End Certifications -->
 
-      <!-- start contact -->
+      <!-- Start Contact -->
       <div id="contact" class="section">
         <div class="container">
           <div class="row">
@@ -592,8 +535,8 @@
                   <i class="fa fa-envelope-o"></i> ritikghoghari.ds@gmail.com
                 </p>
                 <p>
-                  <i class="fa fa-map-marker"></i> Maulbeerallee 25 , 13593
-                  Berlin , Germany
+                  <i class="fa fa-map-marker"></i> Maulbeerallee 25, 13593
+                  Berlin, Germany
                 </p>
               </address>
             </div>
@@ -635,7 +578,7 @@
           </div>
         </div>
       </div>
-      <!-- end contact -->
+      <!-- End Contact -->
 
       <!-- start footer -->
       <footer>
@@ -699,6 +642,17 @@
         window.scrollTo({
           top: 0,
           behavior: "smooth",
+        });
+      });
+    </script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const toggler = document.querySelector(".navbar-toggler");
+        const nav = document.querySelector(".navbar-nav");
+
+        toggler.addEventListener("click", function () {
+          nav.classList.toggle("active");
         });
       });
     </script>
