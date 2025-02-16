@@ -663,8 +663,6 @@ h4 {
     }
 }
 
-/* end portfolio */
-
 /* start certifications */
 #certifications {
     background: var(--secondary-dark);
@@ -730,7 +728,8 @@ h4 {
 
 .certification-image {
     width: 100%;
-    height: auto;
+    height: 200px;
+    /* Set a fixed height for the images */
     border-radius: 10px;
     margin-bottom: 10px;
     object-fit: cover;
@@ -751,7 +750,8 @@ h4 {
 
     .certification-image {
         width: 100%;
-        height: auto;
+        height: 200px;
+        /* Maintain the fixed height for responsiveness */
     }
 }
 
