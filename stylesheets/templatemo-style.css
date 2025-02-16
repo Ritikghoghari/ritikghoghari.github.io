@@ -733,6 +733,8 @@ h4 {
     height: auto;
     border-radius: 10px;
     margin-bottom: 10px;
+    object-fit: cover;
+    /* Ensure the image covers the container */
 }
 
 /* Responsive Design */
@@ -745,6 +747,11 @@ h4 {
     .certification-card {
         width: 100%;
         max-width: 100%;
+    }
+
+    .certification-image {
+        width: 100%;
+        height: auto;
     }
 }
 
