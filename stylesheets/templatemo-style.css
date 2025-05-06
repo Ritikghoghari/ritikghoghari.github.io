@@ -1106,15 +1106,3 @@ footer hr {
         box-shadow: 0 0 30px rgba(231, 76, 60, 0.9);
     }
 }
-
-/* Disable hover effects on touch devices */
-@media (hover: none) {
-
-    .portfolio-item:hover,
-    .btn:hover,
-    .navbar-nav .nav-link:hover {
-        transform: none;
-        box-shadow: none;
-        background: none;
-    }
-}
