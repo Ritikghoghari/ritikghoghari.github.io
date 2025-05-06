@@ -549,14 +549,11 @@ h4 {
 }
 
 .portfolio-item {
-    width: 100%;
     max-width: 300px;
-    position: relative;
-    overflow: hidden;
+    width: 100%;
     border-radius: 10px;
+    overflow: hidden;
     transition: transform 0.3s, box-shadow 0.3s;
-    perspective: 1000px;
-    /* Add perspective for 3D effect */
 }
 
 .portfolio-item:hover {
@@ -878,26 +875,24 @@ footer hr {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 1rem 2rem;
+    padding: 0.8rem 1.5rem;
     border-radius: 50px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 1px;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    overflow: hidden;
+    transition: all 0.3s ease;
     border: 2px solid transparent;
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, var(--accent), #FF6B6B);
+    background: var(--accent);
     color: var(--text-primary);
-    box-shadow: 0 4px 15px rgba(255, 71, 87, 0.3);
+    box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
 }
 
 .btn-primary:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(255, 71, 87, 0.4);
+    background: var(--accent-hover);
+    box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
 }
 
 .btn-outline {
