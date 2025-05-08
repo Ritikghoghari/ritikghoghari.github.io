@@ -548,11 +548,13 @@ h4 {
     gap: 20px;
     justify-content: center;
     padding: 0 20px;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .portfolio-item {
-    max-width: 300px;
     width: 100%;
+    /* Removed max-width */
     border-radius: 10px;
     overflow: hidden;
     transition: transform 0.3s, box-shadow 0.3s;
