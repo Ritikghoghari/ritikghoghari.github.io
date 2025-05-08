@@ -542,12 +542,12 @@ h4 {
     background: var(--accent);
 }
 
-.portfolio-item {
-    max-width: 300px;
-    width: 100%;
-    border-radius: 10px;
-    overflow: hidden;
-    transition: transform 0.3s, box-shadow 0.3s;
+.portfolio-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    justify-content: center;
+    padding: 0 20px;
 }
 
 .portfolio-item {
@@ -556,23 +556,12 @@ h4 {
     border-radius: 10px;
     overflow: hidden;
     transition: transform 0.3s, box-shadow 0.3s;
+    position: relative;
 }
 
 .portfolio-item:hover {
     transform: translateY(-10px);
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-}
-
-.portfolio-item-inner {
-    position: relative;
-    transform-style: preserve-3d;
-    /* Enable 3D transformation */
-    transition: transform 0.3s;
-}
-
-.portfolio-item:hover .portfolio-item-inner {
-    transform: rotateY(10deg) rotateX(10deg);
-    /* Add 3D rotation on hover */
 }
 
 .portfolio-item img {
@@ -608,11 +597,13 @@ h4 {
 
 .overlay-content h4 {
     margin-bottom: 10px;
-    background-color: #3498db;
+    font-size: 1.5rem;
+    color: var(--accent);
 }
 
 .overlay-content p {
     margin-bottom: 20px;
+    font-size: 1rem;
 }
 
 .btn-portfolio {
@@ -630,15 +621,15 @@ h4 {
 /* Responsive Design */
 @media (max-width: 768px) {
     .portfolio-grid {
-        flex-direction: column;
-        align-items: center;
+        grid-template-columns: 1fr;
     }
 
     .portfolio-item {
-        width: 100%;
         max-width: 100%;
     }
 }
+
+/* end portfolio */
 
 /* Certifications Section */
 #certifications {
