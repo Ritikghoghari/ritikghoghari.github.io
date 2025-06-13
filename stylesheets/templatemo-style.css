@@ -210,15 +210,20 @@ h3 {
 
 /* Navbar */
 .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 2rem;
     background: var(--primary-dark);
     position: sticky;
     top: 0;
     z-index: 1000;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .navbar-brand {
@@ -233,27 +238,6 @@ h3 {
     color: var(--link-hover);
 }
 
-.navbar-nav {
-    list-style: none;
-    display: flex;
-    gap: 20px;
-    align-items: center;
-}
-
-.navbar-nav .nav-link {
-    text-decoration: none;
-    font-size: 1.1rem;
-    color: var(--text-primary);
-    padding: 0.5rem 1rem;
-    border-radius: 5px;
-    transition: all 0.3s ease-in-out;
-}
-
-.navbar-nav .nav-link:hover {
-    background-color: var(--link-hover);
-    color: #fff;
-}
-
 .navbar-toggler {
     display: none;
     font-size: 2rem;
@@ -263,7 +247,34 @@ h3 {
     cursor: pointer;
 }
 
-/* Responsive Styles */
+.navbar-nav {
+    list-style: none;
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar-nav li {
+    margin: 0;
+}
+
+.navbar-nav .nav-link {
+    text-decoration: none;
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    padding: 0.5rem 0.75rem;
+    border-radius: 5px;
+    transition: all 0.3s ease-in-out;
+}
+
+.navbar-nav .nav-link:hover {
+    background-color: var(--link-hover);
+    color: #fff;
+}
+
+/* Mobile View */
 @media (max-width: 768px) {
     .navbar-toggler {
         display: block;
@@ -272,15 +283,12 @@ h3 {
     .navbar-nav {
         display: none;
         flex-direction: column;
-        align-items: flex-start;
         background-color: var(--primary-dark);
-        padding: 1rem;
+        width: 100%;
+        padding: 1rem 2rem;
         position: absolute;
         top: 100%;
-        right: 0;
-        width: 100%;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-        border-radius: 0 0 10px 10px;
+        left: 0;
     }
 
     .navbar-nav.active {
