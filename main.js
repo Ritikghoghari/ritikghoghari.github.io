@@ -63,7 +63,7 @@ const PORTFOLIO_DATA = [
         description: "Analysis and prediction of heart disease indicators using Machine Learning techniques to assist in early diagnosis.",
         tags: ["Python", "ML"],
         techStack: "Python, Scikit-learn, Pandas, Data Visualization",
-        image: "images/heart.jpg",
+        image: "images/thumb_heart.png",
         link: "https://github.com/Ritikghoghari/Heart_Disease-Analysis"
     }
 ];
