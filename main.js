@@ -55,6 +55,16 @@ const PORTFOLIO_DATA = [
         techStack: "Power BI, Predictive Modeling",
         image: "images/thumb_churn.png",
         link: "https://github.com/Ritikghoghari/Bank-Customer-Churn-Analysis---Power-BI-Dashboard"
+    },
+    {
+        id: "heart",
+        title: "Heart Disease Analysis",
+        brief: "Medical diagnosis prediction.",
+        description: "Analysis and prediction of heart disease indicators using Machine Learning techniques to assist in early diagnosis.",
+        tags: ["Python", "ML"],
+        techStack: "Python, Scikit-learn, Pandas, Data Visualization",
+        image: "images/heart.jpg",
+        link: "https://github.com/Ritikghoghari/Heart_Disease-Analysis"
     }
 ];
 
