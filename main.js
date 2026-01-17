@@ -168,7 +168,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Project Cards Stagger
+    // Project Cards Stagger - REMOVED for stability
+    // Content will be visible by default via CSS
+    /*
     gsap.from(".project-card", {
         scrollTrigger: {
             trigger: "#projects",
@@ -180,6 +182,7 @@ document.addEventListener('DOMContentLoaded', () => {
         duration: 0.8,
         ease: "back.out(1.7)"
     });
+    */
 });
 
 // Modal Logic

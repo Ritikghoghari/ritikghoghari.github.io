@@ -194,6 +194,9 @@ section {
     overflow: hidden;
     border: 1px solid var(--glass-border);
     transition: 0.3s;
+    /* Ensure visibility override GSAP leftovers */
+    opacity: 1 !important;
+    transform: none !important;
 }
 
 .project-card:hover {
@@ -518,9 +521,23 @@ section {
         padding: 4rem 5%;
     }
 
-    nav ul {
-        display: none;
+    nav {
+        flex-direction: column;
+        padding: 1rem;
+        background: rgba(0, 0, 0, 0.9);
     }
 
-    /* Simplified for now */
+    nav ul {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .modal-content {
+        margin: 10% auto;
+        width: 90%;
+        max-height: 80vh;
+    }
 }
