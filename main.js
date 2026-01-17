@@ -271,3 +271,12 @@ if (document.readyState === 'loading') {
     // DOM is already ready (likely, since modules are deferred)
     initApp();
 }
+
+// SAFETY FALLBACK: Force render after a short delay just in case
+// This fixes cases where the browser reports 'loading' but misses the event
+setTimeout(() => {
+    if (!document.querySelector('.project-card')) {
+        console.warn("Safety Render Triggered");
+        initApp();
+    }
+}, 300);
