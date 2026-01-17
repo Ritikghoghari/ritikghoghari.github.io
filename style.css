@@ -511,7 +511,43 @@ section {
     }
 }
 
-/* Mobile */
+/* Social Buttons */
+.socials {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    margin-top: 1.5rem;
+}
+
+.social-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    color: var(--text-main);
+    padding: 0.8rem 1.5rem;
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    transition: 0.3s;
+    font-family: var(--font-head);
+    font-weight: 500;
+}
+
+.social-btn:hover {
+    background: rgba(0, 243, 255, 0.1);
+    border-color: var(--accent);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 243, 255, 0.2);
+}
+
+.social-btn svg {
+    fill: currentColor;
+    width: 20px;
+    height: 20px;
+}
+
+/* Mobile Responsive */
 @media (max-width: 768px) {
     h1 {
         font-size: 3rem;
