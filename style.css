@@ -362,6 +362,92 @@ section {
     }
 }
 
+/* Animations Initial States */
+.hero-content,
+.glass-card,
+.project-card {
+    opacity: 0;
+    transform: translateY(30px);
+}
+
+/* Modal Styles */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.modal-content {
+    background: #111;
+    border: 1px solid var(--accent);
+    border-radius: 20px;
+    width: 100%;
+    max-width: 800px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 0 50px rgba(0, 243, 255, 0.2);
+}
+
+.modal-header {
+    height: 200px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.5);
+    border: none;
+    color: #fff;
+    font-size: 2rem;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: 0.3s;
+}
+
+.close-btn:hover {
+    background: var(--accent);
+    color: #000;
+}
+
+.modal-body {
+    padding: 2rem;
+}
+
+.modal-body h2 {
+    color: var(--accent);
+    margin-bottom: 1rem;
+}
+
+.modal-body p {
+    color: #ccc;
+    font-size: 1rem;
+}
+
+.modal-links {
+    margin-top: 2rem;
+    display: flex;
+    gap: 1rem;
+}
+
 /* Glitch Effect */
 .glitch {
     position: relative;

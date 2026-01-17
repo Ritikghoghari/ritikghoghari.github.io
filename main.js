@@ -21,7 +21,7 @@ const particlesCount = 2000; // lots of particles
 
 const posArray = new Float32Array(particlesCount * 3);
 
-for(let i = 0; i < particlesCount * 3; i++) {
+for (let i = 0; i < particlesCount * 3; i++) {
     // Spread particles in a wide area
     posArray[i] = (Math.random() - 0.5) * 100;
 }
@@ -42,7 +42,7 @@ scene.add(particlesMesh);
 
 // 2. Geometric Shapes (Decorations)
 const geometry = new THREE.IcosahedronGeometry(10, 1);
-const material = new THREE.MeshStandardMaterial({ 
+const material = new THREE.MeshStandardMaterial({
     color: 0x0066ff,
     wireframe: true,
 });
@@ -51,7 +51,7 @@ sphere.position.set(-20, 0, -10);
 scene.add(sphere);
 
 const geometry2 = new THREE.TorusKnotGeometry(10, 3, 100, 16);
-const material2 = new THREE.MeshStandardMaterial({ 
+const material2 = new THREE.MeshStandardMaterial({
     color: 0xff0066,
     wireframe: true,
 });
@@ -119,7 +119,7 @@ let mouseY = 0;
 document.addEventListener('mousemove', (event) => {
     mouseX = event.clientX / window.innerWidth - 0.5;
     mouseY = event.clientY / window.innerHeight - 0.5;
-    
+
     // Tiny parallax on particle mesh
     particlesMesh.rotation.y = mouseX * 0.1;
     particlesMesh.rotation.x = mouseY * 0.1;
@@ -134,40 +134,84 @@ window.addEventListener('resize', () => {
 
 // --- GSAP Animations (Text Reveals) ---
 // Wait for GSAP to load from CDN
-window.addEventListener('load', () => {
+// --- GSAP Animations (Text Reveals) ---
+// Wait for DOM content loaded, not just window load
+document.addEventListener('DOMContentLoaded', () => {
+    // Ensure GSAP is loaded
+    if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
+        console.warn('GSAP not loaded');
+        return;
+    }
+
     gsap.registerPlugin(ScrollTrigger);
 
-    // Hero Text
-    gsap.from(".hero-content", {
+    // Hero Text - immediate reveal
+    gsap.to(".hero-content", {
+        y: 0,
+        opacity: 1,
         duration: 1.5,
-        y: 50,
-        opacity: 0,
         ease: "power3.out"
     });
 
     // Glass Cards Reveal
     gsap.utils.toArray('.glass-card').forEach(card => {
-        gsap.from(card, {
+        gsap.to(card, {
             scrollTrigger: {
                 trigger: card,
-                start: "top 80%",
+                start: "top 85%",
+                toggleActions: "play none none reverse"
             },
-            y: 50,
-            opacity: 0,
+            y: 0,
+            opacity: 1,
             duration: 1,
             ease: "power2.out"
         });
     });
 
     // Project Cards Stagger
-    gsap.from(".project-card", {
+    gsap.to(".project-card", {
         scrollTrigger: {
             trigger: "#projects",
-            start: "top 70%"
+            start: "top 75%"
         },
-        y: 100,
-        opacity: 0,
+        y: 0,
+        opacity: 1,
         stagger: 0.2,
-        duration: 0.8
+        duration: 0.8,
+        ease: "back.out(1.7)"
     });
 });
+
+// Modal Logic
+window.openModal = function (id) {
+    const modal = document.getElementById(id);
+    if (modal) {
+        modal.style.display = 'flex';
+        // Animate in
+        gsap.fromTo(modal.querySelector('.modal-content'),
+            { scale: 0.8, opacity: 0 },
+            { scale: 1, opacity: 1, duration: 0.4, ease: 'back.out(1.7)' }
+        );
+    }
+}
+
+window.closeModal = function (id) {
+    const modal = document.getElementById(id);
+    if (modal) {
+        gsap.to(modal.querySelector('.modal-content'), {
+            scale: 0.8,
+            opacity: 0,
+            duration: 0.3,
+            onComplete: () => {
+                modal.style.display = 'none';
+            }
+        });
+    }
+}
+
+// Close modal on outside click
+window.onclick = function (event) {
+    if (event.target.classList.contains('modal-overlay')) {
+        event.target.style.display = 'none';
+    }
+}
