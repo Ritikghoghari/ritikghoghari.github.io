@@ -2,534 +2,219 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ritik Ghoghari | Data Scientist & Developer</title>
 
-  <title>Data Analsyst Website</title>
-  <meta name="keywords" content="" />
-  <meta name="description" content="" />
-  <meta name="description"
-    content="Welcome to Ritik Ghoghari's portfolio! Explore my projects, skills in data science, AI, and web development." />
-  <meta name="keywords" content="Ritik Ghoghari, Data Science, AI, Web Development, Portfolio" />
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&display=swap"
+        rel="stylesheet">
 
-  <meta name="author" content="templatemo" />
-  <!-- 
-        Lavish HTML CSS Template
-        https://templatemo.com/tm-458-lavish
-        -->
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
 
-  <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <!-- animate -->
-  <link rel="stylesheet" href="stylesheets/animate.min.css" />
-  <!-- bootstrap -->
-  <link rel="stylesheet" href="stylesheets/bootstrap.min.css" />
-  <!-- font-awesome -->
-  <link rel="stylesheet" href="stylesheets/font-awesome.min.css" />
-  <!-- google font -->
-  <link href="http://fonts.googleapis.com/css?family=Raleway:400,300,700,800" rel="stylesheet" type="text/css" />
-
-  <!-- fullpage -->
-  <link rel="stylesheet" href="stylesheets/jquery.fullPage.css" />
-  <!-- custom -->
-  <link rel="stylesheet" href="stylesheets/templatemo-style.css" />
-  <!-- Modern Styles -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="stylesheets/modern.css" />
+    <!-- Three.js & GSAP via CDN -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
 </head>
 
 <body>
-  <!-- Navbar -->
-  <!-- Navbar -->
-  <nav class="navbar">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="#">Ritik Portfolio</a>
-      <button class="navbar-toggler" type="button">&#9776;</button>
-      <ul class="navbar-nav">
-        <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
-        <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
-        <li class="nav-item">
-          <a class="nav-link" href="#portfolio">Projects</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#certifications">Certificate</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#contact">Contact</a>
-        </li>
-      </ul>
-    </div>
-  </nav>
 
-  <!-- Main -->
-  <div id="fullpage">
-    <!-- start home -->
-    <div id="home" class="section">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-2"></div>
-          <div class="col-md-8 wow fadeIn" data-wow-delay="0.8s">
-            <h3 style="color: whitesmoke">Simple and Elegant</h3>
-            <h1 style="margin-right: 300px">RITIK GHOGHARI</h1>
-            <h2 class="rotate">
-              DESIGNER &AMP; DEVELOPER ,ENTRY-LEVEL DATA ANALYST/SCIENTIST
-            </h2>
-            <h3 style="font-weight: bold">
-              Building the Future with Data-Driven Decisions
-              <!-- <li style="margin-top: 8px">Analyst</li> -->
-              <li style="margin-top: 8px">Problem Solver</li>
-              <li style="margin-top: 8px">Continuous Learner</li>
-            </h3>
-            <a style="margin-top: 15px" href="#work" class="btn btn-default smoothScroll wow fadeInUp"
-              data-wow-delay="3s"><i class="arrow down">Scorll Down</i></a>
-          </div>
-          <div class="col-md-2"></div>
-        </div>
-      </div>
-    </div>
-    <!-- end home -->
+    <!-- WebGL Canvas -->
+    <canvas id="bg"></canvas>
 
-    <!-- start work -->
-    <div id="work" class="section">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-12 wow bounce">
-            <h2>WHAT I DO</h2>
-          </div>
-        </div>
+    <!-- Overlay UI -->
+    <main>
 
-        <div class="row">
-          <div class="col-md-4 col-xs-11 wow fadeInUp" data-wow-delay="0.6s">
-            <div class="media">
-              <div class="media-object media-left">
-                <i class="fa fa-database"></i>
-              </div>
-              <div class="media-body">
-                <h3 class="media-heading">Data Acquisition & Preparation</h3>
-                <ul>
-                  <li>
-                    <strong>Data Acquisition (Both):</strong> Collect data
-                    from sources like databases, APIs, or external datasets.
-                  </li>
-                  <li>
-                    <strong>Data Cleaning (Both):</strong> Handle missing
-                    values, duplicates, and outliers.
-                  </li>
-                  <li>
-                    <strong>Data Transformation (Both):</strong> Convert raw
-                    data into structured formats (standardization,
-                    normalization).
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-4 col-xs-11 wow fadeInUp" data-wow-delay="0.6s">
-            <div class="media">
-              <div class="media-object media-left">
-                <i class="fa fa-search"></i>
-              </div>
-              <div class="media-body">
-                <h3 class="media-heading">Data Analysis & Modeling</h3>
-                <ul>
-                  <li>
-                    <strong>Exploratory Data Analysis (EDA) (Data Analyst):</strong>
-                    Identify trends and patterns using basic statistics.
-                  </li>
-                  <li>
-                    <strong>Advanced Analysis (Data Scientist):</strong> Apply
-                    techniques like clustering, time-series analysis, and
-                    feature engineering.
-                  </li>
-                  <li>
-                    <strong>Model Building (Data Scientist):</strong> Develop
-                    and evaluate machine learning models (e.g., regression,
-                    classification).
-                  </li>
-                  <li>
-                    <strong>Model Optimization (Data Scientist):</strong> Tune
-                    models through cross-validation and hyperparameter tuning.
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-4 col-xs-11 wow fadeInUp" data-wow-delay="0.6s">
-            <div class="media">
-              <div class="media-object media-left">
-                <i class="fa fa-bullhorn"></i>
-              </div>
-              <div class="media-body">
-                <h3 class="media-heading">Reporting & Communication</h3>
-                <ul>
-                  <li>
-                    <strong>Data Visualization (Both):</strong> Create charts
-                    and dashboards (Excel, Power BI, matplotlib , seaborn).
-                  </li>
-                  <li>
-                    <strong>Reporting (Both):</strong> Present insights
-                    through reports and dashboards for stakeholders.
-                  </li>
-                  <li>
-                    <strong>Communication (Both):</strong> Clearly present
-                    findings, model results, and business implications.
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- end work -->
-
-    <!-- start about -->
-    <div id="about" class="section">
-      <div class="container">
-        <div class="row">
-          <!-- Profile Photo Section (Left Side) -->
-          <div class="col-md-4 text-center wow fadeIn" data-wow-delay="0.9s">
-            <div class="profile-photo">
-              <img src="images/pic.jpg" alt="Ritik's Photo" class="img-fluid" />
-            </div>
-          </div>
-
-          <!-- About Text Section (Right Side) -->
-          <div class="col-md-8 wow fadeInRight" data-wow-delay="0.9s">
-            <h2>ABOUT RITIK</h2>
-            <h4>ML Magician &AMP; Data Oracle</h4>
-            <p style="color: azure">
-              Aspiring Data Analyst with expertise in data science, AI, and
-              digital business. Skilled in Python, SQL, Power BI, and Excel,
-              with hands-on experience in data cleaning, visualization, and
-              modeling. Eager to apply skills in a challenging internship or
-              work-student role, either in Berlin or remote.
-            </p>
-
-            <!-- Resume Download Button -->
-            <a href="/path/to/your/resume.pdf" class="btn btn-primary" download>Download Resume</a>
-
-            <!-- Skills Section Below About Text -->
-            <!-- Skills Section Below About Text -->
-            <div class="skills-section">
-              <h4 style="margin-top: 30px; margin-bottom: 20px;">Technical Skills</h4>
-              <div class="skills-grid">
-                <!-- Data Science & ML -->
-                <div class="skill-card">
-                  <i class="fa fa-code" style="color: var(--accent-color); font-size: 24px; margin-bottom: 10px;"></i>
-                  <span class="skill-name">Python</span>
-                  <span class="skill-level">Data Science & AI</span>
-                </div>
-                <div class="skill-card">
-                  <i class="fa fa-database"
-                    style="color: var(--accent-color); font-size: 24px; margin-bottom: 10px;"></i>
-                  <span class="skill-name">SQL</span>
-                  <span class="skill-level">Database Management</span>
-                </div>
-                <div class="skill-card">
-                  <i class="fa fa-cogs" style="color: var(--accent-color); font-size: 24px; margin-bottom: 10px;"></i>
-                  <span class="skill-name">Machine Learning</span>
-                  <span class="skill-level">Predictive Modeling</span>
-                </div>
-                <div class="skill-card">
-                  <i class="fa fa-bar-chart"
-                    style="color: var(--accent-color); font-size: 24px; margin-bottom: 10px;"></i>
-                  <span class="skill-name">Data Analysis</span>
-                  <span class="skill-level">EDA & Visualization</span>
-                </div>
-
-                <!-- Tools & Web -->
-                <div class="skill-card">
-                  <i class="fa fa-pie-chart"
-                    style="color: var(--accent-color); font-size: 24px; margin-bottom: 10px;"></i>
-                  <span class="skill-name">Power BI</span>
-                  <span class="skill-level">Dashboarding</span>
-                </div>
-                <div class="skill-card">
-                  <i class="fa fa-file-excel-o"
-                    style="color: var(--accent-color); font-size: 24px; margin-bottom: 10px;"></i>
-                  <span class="skill-name">Excel</span>
-                  <span class="skill-level">Advanced</span>
-                </div>
-                <div class="skill-card">
-                  <i class="fa fa-html5" style="color: var(--accent-color); font-size: 24px; margin-bottom: 10px;"></i>
-                  <span class="skill-name">Web Development</span>
-                  <span class="skill-level">HTML5, CSS3, JS</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- end about -->
-
-    <!-- Start Portfolio -->
-    <div id="portfolio" class="section">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-12">
-            <h2 class="wow bounce">PORTFOLIO</h2>
-            <p class="section-subtitle" style="font-size: larger">
-              Explore my latest projects and work.
-            </p>
-          </div>
-        </div>
-
-        <!-- Portfolio Grid -->
-        <div class="portfolio-grid">
-          <!-- Project New: Fake Job Detector -->
-          <div class="portfolio-item wow fadeIn" data-wow-delay="0.3s">
-            <div class="portfolio-item-inner">
-              <img src="images/fake_job.png" alt="Fake Job Detector" class="img-responsive" />
-              <div class="portfolio-overlay">
-                <div class="overlay-content">
-                  <h4>Fake Job Detector</h4>
-                  <p>AI-powered tool to identify fraudulent job postings.</p>
-                  <a href="https://github.com/Ritikghoghari/Fake_Job_App" target="_blank" class="btn btn-portfolio">
-                    <i class="fa fa-github"></i> View on GitHub
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Project 1 -->
-          <div class="portfolio-item wow fadeIn" data-wow-delay="0.3s">
-            <div class="portfolio-item-inner">
-              <img src="images/b.jpg" alt="Book Sales Analysis" class="img-responsive" />
-              <div class="portfolio-overlay">
-                <div class="overlay-content">
-                  <h4>Book Data Analysis</h4>
-                  <!-- <p>
-                      Analyze book sales data to uncover trends and insights.
-                    </p> -->
-                  <a href="https://github.com/Ritikghoghari/Book-Sales-Data-Analyst-EDA-" target="_blank"
-                    class="btn btn-portfolio">
-                    <i class="fa fa-github"></i> View on GitHub
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Project 2 -->
-          <div class="portfolio-item wow fadeIn" data-wow-delay="0.6s">
-            <div class="portfolio-item-inner">
-              <img src="images/AB.jpg" alt="Airbnb Analysis" class="img-responsive" />
-              <div class="portfolio-overlay">
-                <div class="overlay-content">
-                  <h4>Airbnb Analysis</h4>
-                  <!-- <p>
-                      Analyze Airbnb data to understand market trends and
-                      pricing strategies.
-                    </p> -->
-                  <a href="https://github.com/Ritikghoghari/Airbnb-EDA---Analysis" target="_blank"
-                    class="btn btn-portfolio">
-                    <i class="fa fa-github"></i> View on GitHub
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Project 3 -->
-          <div class="portfolio-item wow fadeIn" data-wow-delay="0.9s">
-            <div class="portfolio-item-inner">
-              <img src="images/HR9999.jpg" alt="HR Data Analysis" class="img-responsive" />
-              <div class="portfolio-overlay">
-                <div class="overlay-content">
-                  <h4>HR Data Analysis</h4>
-                  <!-- <p>
-                      Analyze HR data to improve employee retention and
-                      performance.
-                    </p> -->
-                  <a href="https://github.com/Ritikghoghari/HR-Data-Analysis-Project---Power-BI-Dashboard"
-                    target="_blank" class="btn btn-portfolio">
-                    <i class="fa fa-github"></i> View on GitHub
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Project 4 -->
-          <div class="portfolio-item wow fadeIn" data-wow-delay="1.2s">
-            <div class="portfolio-item-inner">
-              <img src="images/home3.jpg" alt="Bank Customer Churn Analysis" class="img-responsive" />
-              <div class="portfolio-overlay">
-                <div class="overlay-content">
-                  <h4>Bank Customer Churn Analysis</h4>
-                  <!-- <p>
-                      Understand customer behavior and predict churn with
-                      data-driven insights.
-                    </p> -->
-                  <a href="https://github.com/Ritikghoghari/Bank-Customer-Churn-Analysis---Power-BI-Dashboard"
-                    target="_blank" class="btn btn-portfolio">
-                    <i class="fa fa-github"></i> View on GitHub
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- End Portfolio -->
-
-    <!-- Start Certifications -->
-    <div id="certifications" class="section">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-12">
-            <h2 class="wow bounce">CERTIFICATIONS</h2>
-          </div>
-
-          <!-- Certification 1 -->
-          <div class="col-md-4 col-xs-6 wow fadeIn" data-wow-delay="0.6s">
-            <div class="certification-thumb">
-              <img src="images/Certificate1.jpg" class="img-responsive" alt="Certification 1" />
-              <div class="certification-overlay">
-                <h4>Python Fundamentals For Beginners Certificate</h4>
-                <h5>Offered by: Great Learning</h5>
-                <a href="images/Certificate1.jpg" target="_blank" class="cert-btn">
-                  <i class="fa fa-external-link"></i> View Certificate
-                </a>
-              </div>
-            </div>
-          </div>
-
-          <!-- Certification 2 -->
-          <div class="col-md-4 col-xs-6 wow fadeIn" data-wow-delay="0.6s">
-            <div class="certification-thumb">
-              <img src="images/Internship_Certificate.jpg" class="img-responsive" alt="Certification 2" />
-              <div class="certification-overlay">
-                <h4>Data Analytics and Visualization job Simulation</h4>
-                <h5>Offered by: Forage</h5>
-                <a href="images/Internship_Certificate.jpg" target="_blank" class="cert-btn">
-                  <i class="fa fa-external-link"></i> View Certificate
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- End Certifications -->
-
-    <!-- Start Contact -->
-    <div id="contact" class="section">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-5 col-lg-offset-1 col-md-6 wow fadeInUp" data-wow-delay="0.6s">
-            <address>
-              <p class="contact-title">CONTACT ME</p>
-              <p><i class="fa fa-phone"></i> +49 15566092149</p>
-              <p>
-                <i class="fa fa-envelope-o"></i> ritikghoghari.ds@gmail.com
-              </p>
-              <p>
-                <i class="fa fa-map-marker"></i> Maulbeerallee 25, 13593
-                Berlin, Germany
-              </p>
-            </address>
-          </div>
-          <div class="col-lg-6 col-md-6 col-xs-10 wow fadeInUp" data-wow-delay="0.6s">
-            <form id="form" method="post" action="/contact-us">
-              <input name="name" id="name" type="text" class="form-control" placeholder="Your Name" required />
-              <br />
-              <input name="email" type="email" id="email" class="form-control" placeholder="Your Email" required />
-              <br />
-              <textarea name="message" id="message" class="form-control" placeholder="Your Message" required></textarea>
-              <br />
-              <button type="submit" class="btn btn-primary">Submit</button>
-            </form>
-          </div>
-          <div class="col-md-1 col-sm-1"></div>
-        </div>
-      </div>
-    </div>
-    <!-- End Contact -->
-
-    <!-- start footer -->
-    <footer>
-      <div class="container">
-        <div class="row">
-          <div class="col-md-12 wow fadeIn" data-wow-delay="0.9s">
-            Copyright &copy;
-            <script>
-              document.write(new Date().getFullYear());
-            </script>
-            All rights reserved
-            <hr />
-            <ul class="social-icon">
-              <li><a href="https://www.linkedin.com/in/ritikghoghari/" target="_blank" class="fa fa-linkedin"></a></li>
-              <li><a href="#" class="fa fa-twitter"></a></li>
-              <li><a href="https://github.com/Ritikghoghari" target="_blank" class="fa fa-github"></a></li>
+        <!-- Navigation -->
+        <nav>
+            <div class="logo">RG_DATA</div>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#skills">Skills</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="#contact">Contact</a></li>
             </ul>
-          </div>
-        </div>
-      </div>
-    </footer>
-    <!-- end footer -->
-  </div>
+        </nav>
 
-  <!-- Back to Top Button -->
-  <button id="back-to-top" title="Go to top">
-    <i class="fa fa-arrow-up"></i>
-  </button>
+        <!-- Sections -->
 
-  <!-- jQuery -->
-  <script src="javascripts/jquery.js"></script>
-  <!-- bootstrap -->
-  <script src="javascripts/bootstrap.min.js"></script>
-  <!-- fullpage -->
-  <script src="javascripts/jquery.fullPage.js"></script>
-  <!-- smoothScroll -->
-  <script src="javascripts/smoothscroll.js"></script>
-  <!-- wow -->
-  <script src="javascripts/wow.min.js"></script>
-  <!-- text rotater -->
-  <script src="javascripts/jquery.simple-text-rotator.js"></script>
-  <!-- custom -->
-  <script src="javascripts/custom.js"></script>
+        <!-- HERO -->
+        <section id="home">
+            <div class="hero-content">
+                <h1 class="glitch" data-text="RITIK GHOGHARI">RITIK GHOGHARI</h1>
+                <h2>DATA SCIENTIST <span class="accent">&</span> DEVELOPER</h2>
+                <p>Building the future with data-driven intelligence.</p>
+                <a href="#projects" class="cta-button">View Work</a>
+            </div>
 
-  <!-- Updated Back to Top Script -->
-  <script>
-    const backToTopButton = document.getElementById("back-to-top");
+            <div class="scroll-indicator">
+                <span>Scroll to Explore</span>
+                <div class="mouse"></div>
+            </div>
+        </section>
 
-    window.onscroll = function () {
-      if (
-        document.body.scrollTop > 200 ||
-        document.documentElement.scrollTop > 200
-      ) {
-        backToTopButton.style.display = "block";
-      } else {
-        backToTopButton.style.display = "none";
-      }
-    };
+        <!-- ABOUT -->
+        <section id="about">
+            <div class="glass-card">
+                <h3>01. About Me</h3>
+                <p>
+                    I am an aspiring <strong>Data Analyst & Scientist</strong> based in Berlin, Germany.
+                    I blend the magic of <strong>Machine Learning</strong> with the precision of <strong>Data
+                        Analysis</strong>
+                    to solve complex business problems.
+                </p>
+                <p>
+                    My background spans from Python and SQL to building modern web experiences.
+                    I am currently seeking internship or working student opportunities.
+                </p>
+                <a href="#" class="btn-outline">Download Resume</a>
+            </div>
+        </section>
 
-    backToTopButton.addEventListener("click", function () {
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      });
-    });
-  </script>
+        <!-- SKILLS -->
+        <section id="skills">
+            <div class="glass-card full-width">
+                <h3>02. Technical Arsenal</h3>
+                <div class="skills-grid">
+                    <div class="skill-item">
+                        <span class="icon">🐍</span>
+                        <h4>Python</h4>
+                        <p>Data Science, AI, Automation</p>
+                    </div>
+                    <div class="skill-item">
+                        <span class="icon">🗄️</span>
+                        <h4>SQL</h4>
+                        <p>Complex Queries, Database Design</p>
+                    </div>
+                    <div class="skill-item">
+                        <span class="icon">🤖</span>
+                        <h4>Machine Learning</h4>
+                        <p>Scikit-learn, TensorFlow, Predictive Models</p>
+                    </div>
+                    <div class="skill-item">
+                        <span class="icon">📊</span>
+                        <h4>Data Viz</h4>
+                        <p>Power BI, Tableau, Matplotlib</p>
+                    </div>
+                    <div class="skill-item">
+                        <span class="icon">🌐</span>
+                        <h4>Web Dev</h4>
+                        <p>HTML5, CSS3, JavaScript, Three.js</p>
+                    </div>
+                    <div class="skill-item">
+                        <span class="icon">📈</span>
+                        <h4>Excel</h4>
+                        <p>Advanced Analysis, Macros</p>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const toggler = document.querySelector(".navbar-toggler");
-      const nav = document.querySelector(".navbar-nav");
+        <!-- PROJECTS -->
+        <section id="projects">
+            <h3>03. Selected Works</h3>
+            <div class="project-gallery">
 
-      toggler.addEventListener("click", function () {
-        nav.classList.toggle("active");
-      });
-    });
-  </script>
+                <!-- Project 1 (New) -->
+                <div class="project-card" data-tilt>
+                    <div class="card-image" style="background-image: url('images/fake_job.png');"></div>
+                    <div class="card-content">
+                        <h4>Fake Job Detector</h4>
+                        <p>AI-powered tool using NLP to identify fraudulent job postings with high accuracy.</p>
+                        <div class="tags">
+                            <span>Python</span>
+                            <span>NLP</span>
+                            <span>Machine Learning</span>
+                        </div>
+                        <a href="https://github.com/Ritikghoghari/Fake_Job_App" target="_blank"
+                            class="project-link">View Source</a>
+                    </div>
+                </div>
+
+                <!-- Project 2 -->
+                <div class="project-card" data-tilt>
+                    <div class="card-image" style="background-image: url('images/b.jpg');"></div>
+                    <div class="card-content">
+                        <h4>Book Data Analysis</h4>
+                        <p>Exploratory Data Analysis of book sales trends to uncover market insights.</p>
+                        <div class="tags">
+                            <span>Python</span>
+                            <span>Pandas</span>
+                            <span>Seaborn</span>
+                        </div>
+                        <a href="https://github.com/Ritikghoghari/Book-Sales-Data-Analyst-EDA-" target="_blank"
+                            class="project-link">View Source</a>
+                    </div>
+                </div>
+
+                <!-- Project 3 -->
+                <div class="project-card" data-tilt>
+                    <div class="card-image" style="background-image: url('images/AB.jpg');"></div>
+                    <div class="card-content">
+                        <h4>Airbnb Analysis</h4>
+                        <p>Market trend analysis and pricing strategy optimization for Airbnb listings.</p>
+                        <div class="tags">
+                            <span>Data Analysis</span>
+                            <span>Visualization</span>
+                        </div>
+                        <a href="https://github.com/Ritikghoghari/Airbnb-EDA---Analysis" target="_blank"
+                            class="project-link">View Source</a>
+                    </div>
+                </div>
+
+                <!-- Project 4 -->
+                <div class="project-card" data-tilt>
+                    <div class="card-image" style="background-image: url('images/HR9999.jpg');"></div>
+                    <div class="card-content">
+                        <h4>HR Data Analysis</h4>
+                        <p>Dashboarding employee retention metrics.</p>
+                        <div class="tags">
+                            <span>Power BI</span>
+                            <span>Data Viz</span>
+                        </div>
+                        <a href="https://github.com/Ritikghoghari/HR-Data-Analysis-Project---Power-BI-Dashboard"
+                            target="_blank" class="project-link">View Source</a>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- CONTACT -->
+        <section id="contact">
+            <div class="glass-card text-center">
+                <h3>04. Get In Touch</h3>
+                <p>Currently open for new opportunities.</p>
+                <div class="contact-links">
+                    <a href="mailto:ritikghoghari.ds@gmail.com" class="cta-button">ritikghoghari.ds@gmail.com</a>
+                    <div class="socials">
+                        <a href="https://github.com/Ritikghoghari" target="_blank">GitHub</a>
+                        <a href="https://www.linkedin.com/in/ritikghoghari/" target="_blank">LinkedIn</a>
+                    </div>
+                </div>
+                <footer>
+                    <p>&copy; 2026 Ritik Ghoghari. Built with Three.js</p>
+                </footer>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Project Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script type="module" src="main.js"></script>
 </body>
 
 </html>
