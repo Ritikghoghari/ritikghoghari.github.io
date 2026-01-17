@@ -145,37 +145,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
     gsap.registerPlugin(ScrollTrigger);
 
-    // Hero Text - immediate reveal
-    gsap.to(".hero-content", {
-        y: 0,
-        opacity: 1,
+    // Hero Text
+    gsap.from(".hero-content", {
+        y: 50,
+        opacity: 0,
         duration: 1.5,
         ease: "power3.out"
     });
 
     // Glass Cards Reveal
     gsap.utils.toArray('.glass-card').forEach(card => {
-        gsap.to(card, {
+        gsap.from(card, {
             scrollTrigger: {
                 trigger: card,
                 start: "top 85%",
                 toggleActions: "play none none reverse"
             },
-            y: 0,
-            opacity: 1,
+            y: 50, // Move FROM 50px down
+            opacity: 0, // Fade FROM 0
             duration: 1,
             ease: "power2.out"
         });
     });
 
     // Project Cards Stagger
-    gsap.to(".project-card", {
+    gsap.from(".project-card", {
         scrollTrigger: {
             trigger: "#projects",
             start: "top 75%"
         },
-        y: 0,
-        opacity: 1,
+        y: 50,
+        opacity: 0,
         stagger: 0.2,
         duration: 0.8,
         ease: "back.out(1.7)"

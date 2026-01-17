@@ -362,13 +362,11 @@ section {
     }
 }
 
-/* Animations Initial States */
-.hero-content,
-.glass-card,
-.project-card {
+/* Animations Initial States - REMOVED to prevent invisible content bug */
+/* .hero-content, .glass-card, .project-card {
     opacity: 0;
     transform: translateY(30px);
-}
+} */
 
 /* Modal Styles */
 .modal-overlay {
