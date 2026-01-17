@@ -224,23 +224,40 @@ function initThreeBackground() {
 
 // --- 5. BOOTSTRAP ---
 
-document.addEventListener('DOMContentLoaded', () => {
+function initApp() {
+    console.log("Bootstrapping App...");
+
     // A. Render UI
-    renderPortfolio();
+    if (typeof window.renderPortfolio === 'function') {
+        window.renderPortfolio();
+    } else {
+        console.error("renderPortfolio function not found!");
+    }
 
     // B. Start 3D
-    initThreeBackground();
+    if (typeof initThreeBackground === 'function') {
+        initThreeBackground();
+    }
 
-    // C. Static Animations (Safe Mode)
+    // C. Static Animations (Safe Mode) - Only if dependencies took
     if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
         gsap.registerPlugin(ScrollTrigger);
+        // Hero
         gsap.from(".hero-content", { y: 20, opacity: 0, duration: 1, ease: "power2.out" });
+        // Glass Cards
         gsap.utils.toArray('.glass-card').forEach(card => {
             gsap.from(card, {
                 scrollTrigger: { trigger: card, start: "top 90%" },
                 y: 30, opacity: 0, duration: 0.8, ease: "power2.out"
             });
         });
-        // Projects are already visible by default CSS, no need to animate entry to avoid glitches
     }
-});
+}
+
+// Robust Init: Check if we missed the event or if it's coming
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initApp);
+} else {
+    // DOM is already ready (likely, since modules are deferred)
+    initApp();
+}
