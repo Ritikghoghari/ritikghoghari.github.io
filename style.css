@@ -362,11 +362,8 @@ section {
     }
 }
 
-/* Animations Initial States - REMOVED to prevent invisible content bug */
-/* .hero-content, .glass-card, .project-card {
-    opacity: 0;
-    transform: translateY(30px);
-} */
+/* Animations Initial States - Removed */
+
 
 /* Modal Styles */
 .modal-overlay {
