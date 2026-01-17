@@ -119,6 +119,8 @@ section {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    scroll-margin-top: 80px;
+    /* Offset for fixed navbar */
 }
 
 .hero-content {
