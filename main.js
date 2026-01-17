@@ -14,7 +14,7 @@ const PORTFOLIO_DATA = [
         tags: ["Python", "NLP"],
         techStack: "Python, NLP, Machine Learning, Scikit-learn",
         image: "images/fake_job.png",
-        link: "https://github.com/Ritikghoghari/Fake_Job_App"
+        link: "https://github.com/Ritikghoghari/Fake-Job-Detection-With-Reasoning"
     },
     {
         id: "book",
