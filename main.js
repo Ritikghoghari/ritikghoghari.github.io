@@ -7,6 +7,16 @@ import * as THREE from 'three';
 
 const PORTFOLIO_DATA = [
     {
+        id: "recruit",
+        title: "Smart Recruit Assistant",
+        brief: "AI-driven candidate screening.",
+        description: "An intelligent recruitment tool that uses NLP to screen resumes and match candidates to job descriptions, streamlining the hiring process.",
+        tags: ["Python", "NLP", "AI"],
+        techStack: "Python, Natural Language Processing, AI, Streamlit",
+        image: "images/thumb_smart_recruit.png",
+        link: "https://github.com/Ritikghoghari/Smart-Recruit-Assistant"
+    },
+    {
         id: "fakejob",
         title: "Fake Job Detector",
         brief: "AI-powered fraud detection system.",
