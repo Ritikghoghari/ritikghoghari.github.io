@@ -7,6 +7,16 @@ import * as THREE from 'three';
 
 const PORTFOLIO_DATA = [
     {
+        id: "energy",
+        title: "German Energy Forecast",
+        brief: "Price prediction via Time Series.",
+        description: "Forecasting electricity prices in the German energy market using advanced Time Series forecasting techniques (ARIMA, Prophet, LSTM) to optimize trading strategies.",
+        tags: ["Python", "Sequencing"],
+        techStack: "Python, Time Series, LSTM, Prophet, Pandas",
+        image: "images/thumb_energy_forecast.png",
+        link: "https://github.com/Ritikghoghari/German-Energy-Price-Forecasting"
+    },
+    {
         id: "recruit",
         title: "Smart Recruit Assistant",
         brief: "AI-driven candidate screening.",
