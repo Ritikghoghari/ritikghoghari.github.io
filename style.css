@@ -85,6 +85,28 @@ h3 {
     display: inline-block;
 }
 
+/* Typewriter Cursor */
+.txt-type>.txt {
+    border-right: 0.2rem solid var(--accent);
+    padding-right: 5px;
+    animation: blink 0.7s infinite;
+    color: var(--accent);
+}
+
+@keyframes blink {
+    0% {
+        border-color: transparent
+    }
+
+    50% {
+        border-color: var(--accent)
+    }
+
+    100% {
+        border-color: transparent
+    }
+}
+
 p {
     font-size: 1.2rem;
     line-height: 1.6;
