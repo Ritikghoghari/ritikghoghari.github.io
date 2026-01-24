@@ -7,6 +7,16 @@ import * as THREE from 'three';
 
 const PORTFOLIO_DATA = [
     {
+        id: "jobmarketai",
+        title: "JobMarketAI Agent Crew",
+        brief: "Multi-Agent Career Assistant.",
+        description: "A comprehensive Multi-Agent System powered by Google Gemini and CrewAI. It features a team of AI agents (Recruiter, Security Officer, Career Coach) that analyze resumes, detect fake job postings, and generate tailored application strategies.",
+        tags: ["CrewAI", "LLM", "Python"],
+        techStack: "Python, CrewAI, Streamlit, Google Gemini, LangChain",
+        image: "images/thumb_job_market_ai.png",
+        link: "https://github.com/Ritikghoghari/JobMarketAI"
+    },
+    {
         id: "energy",
         title: "German Energy Forecast",
         brief: "Price prediction via Time Series.",
