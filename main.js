@@ -103,7 +103,7 @@ const PORTFOLIO_DATA = [
         description: "A real-time Computer Vision application using Python, OpenCV, and MediaPipe to detect posture, calculate joint angles, and automatically count exercise repetitions.",
         tags: ["Python", "OpenCV", "MediaPipe"],
         techStack: "Python, OpenCV, MediaPipe, Computer Vision",
-        image: "images/portfolio-img1.jpg",
+        image: "images/thumb_ai_trainer.png",
         link: "https://github.com/Ritikghoghari/Personal-AI-Trainer"
     },
     {
@@ -113,7 +113,7 @@ const PORTFOLIO_DATA = [
         description: "A Python-based AI prototype using Google Gemini to automatically extract B2B invoice data from PDFs into structured JSON formats for ERP integration.",
         tags: ["Python", "Generative AI"],
         techStack: "Python, Google Gemini, PDF Processing, LLM",
-        image: "images/portfolio-img2.jpg",
+        image: "images/thumb_invoice_extractor.png",
         link: "https://github.com/Ritikghoghari/primax-test-project"
     },
     {
@@ -123,7 +123,7 @@ const PORTFOLIO_DATA = [
         description: "Data analysis project focusing on interpreting Logistics IT Support metrics and identifying key operational insights.",
         tags: ["Python", "Data Analysis"],
         techStack: "Python, Data Analysis",
-        image: "images/portfolio-img3.jpg",
+        image: "images/thumb_logistics.png",
         link: "https://github.com/Ritikghoghari/Logistics-IT-Support-Analysis"
     },
     {
@@ -133,7 +133,7 @@ const PORTFOLIO_DATA = [
         description: "Machine Learning project to predict used car selling prices using Linear Regression & Lasso Regression. Built with Python, Pandas, Scikit-learn, Matplotlib & Seaborn.",
         tags: ["Python", "ML"],
         techStack: "Python, Pandas, Scikit-learn, Matplotlib",
-        image: "images/portfolio-img4.jpg",
+        image: "images/thumb_car_price.png",
         link: "https://github.com/Ritikghoghari/CodeAlpha_Car-Price-Prediction"
     },
     {
@@ -143,7 +143,7 @@ const PORTFOLIO_DATA = [
         description: "Classic ML classification project using Random Forest Classifier to classify Iris flowers into Setosa, Versicolor & Virginica species. Achieves 100% accuracy on test set.",
         tags: ["Python", "ML"],
         techStack: "Python, Random Forest, Scikit-learn",
-        image: "images/portfolio-img5.jpg",
+        image: "images/thumb_iris_flower.png",
         link: "https://github.com/Ritikghoghari/CodeAlpha_Iris-Flower-Classification"
     },
     {
@@ -153,7 +153,7 @@ const PORTFOLIO_DATA = [
         description: "Machine Learning classification model aimed at identifying and categorizing different types of defects in fabric images.",
         tags: ["Python", "Computer Vision"],
         techStack: "Python, Machine Learning, Computer Vision",
-        image: "images/portfolio-img1.jpg",
+        image: "images/thumb_fabric_defect.png",
         link: "https://github.com/Ritikghoghari/Fabric-Defect-Classification"
     },
     {
@@ -163,28 +163,8 @@ const PORTFOLIO_DATA = [
         description: "A recommendation system engine built to suggest personalized movie content to users based on viewing habits and ratings.",
         tags: ["Python", "ML"],
         techStack: "Python, Recommendation Engine, Machine Learning",
-        image: "images/portfolio-img2.jpg",
+        image: "images/thumb_movie_rec.png",
         link: "https://github.com/Ritikghoghari/Movie-Recommendation-System"
-    },
-    {
-        id: "weather-app",
-        title: "Weather App",
-        brief: "Python-based weather forecaster.",
-        description: "A functional weather application built in Python, fetching and displaying real-time geographic weather data.",
-        tags: ["Python", "API"],
-        techStack: "Python, APIs",
-        image: "images/portfolio-img3.jpg",
-        link: "https://github.com/Ritikghoghari/Weather-App"
-    },
-    {
-        id: "clustering",
-        title: "Clustering Models",
-        brief: "Exploration of clustering algorithms.",
-        description: "Implementation and comparative analysis of various unsupervised learning and clustering models.",
-        tags: ["Python", "Unsupervised Learning"],
-        techStack: "Python, Unsupervised Learning, Scikit-learn",
-        image: "images/portfolio-img4.jpg",
-        link: "https://github.com/Ritikghoghari/Clustering_Models"
     }
 ];
 
