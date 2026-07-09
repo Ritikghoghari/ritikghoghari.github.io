@@ -446,86 +446,132 @@ setTimeout(() => {
     }
 }, 300);
 
-// --- CHATBOT LOGIC ---
-const chatInput = document.getElementById('chat-input');
-const chatSendBtn = document.getElementById('chat-send-btn');
-const chatMessages = document.getElementById('chat-messages');
+// --- ACTIVE NAV HIGHLIGHT ---
+const navLinks = document.querySelectorAll('nav ul a[href^="#"]');
+const navSections = Array.from(navLinks)
+    .map(link => document.querySelector(link.getAttribute('href')))
+    .filter(Boolean);
 
-let chatState = 'ask_name';
-let userData = {
-    name: '',
-    email: '',
-    message: ''
-};
+if (navSections.length) {
+    const navObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                navLinks.forEach(link => link.classList.remove('active'));
+                const activeLink = document.querySelector(`nav ul a[href="#${entry.target.id}"]`);
+                if (activeLink) activeLink.classList.add('active');
+            }
+        });
+    }, { rootMargin: '-40% 0px -50% 0px' });
 
-function addMessage(text, sender) {
-    const msgDiv = document.createElement('div');
-    msgDiv.classList.add('message', sender);
-    msgDiv.innerHTML = `<p>${text}</p>`;
-    chatMessages.appendChild(msgDiv);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
+    navSections.forEach(section => navObserver.observe(section));
 }
 
-function handleInput() {
-    const text = chatInput.value.trim();
-    if (!text) return;
+// --- FLOATING CHAT WIDGET ---
+const WEB3FORMS_ACCESS_KEY = "fc739b37-dd65-43a9-8ce3-c762edb249a5";
 
-    // Add user message
-    addMessage(text, 'user');
-    chatInput.value = '';
+const chatToggleBtn = document.getElementById('chat-toggle-btn');
+const chatPanel = document.getElementById('chat-panel');
+const chatIconOpen = document.getElementById('chat-icon-open');
+const chatIconClose = document.getElementById('chat-icon-close');
+const chatForm = document.getElementById('chat-form');
+const chatSubmitBtn = document.getElementById('chat-submit-btn');
+const chatStatusEl = document.getElementById('chat-status');
 
-    // Process logic based on state
-    if (chatState === 'ask_name') {
-        userData.name = text;
-        chatState = 'ask_email';
-        setTimeout(() => addMessage(`Nice to meet you, ${userData.name}! Please provide your email address so Ritik can reply to you.`, 'bot'), 500);
-    } else if (chatState === 'ask_email') {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(text)) {
-            setTimeout(() => addMessage("That doesn't look like a valid email. Please try again.", 'bot'), 500);
-            return;
-        }
-        userData.email = text;
-        chatState = 'ask_message';
-        setTimeout(() => addMessage("Thanks! What would you like to send him?", 'bot'), 500);
-    } else if (chatState === 'ask_message') {
-        userData.message = text;
-        chatState = 'sending';
-        setTimeout(() => addMessage("encrypting and sending your message...", 'bot'), 500);
-        
-        // Send via Web3Forms
+const chatFields = {
+    name: { input: document.getElementById('cf-name'), error: document.getElementById('cf-name-error') },
+    email: { input: document.getElementById('cf-email'), error: document.getElementById('cf-email-error') },
+    message: { input: document.getElementById('cf-message'), error: document.getElementById('cf-message-error') }
+};
+
+if (chatToggleBtn) {
+    chatToggleBtn.addEventListener('click', () => {
+        const isOpen = !chatPanel.classList.contains('hidden');
+        chatPanel.classList.toggle('hidden');
+        chatIconOpen.style.display = isOpen ? 'block' : 'none';
+        chatIconClose.style.display = isOpen ? 'none' : 'block';
+        if (!isOpen) chatFields.name.input.focus();
+    });
+}
+
+function setFieldError(field, message) {
+    chatFields[field].error.textContent = message;
+    chatFields[field].input.classList.toggle('invalid', !!message);
+}
+
+function validateChatForm() {
+    let valid = true;
+
+    const name = chatFields.name.input.value.trim();
+    if (!name) {
+        setFieldError('name', 'Please enter your name.');
+        valid = false;
+    } else {
+        setFieldError('name', '');
+    }
+
+    const email = chatFields.email.input.value.trim();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email || !emailRegex.test(email)) {
+        setFieldError('email', 'Please enter a valid email address.');
+        valid = false;
+    } else {
+        setFieldError('email', '');
+    }
+
+    const message = chatFields.message.input.value.trim();
+    if (!message) {
+        setFieldError('message', 'Please write a short message.');
+        valid = false;
+    } else {
+        setFieldError('message', '');
+    }
+
+    return valid;
+}
+
+if (chatForm) {
+    chatForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        // Honeypot: bots fill this hidden field, humans never see it
+        const honeypot = document.getElementById('cf-hp').value;
+        if (honeypot) return;
+
+        if (!validateChatForm()) return;
+
+        chatSubmitBtn.disabled = true;
+        chatSubmitBtn.classList.add('sending');
+        chatStatusEl.textContent = 'Sending...';
+        chatStatusEl.className = 'chat-status';
+
         const formData = new FormData();
-        formData.append("access_key", "fc739b37-dd65-43a9-8ce3-c762edb249a5");
-        formData.append("name", userData.name);
-        formData.append("email", userData.email);
-        formData.append("message", userData.message);
+        formData.append("access_key", WEB3FORMS_ACCESS_KEY);
+        formData.append("name", chatFields.name.input.value.trim());
+        formData.append("email", chatFields.email.input.value.trim());
+        formData.append("message", chatFields.message.input.value.trim());
 
         fetch("https://api.web3forms.com/submit", {
             method: "POST",
             body: formData
         })
-        .then(response => response.json())
-        .then(data => {
-            if(data.success) {
-                addMessage("Message securely transmitted! Ritik will get back to you shortly.", 'bot');
-                chatState = 'done';
-            } else {
-                addMessage("Error sending message. Please use the email link below.", 'error');
-                chatState = 'done';
-            }
-        })
-        .catch(err => {
-            addMessage("Network Error. Please use the email link below.", 'error');
-            chatState = 'done';
-        });
-    } else if (chatState === 'done') {
-        setTimeout(() => addMessage("I have already sent your message. If you need anything else, please email Ritik directly.", 'bot'), 500);
-    }
-}
-
-if(chatSendBtn) {
-    chatSendBtn.addEventListener('click', handleInput);
-    chatInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') handleInput();
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    chatStatusEl.textContent = "Thanks! I'll get back to you soon 🚀";
+                    chatStatusEl.className = 'chat-status success';
+                    chatForm.reset();
+                } else {
+                    chatStatusEl.textContent = "Something went wrong. Please email me directly.";
+                    chatStatusEl.className = 'chat-status error';
+                }
+            })
+            .catch(() => {
+                chatStatusEl.textContent = "Network error. Please email me directly.";
+                chatStatusEl.className = 'chat-status error';
+            })
+            .finally(() => {
+                chatSubmitBtn.disabled = false;
+                chatSubmitBtn.classList.remove('sending');
+            });
     });
 }
