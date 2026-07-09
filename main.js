@@ -260,55 +260,53 @@ window.onclick = function (event) {
 
 
 // --- 4. THREE.JS BACKGROUND (The "Engine") ---
+// Lightweight particle field + slow data-grid plane (replaces the old torus-knot demo).
 
 function initThreeBackground() {
     const canvas = document.querySelector('#bg');
     if (!canvas) return;
 
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true });
+    const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
 
-    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(window.innerWidth, window.innerHeight);
-    camera.position.setZ(30);
+    camera.position.set(0, 0, 40);
 
-    // Geometry
-    const geometry = new THREE.TorusKnotGeometry(10, 3, 100, 16);
-    const material = new THREE.MeshStandardMaterial({ color: 0xff0055, wireframe: true });
-    const torusKnot = new THREE.Mesh(geometry, material);
-    scene.add(torusKnot);
-
-    const coreGeo = new THREE.IcosahedronGeometry(2);
-    const coreMat = new THREE.MeshBasicMaterial({ color: 0x00f3ff, wireframe: true });
-    const core = new THREE.Mesh(coreGeo, coreMat);
-    core.position.set(-15, 0, 5);
-    scene.add(core);
-
-    // Particles
-    function addStar() {
-        const geometry = new THREE.SphereGeometry(0.15, 24, 24);
-        const material = new THREE.MeshStandardMaterial({ color: 0x00f3ff });
-        const star = new THREE.Mesh(geometry, material);
-        const [x, y, z] = Array(3).fill().map(() => THREE.MathUtils.randFloatSpread(150));
-        star.position.set(x, y, z);
-        scene.add(star);
+    // Particle field
+    const particleCount = 500;
+    const positions = new Float32Array(particleCount * 3);
+    for (let i = 0; i < particleCount; i++) {
+        positions[i * 3] = THREE.MathUtils.randFloatSpread(160);
+        positions[i * 3 + 1] = THREE.MathUtils.randFloatSpread(160);
+        positions[i * 3 + 2] = THREE.MathUtils.randFloatSpread(160);
     }
-    Array(300).fill().forEach(addStar);
+    const particleGeo = new THREE.BufferGeometry();
+    particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    const particleMat = new THREE.PointsMaterial({ color: 0x00f3ff, size: 0.4, transparent: true, opacity: 0.7 });
+    const particles = new THREE.Points(particleGeo, particleMat);
+    scene.add(particles);
 
-    // Light
-    const pointLight = new THREE.PointLight(0xffffff, 20, 100);
-    pointLight.position.set(5, 5, 5);
-    scene.add(pointLight, new THREE.AmbientLight(0xffffff));
+    // Slow-moving data-grid plane beneath the particles
+    const gridGeo = new THREE.PlaneGeometry(220, 220, 24, 24);
+    const gridMat = new THREE.MeshBasicMaterial({ color: 0x0066ff, wireframe: true, transparent: true, opacity: 0.12 });
+    const grid = new THREE.Mesh(gridGeo, gridMat);
+    grid.rotation.x = Math.PI / 2.4;
+    grid.position.y = -30;
+    scene.add(grid);
+
+    // Mouse parallax
+    let mouseX = 0, mouseY = 0;
+    window.addEventListener('mousemove', (e) => {
+        mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+        mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+    });
 
     // Scroll
+    let scrollT = 0;
     function moveCamera() {
-        const t = document.body.getBoundingClientRect().top;
-        torusKnot.rotation.x += 0.01;
-        torusKnot.rotation.y += 0.025;
-        camera.position.z = t * -0.01 + 30;
-        camera.position.x = t * -0.0002;
-        camera.rotation.y = t * -0.0002;
+        scrollT = document.body.getBoundingClientRect().top;
     }
     document.body.onscroll = moveCamera;
     moveCamera();
@@ -316,9 +314,15 @@ function initThreeBackground() {
     // Loop
     function animate() {
         requestAnimationFrame(animate);
-        torusKnot.rotation.x += 0.005;
-        torusKnot.rotation.y += 0.002;
-        core.rotation.x -= 0.01;
+        particles.rotation.y += 0.0006;
+        particles.rotation.x += 0.0002;
+        grid.rotation.z += 0.0003;
+
+        camera.position.x += (mouseX * 4 - camera.position.x) * 0.02;
+        camera.position.y += (-mouseY * 4 - camera.position.y) * 0.02;
+        camera.position.z = 40 + scrollT * -0.015;
+        camera.lookAt(0, 0, 0);
+
         renderer.render(scene, camera);
     }
     animate();
@@ -354,6 +358,7 @@ function initApp() {
         gsap.registerPlugin(ScrollTrigger);
         // Hero
         gsap.from(".hero-content", { y: 20, opacity: 0, duration: 1, ease: "power2.out" });
+        gsap.from(".hero-avatar", { y: 20, opacity: 0, duration: 1, delay: 0.2, ease: "power2.out" });
         // Glass Cards
         gsap.utils.toArray('.glass-card').forEach(card => {
             gsap.from(card, {
@@ -361,10 +366,44 @@ function initApp() {
                 y: 30, opacity: 0, duration: 0.8, ease: "power2.out"
             });
         });
+        // Skill items stagger
+        gsap.from(".skill-item", {
+            scrollTrigger: { trigger: ".skills-grid", start: "top 85%" },
+            y: 30, opacity: 0, duration: 0.6, stagger: 0.08, ease: "power2.out"
+        });
+        // Project cards stagger
+        gsap.from(".project-card", {
+            scrollTrigger: { trigger: ".project-gallery", start: "top 85%" },
+            y: 30, opacity: 0, duration: 0.6, stagger: 0.08, ease: "power2.out"
+        });
     }
 
     // D. Init Typewriter
     initTypewriter();
+
+    // E. Mobile Nav Drawer
+    initNavDrawer();
+}
+
+// --- MOBILE NAV DRAWER ---
+function initNavDrawer() {
+    const toggle = document.getElementById('nav-toggle');
+    const links = document.getElementById('nav-links');
+    if (!toggle || !links) return;
+
+    toggle.addEventListener('click', () => {
+        const isOpen = links.classList.toggle('open');
+        toggle.classList.toggle('open', isOpen);
+        toggle.setAttribute('aria-expanded', String(isOpen));
+    });
+
+    links.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+            links.classList.remove('open');
+            toggle.classList.remove('open');
+            toggle.setAttribute('aria-expanded', 'false');
+        });
+    });
 }
 
 // --- 6. TYPEWRITER EFFECT ---
