@@ -78,9 +78,10 @@ function roundRect(ctx, x, y, w, h, r) {
 
 export async function createWorld({ canvas, projects, skills, socials, manager, reducedMotion, handlers }) {
   manager.itemStart('init'); // keeps the loader open until every texture request below has been registered
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
-  const maxDpr = window.matchMedia('(pointer: coarse)').matches ? 1.5 : 2;
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, maxDpr));
+  const coarse = window.matchMedia('(pointer: coarse)').matches;
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: !coarse, powerPreference: 'high-performance' });
+  let dpr = Math.min(window.devicePixelRatio || 1, coarse ? 1.5 : 2);
+  renderer.setPixelRatio(dpr);
   renderer.setClearColor(BG, 1);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   const maxAniso = Math.min(8, renderer.capabilities.getMaxAnisotropy());
@@ -216,26 +217,21 @@ export async function createWorld({ canvas, projects, skills, socials, manager, 
     return ring;
   });
 
-  // ----- ABOUT: avatar disc with orbiting rings -----
-  const avatarImg = await loadImage('/avatar.svg', manager);
+  // ----- ABOUT: data globe with orbiting rings -----
   const avatarGroup = new THREE.Group();
-  {
-    const c = document.createElement('canvas');
-    c.width = c.height = 512;
-    const ctx = c.getContext('2d');
-    ctx.fillStyle = '#05080f';
-    ctx.fillRect(0, 0, 512, 512);
-    if (avatarImg) ctx.drawImage(avatarImg, 0, 0, 512, 512);
-    const tex = new THREE.CanvasTexture(c);
-    tex.colorSpace = THREE.SRGBColorSpace;
-    tex.anisotropy = maxAniso;
-    const disc = new THREE.Mesh(new THREE.CircleGeometry(3, 64), new THREE.MeshBasicMaterial({ map: tex, fog: false }));
-    const halo = new THREE.Mesh(
-      new THREE.RingGeometry(3.05, 3.25, 96),
-      new THREE.MeshBasicMaterial({ color: CYAN, transparent: true, opacity: 0.9, side: THREE.DoubleSide }),
-    );
-    avatarGroup.add(disc, halo);
-  }
+  const globeDots = new THREE.Points(
+    new THREE.IcosahedronGeometry(3, 12),
+    new THREE.PointsMaterial({ color: CYAN, size: 0.07, transparent: true, opacity: 0.9, depthWrite: false }),
+  );
+  const globeWire = new THREE.Mesh(
+    new THREE.IcosahedronGeometry(2.6, 2),
+    new THREE.MeshBasicMaterial({ color: 0x8b5cf6, wireframe: true, transparent: true, opacity: 0.35 }),
+  );
+  const globeCore = new THREE.Mesh(
+    new THREE.SphereGeometry(1.1, 32, 32),
+    new THREE.MeshStandardMaterial({ color: 0x07203a, emissive: CYAN, emissiveIntensity: 0.6, roughness: 0.3 }),
+  );
+  avatarGroup.add(globeDots, globeWire, globeCore);
   const aboutRings = [4.3, 5.4, 6.5].map((r, i) => {
     const ring = new THREE.Mesh(
       new THREE.TorusGeometry(r, 0.03, 8, 160),
@@ -485,7 +481,13 @@ export async function createWorld({ canvas, projects, skills, socials, manager, 
   }
   layout();
   manager.itemEnd('init');
-  const ro = new ResizeObserver(layout);
+  let lastW = canvas.clientWidth;
+  const ro = new ResizeObserver(() => {
+    const w = canvas.clientWidth;
+    if (coarse && w === lastW) return; // phone address bar showing/hiding: keep the current buffer
+    lastW = w;
+    layout();
+  });
   ro.observe(canvas);
 
   // ----- interaction -----
@@ -509,7 +511,7 @@ export async function createWorld({ canvas, projects, skills, socials, manager, 
   function onMove(e) {
     mouse.x = (e.clientX / window.innerWidth - 0.5) * 2;
     mouse.y = (e.clientY / window.innerHeight - 0.5) * 2;
-    if (e.target === canvas) {
+    if (e.target === canvas && e.pointerType === 'mouse') {
       updatePointer(e);
       pointerActive = true;
     } else {
@@ -585,6 +587,9 @@ export async function createWorld({ canvas, projects, skills, socials, manager, 
     // about
     aboutRings.forEach((r, i) => (r.rotation.z += dt * (0.4 + i * 0.25) * motion));
     avatarGroup.rotation.y = Math.sin(time * 0.6 * motion) * 0.25 + px * 0.1;
+    globeDots.rotation.y += dt * 0.15 * motion;
+    globeWire.rotation.y -= dt * 0.25 * motion;
+    globeWire.rotation.x += dt * 0.1 * motion;
 
     // skills
     skillRing.rotation.y += dt * 0.12 * motion;
@@ -674,8 +679,24 @@ export async function createWorld({ canvas, projects, skills, socials, manager, 
     { passive: true },
   );
 
+  // Lower the render resolution step by step while the device can't hold ~40 fps.
+  let slowFrames = 0;
+  function adapt(dt) {
+    if (dt > 1 / 40) slowFrames++;
+    else slowFrames = Math.max(0, slowFrames - 1);
+    if (slowFrames > 45 && dpr > 1) {
+      dpr = Math.max(1, dpr - 0.25);
+      renderer.setPixelRatio(dpr);
+      layout();
+      slowFrames = 0;
+    }
+  }
+
   return {
-    update,
+    update(s, dt, time) {
+      adapt(dt);
+      update(s, dt, time);
+    },
     get frontIndex() {
       return state.front;
     },

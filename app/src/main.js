@@ -112,7 +112,16 @@ function showSkill(skill, x, y, pinned) {
 
 // ---------- scroll + sections ----------
 
-const maxScroll = () => Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+// Cached so the phone address bar showing/hiding (which changes innerHeight) doesn't make the scene jump.
+let cachedMax = 0;
+let cachedWidth = 0;
+const maxScroll = () => {
+  if (!cachedMax || window.innerWidth !== cachedWidth) {
+    cachedWidth = window.innerWidth;
+    cachedMax = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+  }
+  return cachedMax;
+};
 let targetS = 0;
 let shownS = 0;
 function readScroll() {
