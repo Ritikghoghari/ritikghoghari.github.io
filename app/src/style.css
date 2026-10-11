@@ -32,8 +32,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
 }
 
 /* ---------- canvas + scroll space ---------- */
-#bg { position: fixed; inset: 0; width: 100%; height: 100%; display: block; z-index: 0; }
-#scroll-space { height: 1100vh; pointer-events: none; }
+#bg { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; height: 100lvh; display: block; z-index: 0; }
+#scroll-space { height: 1100vh; height: 1100lvh; pointer-events: none; }
 body.no-3d #bg, body.no-3d #scroll-space, body.no-3d #progress { display: none; }
 
 /* ---------- loader ---------- */
@@ -253,3 +253,9 @@ body.no-3d #hero-title {
   text-align: center; margin-bottom: 12px; pointer-events: auto;
 }
 body.no-3d .panel-hero { flex-direction: column; justify-content: center; }
+
+/* Phones: live blur over a moving WebGL canvas is expensive; use a near-opaque panel instead */
+@media (pointer: coarse) {
+  .glass, .project-caption, .modal { backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .glass, .project-caption { background: rgba(8, 13, 30, 0.9); }
+}
