@@ -1,8 +1,20 @@
-// Content for the portfolio. Project data is sourced from github.com/Ritikghoghari.
+// Portfolio content. Projects are sourced from github.com/Ritikghoghari; experience/education from the resume.
+
+export const PROFILE = {
+  name: 'Ritik Ghoghari',
+  role: 'Data Scientist & AI Developer',
+  location: 'Peine, Germany',
+  email: 'ritikghoghari.ds@gmail.com',
+  github: 'https://github.com/Ritikghoghari',
+  linkedin: 'https://www.linkedin.com/in/ritikghoghari/',
+  resume: '/Resume_11.pdf',
+};
 
 export const PROJECTS = [
   {
     id: 'greenwashing',
+    category: 'AI & NLP',
+    featured: true,
     title: 'Catching Greenwashing From Space',
     brief: 'NLP claims vs. satellite forest loss.',
     description:
@@ -14,6 +26,8 @@ export const PROJECTS = [
   },
   {
     id: 'jobmarketai',
+    category: 'AI & NLP',
+    featured: true,
     title: 'JobMarketAI Agent Crew',
     brief: 'Multi-agent career assistant.',
     description:
@@ -25,6 +39,8 @@ export const PROJECTS = [
   },
   {
     id: 'energy',
+    category: 'Machine Learning',
+    featured: false,
     title: 'German Energy Forecast',
     brief: 'Price prediction via time series.',
     description:
@@ -36,6 +52,8 @@ export const PROJECTS = [
   },
   {
     id: 'recruit',
+    category: 'AI & NLP',
+    featured: false,
     title: 'Smart Recruit Assistant',
     brief: 'AI-driven candidate screening.',
     description:
@@ -47,17 +65,21 @@ export const PROJECTS = [
   },
   {
     id: 'fakejob',
+    category: 'AI & NLP',
+    featured: true,
     title: 'Fake Job Detector',
-    brief: 'AI-powered fraud detection.',
+    brief: 'Fraud detection with an explainable reasoning engine.',
     description:
-      'A machine-learning model built with Python and Scikit-learn that analyses job descriptions to estimate how likely a posting is to be a scam. A web interface for pasting a job URL or description is planned.',
-    tags: ['Python', 'NLP'],
-    techStack: 'Python, NLP, Machine Learning, Scikit-learn',
+      'Hybrid fraud-detection system: LightGBM scores job postings for fraud probability, and a GPT-4o reasoning engine explains why a listing looks suspicious and verifies the company via real-time web search. Shipped as a Streamlit dashboard.',
+    tags: ['LightGBM', 'GPT-4o', 'RAG'],
+    techStack: 'Python, LightGBM, GPT-4o, RAG, Streamlit',
     image: 'fake_job',
     link: 'https://github.com/Ritikghoghari/Fake-Job-Detection-With-Reasoning',
   },
   {
     id: 'ai-trainer',
+    category: 'Computer Vision',
+    featured: true,
     title: 'Personal AI Trainer',
     brief: 'Real-time CV workout tracker.',
     description:
@@ -69,6 +91,8 @@ export const PROJECTS = [
   },
   {
     id: 'primax-test',
+    category: 'AI & NLP',
+    featured: false,
     title: 'Invoice Data Extractor',
     brief: 'Gemini-powered invoice parsing.',
     description:
@@ -80,6 +104,8 @@ export const PROJECTS = [
   },
   {
     id: 'airbnb',
+    category: 'Data Analytics',
+    featured: false,
     title: 'Airbnb Analysis',
     brief: 'Pricing strategy & optimisation.',
     description: 'Exploratory data analysis of Airbnb listings: market trends and pricing-strategy optimisation.',
@@ -90,6 +116,8 @@ export const PROJECTS = [
   },
   {
     id: 'book',
+    category: 'Data Analytics',
+    featured: false,
     title: 'Book Sales Analysis',
     brief: 'Market insights via EDA.',
     description: 'Exploratory data analysis of book sales trends to uncover market insights.',
@@ -100,6 +128,8 @@ export const PROJECTS = [
   },
   {
     id: 'hr',
+    category: 'Data Analytics',
+    featured: false,
     title: 'HR Data Analysis',
     brief: 'Retention metrics dashboard.',
     description: 'Power BI dashboard of employee retention metrics.',
@@ -110,6 +140,8 @@ export const PROJECTS = [
   },
   {
     id: 'churn',
+    category: 'Data Analytics',
+    featured: false,
     title: 'Bank Customer Churn',
     brief: 'Retention analytics dashboard.',
     description: 'Power BI dashboard analysing bank customer churn to inform retention strategy.',
@@ -120,6 +152,8 @@ export const PROJECTS = [
   },
   {
     id: 'heart',
+    category: 'Machine Learning',
+    featured: false,
     title: 'Heart Disease Analysis',
     brief: 'Medical diagnosis prediction.',
     description: 'Analysis and prediction of heart-disease indicators using machine-learning techniques.',
@@ -130,6 +164,8 @@ export const PROJECTS = [
   },
   {
     id: 'logistics-it',
+    category: 'Data Analytics',
+    featured: false,
     title: 'Logistics IT Support Analysis',
     brief: 'Operational insights from IT support data.',
     description: 'Data analysis of logistics IT-support metrics to identify key operational insights.',
@@ -140,6 +176,8 @@ export const PROJECTS = [
   },
   {
     id: 'car-price',
+    category: 'Machine Learning',
+    featured: false,
     title: 'Car Price Prediction',
     brief: 'Predicting used-car prices.',
     description:
@@ -151,6 +189,8 @@ export const PROJECTS = [
   },
   {
     id: 'iris-flower',
+    category: 'Machine Learning',
+    featured: false,
     title: 'Iris Flower Classification',
     brief: 'Classic ML classification.',
     description:
@@ -162,9 +202,11 @@ export const PROJECTS = [
   },
   {
     id: 'fabric-defect',
+    category: 'Computer Vision',
+    featured: false,
     title: 'Fabric Defect Classification',
     brief: 'Detecting manufacturing defects.',
-    description: 'Classification model that identifies and categorises different types of defects in fabric images.',
+    description: 'Image-classification system that automates manufacturing quality control by categorising fabric defects, reaching 71% accuracy and reducing manual inspection.',
     tags: ['Python', 'Vision'],
     techStack: 'Python, Machine Learning, Computer Vision',
     image: 'thumb_fabric_defect',
@@ -172,6 +214,8 @@ export const PROJECTS = [
   },
   {
     id: 'movie-rec',
+    category: 'Machine Learning',
+    featured: false,
     title: 'Movie Recommendation System',
     brief: 'Personalised movie suggestions.',
     description: 'A recommendation engine that suggests movies based on viewing habits and ratings.',
@@ -182,19 +226,45 @@ export const PROJECTS = [
   },
 ];
 
-export const SKILLS = [
-  { name: 'Python', desc: 'Data science, AI, automation', color: 0x00f3ff, shape: 'icosa' },
-  { name: 'SQL', desc: 'Complex queries, database design', color: 0x3b82f6, shape: 'box' },
-  { name: 'Machine Learning', desc: 'Scikit-learn, TensorFlow, predictive models', color: 0x8b5cf6, shape: 'knot' },
-  { name: 'Data Viz', desc: 'Power BI, Tableau, Matplotlib', color: 0x22d3ee, shape: 'octa' },
-  { name: 'Web Dev', desc: 'HTML5, CSS3, JavaScript, Three.js', color: 0x38bdf8, shape: 'dodeca' },
-  { name: 'Excel', desc: 'Advanced analysis, macros', color: 0x34d399, shape: 'cone' },
-  { name: 'Gen AI & NLP', desc: 'LLMs, Gemini, LangChain, CrewAI', color: 0xc084fc, shape: 'torus' },
-  { name: 'Computer Vision', desc: 'OpenCV, MediaPipe, image processing', color: 0x60a5fa, shape: 'tetra' },
+export const CATEGORIES = ['All', 'AI & NLP', 'Machine Learning', 'Computer Vision', 'Data Analytics'];
+
+export const EXPERIENCE = [
+  {
+    title: 'Intern – Data Analytics & Process Optimization',
+    org: 'Accenture North America',
+    where: 'Remote',
+    when: 'Oct 2024 – Nov 2024',
+    points: [
+      'Analysed large datasets to validate digital-marketing strategies, improving data reliability by 25%.',
+      'Built interactive Power BI dashboards to track KPIs, cutting manual reporting time by 30%.',
+      'Automated repetitive data-cleaning workflows, reducing processing time from 2 hours to 40 minutes.',
+      'Translated technical findings into actionable insights for cross-functional teams.',
+    ],
+  },
 ];
 
-export const SOCIALS = [
-  { name: 'GitHub', url: 'https://github.com/Ritikghoghari' },
-  { name: 'LinkedIn', url: 'https://www.linkedin.com/in/ritikghoghari/' },
-  { name: 'Resume', url: '/Resume_11.pdf' },
+export const EDUCATION = [
+  {
+    title: 'M.Sc. Data Science, AI & Digital Business',
+    org: 'Gisma University of Applied Sciences',
+    where: 'Potsdam, Germany',
+    when: 'Oct 2024 – Present',
+    points: ['Focus: Business Intelligence, Digital Business Processes, Data Quality Management.'],
+  },
+  {
+    title: 'Bachelor of Computer Applications',
+    org: 'Veer Narmad South Gujarat University',
+    where: 'Surat, India',
+    when: 'Jun 2019 – Aug 2022',
+    points: ['Focus: Database Management (SQL), Structured Programming, Web Technologies.'],
+  },
+];
+
+export const SKILL_GROUPS = [
+  { name: 'AI & Machine Learning', items: ['Predictive Analytics', 'LightGBM', 'Scikit-learn', 'TensorFlow', 'NLP', 'GenAI (GPT-4o, Gemini)', 'LangChain', 'CrewAI', 'RAG'] },
+  { name: 'Data & Analytics', items: ['Python', 'Pandas', 'NumPy', 'SQL', 'Data Cleaning', 'Time Series', 'Process Optimization'] },
+  { name: 'Visualization & BI', items: ['Power BI', 'Tableau', 'Excel (Advanced)', 'Matplotlib', 'Seaborn'] },
+  { name: 'Computer Vision', items: ['OpenCV', 'MediaPipe', 'Image Processing'] },
+  { name: 'Tools & Web', items: ['Streamlit', 'Git', 'HTML / CSS / JavaScript', 'Three.js'] },
+  { name: 'Languages', items: ['English (C1)', 'German (A2)'] },
 ];

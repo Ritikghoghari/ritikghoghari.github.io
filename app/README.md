@@ -1,8 +1,6 @@
 # 3D Portfolio (Vite + Three.js)
 
-Scroll-driven 3D portfolio: the camera flies through Hero → About → Skills → Projects → Contact.
-Projects are cards on a 3D carousel (click the front card, use ←/→, or the buttons). Falls back to a
-normal 2D layout when WebGL is unavailable.
+Clean single-page portfolio with a lightweight Three.js hero. Normal scrolling; the 3D sphere only renders while the hero is visible.
 
 ```bash
 cd app
@@ -11,7 +9,7 @@ npm run dev       # local dev server
 npm run build     # outputs app/dist
 ```
 
-Content lives in `src/data.js`. The scene is in `src/world.js`; scroll/camera stops in `src/timeline.js`.
+Content lives in `src/data.js`. The hero sphere is in `src/hero3d.js`.
 `npm run textures` regenerates the WebP thumbnails from `../images` (needs `npm i --no-save sharp`).
 
 ## Deploy (Vercel or Netlify)
