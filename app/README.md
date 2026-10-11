@@ -14,6 +14,6 @@ npm run build     # outputs app/dist
 Content lives in `src/data.js`. The scene is in `src/world.js`; scroll/camera stops in `src/timeline.js`.
 `npm run textures` regenerates the WebP thumbnails from `../images` (needs `npm i --no-save sharp`).
 
-## Deploy on Vercel
-Import the GitHub repo. `vercel.json` at the repo root already sets install/build/output, so no settings need changing.
+## Deploy (Vercel or Netlify)
+Import the GitHub repo on either host. `vercel.json` and `netlify.toml` at the repo root already set install, build and output, so no settings need changing.
 The original static site at the repo root is untouched and keeps serving GitHub Pages.
