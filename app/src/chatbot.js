@@ -13,6 +13,9 @@ function el(tag, attrs = {}, ...children) {
 const link = (href, text) =>
   el('a', href.startsWith('http') ? { href, target: '_blank', rel: 'noopener' } : { href }, text);
 
+// Pages other than the main portfolio (e.g. /city/) point in-page links back to it.
+let linkBase = '';
+
 // ---------- knowledge ----------
 const allSkills = SKILL_GROUPS.flatMap((g) => g.items);
 const norm = (s) => s.toLowerCase().replace(/[^a-z0-9+#.\s-]/g, ' ').replace(/\s+/g, ' ').trim();
@@ -69,10 +72,10 @@ function answer(raw) {
   if (has(q, ['contact', 'email', 'mail', 'reach', 'hire', 'hiring', 'message', 'connect', 'phone', 'call']))
     return [
       el('p', {}, 'You can reach Ritik here:'),
-      el('ul', {}, el('li', {}, '✉️ ', link(`mailto:${PROFILE.email}`, PROFILE.email)), el('li', {}, link(PROFILE.linkedin, 'LinkedIn ↗')), el('li', {}, link('#contact', 'Contact form on this page'))),
+      el('ul', {}, el('li', {}, '✉️ ', link(`mailto:${PROFILE.email}`, PROFILE.email)), el('li', {}, link(PROFILE.linkedin, 'LinkedIn ↗')), el('li', {}, link(`${linkBase}#contact`, 'Contact form'))),
     ];
   if (has(q, ['available', 'availability', 'open to', 'looking', 'internship', 'working student', 'werkstudent', 'job', 'role', 'start']))
-    return [el('p', {}, `Yes. Ritik is open to internships and working-student roles near Peine, Germany, or remote. The fastest way to reach him is `, link(`mailto:${PROFILE.email}`, 'email'), ' or the ', link('#contact', 'contact form'), '.')];
+    return [el('p', {}, `Yes. Ritik is open to internships and working-student roles near Peine, Germany, or remote. The fastest way to reach him is `, link(`mailto:${PROFILE.email}`, 'email'), ' or the ', link(`${linkBase}#contact`, 'contact form'), '.')];
   if (has(q, ['where', 'location', 'based', 'live', 'city', 'germany', 'relocat', 'remote']))
     return [el('p', {}, `Ritik is based in ${PROFILE.location} and is happy to work remotely.`)];
   if (has(q, ['cv', 'resume', 'lebenslauf']))
@@ -116,7 +119,7 @@ function answer(raw) {
     return [
       el('p', {}, `Ritik has ${PROJECTS.length} projects on GitHub. Highlights:`),
       el('ul', {}, PROJECTS.filter((p) => p.featured).map(projectLine)),
-      el('p', {}, 'Ask about any of them by name, or ', link('#projects', 'browse all projects'), '.'),
+      el('p', {}, 'Ask about any of them by name, or ', link(`${linkBase}#projects`, 'browse all projects'), '.'),
     ];
   if (has(q, ['skill', 'skills', 'stack', 'tech', 'tools', 'know', 'good at', 'expert', 'programming']))
     return [el('ul', {}, SKILL_GROUPS.map((g) => el('li', {}, el('strong', {}, `${g.name}: `), g.items.join(', '))))];
@@ -130,7 +133,8 @@ function answer(raw) {
 }
 
 // ---------- UI ----------
-export function initChatbot({ reducedMotion }) {
+export function initChatbot({ reducedMotion, base = '' }) {
+  linkBase = base;
   const toggle = el('button', { type: 'button', class: 'cb-toggle', 'aria-expanded': 'false', 'aria-controls': 'cb-panel', 'aria-label': 'Open chat assistant' });
   toggle.innerHTML =
     '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-12.2 7.5L3 21l2-5.6A8.4 8.4 0 1 1 21 11.5z"/></svg>';

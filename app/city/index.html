@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Ritik's City | 3D Portfolio of Ritik Ghoghari</title>
+    <meta name="description" content="Explore Ritik Ghoghari's portfolio as a 3D city: each landmark is a part of his story as a Data Scientist and AI developer." />
+    <meta name="theme-color" content="#070a14" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  </head>
+  <body class="city">
+    <canvas id="city-canvas" aria-label="3D city. Use the stop buttons to travel between landmarks."></canvas>
+
+    <header class="c-top">
+      <a class="c-brand" href="/">Ritik<span>.</span></a>
+      <a class="c-classic" href="/">Classic view ↗</a>
+    </header>
+
+    <!-- intro -->
+    <section class="c-intro" id="c-intro">
+      <p class="c-eyebrow">A 3D portfolio</p>
+      <h1>Welcome to <span>Ritik's City</span></h1>
+      <p>Every landmark in this city is part of my story: who I am, where I worked, what I studied and what I built.</p>
+      <button class="c-btn" id="c-enter" type="button">Enter the city →</button>
+      <p class="c-loading" id="c-loading">Building the city…</p>
+    </section>
+
+    <!-- info card for the current stop -->
+    <aside class="c-panel" id="c-panel" aria-live="polite" hidden></aside>
+
+    <!-- stop navigation -->
+    <nav class="c-nav" id="c-nav" aria-label="City stops" hidden>
+      <button class="c-arrow" id="c-prev" type="button" aria-label="Previous stop">←</button>
+      <ol class="c-stops" id="c-stops"></ol>
+      <button class="c-arrow" id="c-next" type="button" aria-label="Next stop">→</button>
+    </nav>
+    <p class="c-hint" id="c-hint" hidden>Drag to look around · tap a building to visit it</p>
+
+    <noscript><p class="c-fallback">This 3D city needs JavaScript. <a href="/">Open the classic portfolio</a>.</p></noscript>
+    <script type="module" src="/src/city/main.js"></script>
+  </body>
+</html>
