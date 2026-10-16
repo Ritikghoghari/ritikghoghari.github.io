@@ -1,5 +1,5 @@
 import {
-  WebGLRenderer, Scene, PerspectiveCamera, BufferGeometry, BufferAttribute, Points, ShaderMaterial, AdditiveBlending,
+  WebGLRenderer, Scene, PerspectiveCamera, BufferGeometry, BufferAttribute, Points, ShaderMaterial, AdditiveBlending, Group,
 } from 'three';
 
 // One draw call: a breathing particle sphere animated on the GPU. Renders only while the hero is on screen.
@@ -60,7 +60,31 @@ export function startHero(canvas, { reducedMotion }) {
       }`,
   });
   const sphere = new Points(geo, mat);
-  scene.add(sphere);
+
+  // Two tilted particle rings orbiting the sphere (same shader, so they "breathe" with it)
+  const ring = (n, radius) => {
+    const rp = new Float32Array(n * 3);
+    const rs = new Float32Array(n);
+    for (let i = 0; i < n; i++) {
+      const a = (i / n) * Math.PI * 2;
+      const jitter = 1 + (Math.random() - 0.5) * 0.06;
+      rp[i * 3] = Math.cos(a) * radius * jitter;
+      rp[i * 3 + 1] = (Math.random() - 0.5) * 0.03;
+      rp[i * 3 + 2] = Math.sin(a) * radius * jitter;
+      rs[i] = Math.random();
+    }
+    const g = new BufferGeometry();
+    g.setAttribute('position', new BufferAttribute(rp, 3));
+    g.setAttribute('seed', new BufferAttribute(rs, 1));
+    return new Points(g, mat);
+  };
+  const ringA = ring(coarse ? 260 : 520, 1.3);
+  const ringB = ring(coarse ? 200 : 400, 1.45);
+  ringA.rotation.set(1.15, 0, 0.35);
+  ringB.rotation.set(-0.9, 0.4, -0.5);
+  const orb = new Group();
+  orb.add(sphere, ringA, ringB);
+  scene.add(orb);
 
   function resize() {
     const w = canvas.clientWidth;
@@ -72,8 +96,8 @@ export function startHero(canvas, { reducedMotion }) {
     // Desktop: sphere sits to the right of the text. Narrow screens: centred, further back.
     const wide = w / h > 1.1;
     const aspect = w / h;
-    sphere.scale.setScalar(wide ? 0.82 : 1);
-    sphere.position.set(wide ? 1.45 * Math.min(1.7, aspect) : 0, wide ? 0 : 0.6, wide ? 0 : -1.5);
+    orb.scale.setScalar(wide ? 0.78 : 0.95);
+    orb.position.set(wide ? 1.45 * Math.min(1.7, aspect) : 0, wide ? 0 : 0.6, wide ? 0 : -1.5);
   }
   let lastW = 0;
   const ro = new ResizeObserver(() => {
@@ -102,8 +126,10 @@ export function startHero(canvas, { reducedMotion }) {
     time += dt;
     mat.uniforms.uTime.value = time;
     sphere.rotation.y += dt * 0.12;
-    sphere.rotation.x += (target.x - sphere.rotation.x) * 0.05;
-    sphere.rotation.z += (target.y * 0.3 - sphere.rotation.z) * 0.05;
+    ringA.rotation.y += dt * 0.35;
+    ringB.rotation.y -= dt * 0.25;
+    orb.rotation.x += (target.x - orb.rotation.x) * 0.05;
+    orb.rotation.y += (target.y - orb.rotation.y) * 0.05;
     renderer.render(scene, camera);
     raf = visible && !document.hidden ? requestAnimationFrame(frame) : 0;
   };

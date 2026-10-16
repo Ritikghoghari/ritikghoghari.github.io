@@ -107,7 +107,14 @@ strong { color: var(--text); font-weight: 600; }
 .timeline ul li::before { content: ''; position: absolute; left: 0; top: 0.72em; width: 6px; height: 1px; background: var(--muted); }
 
 /* skills */
-.skills { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.skills-wrap { display: grid; grid-template-columns: minmax(280px, 0.9fr) 1.6fr; gap: 40px; align-items: center; }
+.skills { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+.skill-globe { position: relative; aspect-ratio: 1; width: 100%; max-width: 440px; margin-inline: auto; perspective: 900px; transform-style: preserve-3d; cursor: grab; user-select: none; }
+.skill-globe::before { content: ''; position: absolute; inset: 14%; border-radius: 50%; background: radial-gradient(circle at 35% 30%, rgba(94, 234, 212, 0.16), rgba(124, 156, 255, 0.06) 55%, transparent 70%); }
+.skill-globe span {
+  position: absolute; left: 50%; top: 50%; white-space: nowrap; font: 600 0.92rem var(--head); color: var(--text);
+  padding: 3px 10px; border-radius: 999px; background: rgba(18, 21, 29, 0.75); border: 1px solid var(--line); will-change: transform, opacity;
+}
 .skill-group { padding: 22px; }
 .skill-group h3 { font: 600 1rem var(--head); margin-bottom: 14px; }
 .chips { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -138,13 +145,24 @@ strong { color: var(--text); font-weight: 600; }
 
 .project-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
 .project { overflow: hidden; display: flex; flex-direction: column; transition: border-color 0.25s, transform 0.25s; animation: fadeIn 0.35s ease both; }
-.project:hover { border-color: #33405a; transform: translateY(-3px); }
+.project:hover { border-color: #33405a; }
 .project-media { aspect-ratio: 16 / 9; overflow: hidden; background: var(--surface-2); }
 .project-media .placeholder { height: 100%; font-size: 2.6rem; }
 .project-body { padding: 18px 20px 20px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
 .project-body h4 { font: 600 1.05rem/1.3 var(--head); }
 .project-body > p:not(.kicker) { font-size: 0.92rem; flex: 1; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+/* 3D tilt + glare (mouse only; set by effects3d.js) */
+.tilt { --rx: 0deg; --ry: 0deg; --gx: 50%; --gy: 50%; position: relative; }
+.tilt.tilting, .js .tilt.reveal.in.tilting { transform: perspective(900px) rotateX(var(--rx)) rotateY(var(--ry)) translateZ(0); transition: transform 0.12s ease-out, border-color 0.25s; }
+.tilt:not(.tilting) { transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1), border-color 0.25s, opacity 0.8s ease; }
+.tilt::after {
+  content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity 0.3s;
+  background: radial-gradient(circle at var(--gx) var(--gy), rgba(255, 255, 255, 0.09), transparent 45%);
+}
+.tilt.tilting::after { opacity: 1; }
+.tilt.tilting { border-color: #3a4766; box-shadow: 0 24px 48px -24px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(94, 234, 212, 0.08); }
 
 /* contact */
 .contact { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start; }
@@ -170,12 +188,13 @@ strong { color: var(--text); font-weight: 600; }
 .footer { border-top: 1px solid var(--line); padding: 28px 0; color: var(--muted); font-size: 0.875rem; text-align: center; }
 
 /* ---------- reveal (only when JS runs) ---------- */
-.js .reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.js .reveal { opacity: 0; transform: perspective(1100px) translateY(36px) rotateX(14deg); transform-origin: 50% 100%; transition: opacity 0.8s ease, transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1); }
 .js .reveal.in { opacity: 1; transform: none; }
 
 /* ---------- responsive ---------- */
 @media (max-width: 960px) {
-  .skills { grid-template-columns: 1fr 1fr; }
+  .skills-wrap { grid-template-columns: 1fr; }
+  .skill-globe { max-width: 360px; }
   .project-grid { grid-template-columns: 1fr 1fr; }
   .feature { grid-template-columns: 1fr; }
   .feature:nth-child(even) .feature-media { order: 0; }
@@ -196,6 +215,8 @@ strong { color: var(--text); font-weight: 600; }
   #hero-canvas { height: 62%; }
   .hero::before { right: -30vw; top: 28%; width: 110vw; height: 110vw; }
   .skills, .project-grid { grid-template-columns: 1fr; }
+  .skill-globe { max-width: 300px; }
+  .skill-globe span { font-size: 0.8rem; }
   .facts dt { font-size: 1.4rem; }
 }
 
