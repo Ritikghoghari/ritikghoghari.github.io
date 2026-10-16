@@ -110,6 +110,20 @@ ul, ol { list-style: none; }
   .c-top { padding: 12px 14px; }
 }
 
+/* real-city mode (Google 3D): landmark markers, attribution, place tag */
+.c-place { font-size: 0.78rem !important; color: var(--muted) !important; margin-bottom: -6px; }
+.g-markers { position: fixed; inset: 0; z-index: 12; pointer-events: none; }
+.g-marker {
+  position: absolute; left: 0; top: 0; pointer-events: auto; display: flex; flex-direction: column; align-items: center; gap: 4px;
+  margin: -34px 0 0 -40px; width: 80px;
+}
+.g-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--teal); box-shadow: 0 0 0 4px rgba(94, 234, 212, 0.3), 0 0 18px rgba(94, 234, 212, 0.8); }
+.g-name { font-size: 0.75rem; font-weight: 600; padding: 2px 8px; border-radius: 999px; background: rgba(7, 10, 20, 0.75); white-space: nowrap; }
+.g-marker:hover .g-name { background: var(--teal); color: #0b0d12; }
+.g-attrib { position: fixed; z-index: 13; left: 12px; bottom: 76px; font-size: 0.68rem; color: #e8eaf0; text-shadow: 0 1px 2px #000; opacity: 0.85; max-width: 60vw; }
+body.real-city .c-intro { background: radial-gradient(ellipse at 50% 60%, rgba(7, 10, 20, 0.15), rgba(7, 10, 20, 0.7)); }
+@media (max-width: 760px) { .g-attrib { bottom: 70px; max-width: 70vw; } }
+
 /* chat assistant (shared with the main site) */
 .cb { position: fixed; right: 20px; bottom: 20px; z-index: 40; display: flex; flex-direction: column; align-items: flex-end; gap: 12px; }
 .cb-toggle { width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center; color: #0b0d12; background: var(--grad); box-shadow: 0 10px 30px -8px rgba(94, 234, 212, 0.55); transition: transform 0.25s; }

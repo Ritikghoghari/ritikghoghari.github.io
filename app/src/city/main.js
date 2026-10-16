@@ -108,7 +108,8 @@ function button(text, onClick, cls, disabled = false) {
 let STOPS = [];
 const panel = $('c-panel');
 function renderPanel() {
-  panel.replaceChildren(el('div', { class: 'c-panel-inner' }, CONTENT[current]()));
+  const place = STOPS[current]?.place;
+  panel.replaceChildren(el('div', { class: 'c-panel-inner' }, place ? el('p', { class: 'c-place' }, `📍 ${place}, Berlin`) : null, CONTENT[current]()));
   panel.dataset.side = STOPS[current]?.side > 0 ? 'left' : 'right'; // keep the card opposite the landmark
   panel.hidden = false;
   panel.classList.remove('show');
@@ -159,7 +160,15 @@ async function boot() {
     return;
   }
 
-  const { createCity, STOPS: stops } = await import('./scene.js');
+  // Real Berlin (Google Photorealistic 3D Tiles) when a key was provided at build time;
+  // otherwise, or if Google fails to load, the generated city.
+  const apiKey = import.meta.env.VITE_GOOGLE_MAPS_KEY;
+  const useGoogle = !!apiKey && !new URLSearchParams(location.search).has('generated');
+  if (useGoogle) {
+    document.body.classList.add('real-city');
+    $('c-loading').textContent = 'Loading real Berlin in 3D…';
+  }
+  const { createCity, STOPS: stops } = useGoogle ? await import('./google.js') : await import('./scene.js');
   STOPS = stops;
   $('c-stops').append(
     ...STOPS.map((s, i) => {
@@ -177,6 +186,8 @@ async function boot() {
 
   city = createCity($('city-canvas'), {
     reducedMotion,
+    apiKey,
+    onFail: () => location.replace(`${location.pathname}?generated${location.hash}`),
     projects: PROJECTS,
     onPick: (stop, mesh) => {
       // a billboard on Projects Avenue opens that project
@@ -184,6 +195,7 @@ async function boot() {
       if (stop !== current) go(stop);
     },
   });
+  if (city.ready) await city.ready;
   $('c-loading').hidden = true;
   $('c-enter').disabled = false;
 
