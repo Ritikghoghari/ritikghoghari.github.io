@@ -29,6 +29,9 @@ jobs:
           cache-dependency-path: app/package-lock.json
       - run: npm ci
       - run: npm run build
+        env:
+          # Optional: enables the real Google 3D Berlin on /city/. Without it the generated city is used.
+          VITE_GOOGLE_MAPS_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: app/dist

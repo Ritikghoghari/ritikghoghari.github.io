@@ -15,10 +15,10 @@ const FOG_DENSITY = 0.0068;
 // Camera stops. `cam`/`look` are where the camera sits and what it looks at.
 export const STOPS = [
   { id: 'gate', label: 'City Gate', cam: [0, 6, 182], look: [0, 9, 140] },
-  { id: 'about', label: 'Ritik HQ', side: -1, z: 116, cam: [6, 7, 143], look: [-18, 24, 116] },
-  { id: 'experience', label: 'Experience', side: 1, z: 68, cam: [-6, 7, 106], look: [18, 16, 68] },
-  { id: 'education', label: 'Education', side: -1, z: 20, cam: [6, 6, 54], look: [-18, 9, 20] },
-  { id: 'skills', label: 'Skills Plaza', side: 1, z: -28, cam: [-5, 6, 4], look: [18, 8, -28] },
+  { id: 'about', label: 'Ritik HQ', side: -1, z: 116, cam: [2.5, 9, 143], look: [-18, 24, 116] },
+  { id: 'experience', label: 'Experience', side: 1, z: 68, cam: [-2.5, 9, 106], look: [18, 16, 68] },
+  { id: 'education', label: 'Education', side: -1, z: 20, cam: [2.5, 8.5, 54], look: [-18, 9, 20] },
+  { id: 'skills', label: 'Skills Plaza', side: 1, z: -28, cam: [-2.5, 8.5, 4], look: [18, 8, -28] },
   { id: 'projects', label: 'Projects Avenue', cam: [0, 5.5, -78], look: [0, 9, -120] },
   { id: 'contact', label: 'Contact Tower', cam: [0, 6, -150], look: [0, 22, -196] },
 ];
