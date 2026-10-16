@@ -1,6 +1,10 @@
 import * as THREE from 'three';
-import { facadeMaterial, skyDome, glowTexture, STYLE } from './facade.js';
+import { facadeMaterial, skyDome, glowTexture, STYLE, cityTime } from './facade.js';
 import { buildStreets } from './streets.js';
+import { buildTraffic } from './traffic.js';
+import { buildPeople } from './people.js';
+import { buildProps } from './props.js';
+import { buildRain } from './weather.js';
 
 // ---------------------------------------------------------------------------
 // Layout: one main avenue runs along -z. Landmarks sit beside it; everything
@@ -73,6 +77,9 @@ function sign(lines, width, opts) {
 // ---------------------------------------------------------------------------
 export function createCity(canvas, { reducedMotion, projects, onPick }) {
   const coarse = window.matchMedia('(pointer: coarse)').matches;
+  const params = new URLSearchParams(location.search);
+  // phones (and ?lite) get the same city with cheaper reflections and fewer cars/people
+  const quality = coarse || params.has('lite') ? 'low' : 'high';
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: !coarse, powerPreference: 'high-performance' });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, coarse ? 1.25 : 1.5));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -91,6 +98,25 @@ export function createCity(canvas, { reducedMotion, projects, onPick }) {
   street.position.set(40, 10, -30);
   scene.add(street);
 
+  // environment map for cars, glass and metal: the night sky plus a ring of lit windows and street lights
+  {
+    const env = new THREE.Scene();
+    env.add(skyDome());
+    const lit = new THREE.MeshBasicMaterial({ color: 0xffc98a });
+    const cool = new THREE.MeshBasicMaterial({ color: 0x9ec4ff });
+    for (let i = 0; i < 40; i++) {
+      const a = (i / 40) * Math.PI * 2;
+      const m = new THREE.Mesh(new THREE.PlaneGeometry(6 + rand() * 10, 2 + rand() * 8), rand() < 0.7 ? lit : cool);
+      m.position.set(Math.cos(a) * 60, 2 + rand() * 18, Math.sin(a) * 60);
+      m.lookAt(0, m.position.y, 0);
+      env.add(m);
+    }
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    scene.environment = pmrem.fromScene(env, 0.02, 0.1, 1000).texture;
+    scene.environmentIntensity = 0.55;
+    pmrem.dispose();
+  }
+
   const win = (opts) => facadeMaterial({ fog: FOG, density: FOG_DENSITY, ...opts });
   const pickables = [];
 
@@ -99,8 +125,16 @@ export function createCity(canvas, { reducedMotion, projects, onPick }) {
   ground.rotation.x = -Math.PI / 2;
   ground.position.z = -40;
   scene.add(ground);
-  const streets = buildStreets(scene, { rand, BLOCK_X, BLOCK_Z, AVENUE_HALF });
+  const streets = buildStreets(scene, { BLOCK_X, BLOCK_Z, AVENUE_HALF, fog: FOG, density: FOG_DENSITY, mirror: quality === 'high' && !reducedMotion });
   const KERB = streets.kerb;
+  const zebraBusy = new Uint8Array(BLOCK_Z.length); // crossings where people are on the zebra (cars wait)
+  const traffic = buildTraffic(scene, { rand, BLOCK_Z, AVENUE_HALF, KERB, quality, zebraBusy });
+  const people = buildPeople(scene, { rand, BLOCK_Z, AVENUE_HALF, KERB, quality, stops: STOPS, zebraBusy });
+  buildProps(scene, { rand, BLOCK_Z, AVENUE_HALF, KERB, quality, parks: PARK_BLOCKS.map((k) => k.split(',').map(Number)) });
+  const rain = buildRain(scene, { quality });
+  let raining = !reducedMotion;
+  rain.setOn(raining);
+  streets.setRain(raining);
 
   // ---------- buildings: 4 facade styles, setback tiers, rooftop equipment; all instanced ----------
   const parts = []; // { x, z, w, d, h, y, style, seed }
@@ -217,29 +251,18 @@ export function createCity(canvas, { reducedMotion, projects, onPick }) {
     scene.add(aviation);
   }
 
-  // parks in front of landmarks
+  // parks in front of landmarks (their trees come from props.js)
   {
     const lawnMat = new THREE.MeshStandardMaterial({ color: 0x14301f, roughness: 1 });
-    const trunks = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.15, 0.22, 2.2, 6), new THREE.MeshStandardMaterial({ color: 0x2b1d14 }), PARK_BLOCKS.length * 9);
-    const crowns = new THREE.InstancedMesh(new THREE.IcosahedronGeometry(1.6, 1), new THREE.MeshStandardMaterial({ color: 0x17402a, roughness: 0.9, flatShading: true }), PARK_BLOCKS.length * 9);
     const lampPos = [];
-    let k = 0;
     for (const key of PARK_BLOCKS) {
       const [px, pz] = key.split(',').map(Number);
       const lawn = new THREE.Mesh(new THREE.PlaneGeometry(17, 17), lawnMat);
       lawn.rotation.x = -Math.PI / 2;
       lawn.position.set(px, KERB + 0.02, pz);
       scene.add(lawn);
-      for (let i = 0; i < 9; i++) {
-        const tx = px + (rand() - 0.5) * 14;
-        const tz = pz + (rand() - 0.5) * 14;
-        const sc = 0.8 + rand() * 0.5;
-        trunks.setMatrixAt(k, m4.makeTranslation(tx, KERB + 1.1, tz));
-        crowns.setMatrixAt(k++, m4.makeScale(sc, sc * 1.15, sc).setPosition(tx, KERB + 3 * sc, tz));
-      }
       lampPos.push(px - 6, KERB + 2.6, pz - 6, px + 6, KERB + 2.6, pz + 6, px - 6, KERB + 2.6, pz + 6);
     }
-    scene.add(trunks, crowns);
     const lg = new THREE.BufferGeometry();
     lg.setAttribute('position', new THREE.BufferAttribute(new Float32Array(lampPos), 3));
     scene.add(new THREE.Points(lg, new THREE.PointsMaterial({ color: 0xffe4b5, size: 1.1, transparent: true, depthWrite: false })));
@@ -247,7 +270,7 @@ export function createCity(canvas, { reducedMotion, projects, onPick }) {
 
   // ---------- landmarks ----------
   const landmarkMat = (color) =>
-    new THREE.MeshStandardMaterial({ color: 0x0d1324, emissive: color, emissiveIntensity: 0.18, metalness: 0.3, roughness: 0.5 });
+    new THREE.MeshStandardMaterial({ color: 0x0d1324, emissive: color, emissiveIntensity: 0.18, metalness: 0.3, roughness: 0.5, envMapIntensity: 0.25 });
   const edges = (mesh, color) => {
     const l = new THREE.LineSegments(new THREE.EdgesGeometry(mesh.geometry), new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.9 }));
     l.position.copy(mesh.position);
@@ -451,7 +474,10 @@ export function createCity(canvas, { reducedMotion, projects, onPick }) {
   let portrait = false;
   const yawPitch = { yaw: 0, pitch: 0, tYaw: 0, tPitch: 0 };
 
+  // ?cam=x,y,z,lookX,lookY,lookZ overrides the tour cameras (for close-up visual checks)
+  const debugCam = params.get('cam')?.split(',').map(Number);
   const stopTarget = (i) => {
+    if (debugCam?.length === 6) return { pos: new THREE.Vector3(...debugCam.slice(0, 3)), look: new THREE.Vector3(...debugCam.slice(3)) };
     const s = STOPS[i];
     const pos = new THREE.Vector3(...s.cam);
     const look = new THREE.Vector3(...s.look);
@@ -525,7 +551,7 @@ export function createCity(canvas, { reducedMotion, projects, onPick }) {
         resize();
       }).catch(() => (bloomOn = false));
   let slowFrames = 0;
-  const keepBloom = new URLSearchParams(location.search).has('forcebloom'); // for visual checks on slow machines
+  const keepBloom = params.has('forcebloom'); // for visual checks on slow machines
 
   // ---------- resize ----------
   function resize() {
@@ -590,7 +616,10 @@ export function createCity(canvas, { reducedMotion, projects, onPick }) {
     camera.lookAt(lookAt);
 
     if (!reducedMotion) {
-      streets.update(dt, t);
+      cityTime.value = t;
+      traffic.update(dt, t);
+      people.update(dt, t + 4);
+      if (raining) rain.update(camera);
       if (aviation) aviation.material.opacity = Math.sin(t * 2.4) > 0.2 ? 1 : 0.15;
       holoSigns.forEach((s) => {
         const a = s.userData.a + t * 0.35;
@@ -607,7 +636,10 @@ export function createCity(canvas, { reducedMotion, projects, onPick }) {
     // drop the glow if this device can't keep ~40 fps
     if (composer && bloomOn) {
       slowFrames = dt > 1 / 38 ? slowFrames + 1 : Math.max(0, slowFrames - 1);
-      if (slowFrames > 90 && !keepBloom) bloomOn = false;
+      if (slowFrames > 90 && !keepBloom) {
+        bloomOn = false;
+        streets.dropMirror();
+      }
     }
     if (composer && bloomOn) composer.render();
     else renderer.render(scene, camera);
@@ -622,6 +654,14 @@ export function createCity(canvas, { reducedMotion, projects, onPick }) {
   });
 
   return {
+    get raining() {
+      return raining;
+    },
+    setRain(on) {
+      raining = on;
+      rain.setOn(on);
+      streets.setRain(on);
+    },
     enter(onDone) {
       aerial = false;
       // dive from the sky down to the city gate

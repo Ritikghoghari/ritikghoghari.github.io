@@ -3,13 +3,18 @@ import * as THREE from 'three';
 // Building styles drawn by the facade shader.
 export const STYLE = { GLASS: 0, OFFICE: 1, RESIDENTIAL: 2, BRICK: 3 };
 
+// Shared clock for every facade (window lights switching on/off, TV flicker).
+export const cityTime = { value: 0 };
+
 // Night facade shader: per-style wall colour and window grid, floor slabs, mullions on glass,
-// lit/unlit windows with varied colour and brightness, glowing shop fronts at street level,
-// simple moonlight shading and distance fog.
+// rooms behind the windows (interior mapping: back wall, floor, ceiling lamp, furniture, curtains/blinds),
+// glass that reflects the sky and the city glow (fresnel), a few windows switching on and off,
+// glowing shop fronts at street level, moonlight shading and distance fog.
 // Instanced city blocks pass aSeed/aStyle per building; landmarks pass uniforms and a tint.
-export function facadeMaterial({ instanced = false, fog, density, tint = null, seed = 0.5, style = STYLE.OFFICE, litRatio = -1 } = {}) {
+// Buildings are axis-aligned boxes, so each face's tangent frame comes straight from its normal.
+export function facadeMaterial({ instanced = false, fog, density, tint = null, seed = 0.5, style = STYLE.OFFICE, litRatio = -1, interiors = true } = {}) {
   return new THREE.ShaderMaterial({
-    defines: { INSTANCED_CITY: instanced ? 1 : 0, TINTED: tint ? 1 : 0 },
+    defines: { INSTANCED_CITY: instanced ? 1 : 0, TINTED: tint ? 1 : 0, INTERIORS: interiors ? 1 : 0 },
     uniforms: {
       uFog: { value: fog },
       uDensity: { value: density },
@@ -17,6 +22,7 @@ export function facadeMaterial({ instanced = false, fog, density, tint = null, s
       uStyle: { value: style },
       uTint: { value: new THREE.Color(tint ?? 0xffffff) },
       uLit: { value: litRatio },
+      uTime: cityTime,
     },
     vertexShader: /* glsl */ `
       #if INSTANCED_CITY
@@ -41,7 +47,7 @@ export function facadeMaterial({ instanced = false, fog, density, tint = null, s
         gl_Position = projectionMatrix * mv;
       }`,
     fragmentShader: /* glsl */ `
-      uniform vec3 uFog; uniform float uDensity; uniform vec3 uTint; uniform float uLit;
+      uniform vec3 uFog; uniform float uDensity; uniform vec3 uTint; uniform float uLit; uniform float uTime;
       varying vec3 vPos; varying vec3 vN; varying float vSeed; varying float vStyle; varying float vDepth;
 
       // sin-free hash: stable on low-precision mobile GPUs
@@ -52,6 +58,58 @@ export function facadeMaterial({ instanced = false, fog, density, tint = null, s
         if (h < 0.78) return vec3(1.0, 0.88, 0.70);  // neutral
         if (h < 0.95) return vec3(0.68, 0.84, 1.0);  // cool office LED
         return vec3(0.45, 0.55, 1.0);                // TV glow
+      }
+
+      // what the glass reflects: dark sky above, warm light-polluted horizon, lit street below,
+      // plus faint reflected windows of the buildings across the street
+      vec3 reflection(vec3 r) {
+        vec3 c = mix(vec3(0.10, 0.09, 0.17), vec3(0.015, 0.02, 0.05), smoothstep(0.0, 0.6, r.y));
+        c += vec3(0.38, 0.18, 0.10) * exp(-abs(r.y) * 9.0) * 0.6;
+        if (r.y < 0.0) c = mix(c, vec3(0.16, 0.11, 0.07), smoothstep(0.0, -0.3, r.y));
+        vec2 g = vec2(atan(r.x, r.z) * 38.0, r.y * 70.0);
+        float spot = step(0.93, hash(floor(g))) * step(abs(r.y), 0.35);
+        c += vec3(1.0, 0.8, 0.55) * spot * 0.35 * (1.0 - smoothstep(0.0, 0.35, abs(r.y)));
+        return c;
+      }
+
+      // ray-marched room behind a window. f: position in the cell (0..1), d: view ray in room units
+      vec3 room(vec2 f, vec3 d, vec2 cell, float isLit, vec3 lc, int style) {
+        vec3 t3 = (step(vec3(0.0), d) - vec3(f, 0.0)) / d;
+        float t = min(min(t3.x, t3.y), t3.z);
+        vec3 h = vec3(f, 0.0) + d * t;
+        float k = hash(cell * 4.13 + vSeed);
+        vec3 wallC = mix(vec3(0.55, 0.50, 0.45), vec3(0.45, 0.50, 0.58), step(0.6, k));
+        vec3 alb;
+        float lamp = 0.0;
+        if (t == t3.z) {                       // back wall, with furniture along the bottom
+          alb = wallC;
+          float sofa = step(h.y, 0.32) * step(0.15 + 0.3 * k, h.x) * step(h.x, 0.7 + 0.25 * k);
+          float shelf = step(0.45, h.y) * step(h.y, 0.75) * step(0.05, h.x) * step(h.x, 0.2) * step(0.5, k);
+          float art = step(0.5, h.y) * step(h.y, 0.72) * step(0.45, h.x) * step(h.x, 0.75) * step(k, 0.5);
+          alb = mix(alb, vec3(0.12, 0.09, 0.08), max(sofa, shelf));
+          alb = mix(alb, vec3(0.7, 0.35, 0.25) * (0.5 + k), art);
+        } else if (t == t3.y && d.y < 0.0) {   // floor
+          alb = mix(vec3(0.32, 0.22, 0.15), vec3(0.25, 0.25, 0.27), step(0.5, k));
+          alb *= 0.6 + 0.4 * h.z;
+        } else if (t == t3.y) {                // ceiling with a lamp in the middle
+          alb = vec3(0.75);
+          lamp = exp(-length(h.xz - vec2(0.5, 0.55)) * 7.0);
+        } else {                               // side walls
+          alb = wallC * 0.8;
+        }
+        float depthShade = 1.0 - 0.45 * h.z;
+        vec3 lit = lc * alb * depthShade * 1.25 + lc * lamp * 1.6;
+        vec3 dark = alb * 0.025 * depthShade;
+        vec3 c = mix(dark, lit, isLit);
+        // curtains (homes) or blinds (offices)
+        if (style >= 2) {
+          float cw = 0.12 + 0.18 * hash(cell * 2.9 + vSeed);
+          float curtain = step(f.x, 0.28 + cw) * step(0.2, f.x) + step(0.72 - cw, f.x) * step(f.x, 0.8);
+          c = mix(c, lc * vec3(0.55, 0.42, 0.32) * (0.25 + 0.75 * isLit) * (0.8 + 0.2 * sin(f.x * 90.0)), min(curtain, 1.0) * 0.85);
+        } else if (style == 1 && hash(cell * 5.3) < 0.4) {
+          c *= 0.55 + 0.45 * step(0.35, fract(f.y * 14.0));
+        }
+        return c;
       }
 
       void main() {
@@ -72,28 +130,46 @@ export function facadeMaterial({ instanced = false, fog, density, tint = null, s
         wall = mix(wall, uTint * 0.22, 0.55);
         #endif
 
+        vec3 n = normalize(vN);
+        vec3 V = normalize(vPos - cameraPosition);
+        float fres = 0.04 + 0.96 * pow(1.0 - clamp(dot(-V, n), 0.0, 1.0), 5.0);
+        vec3 refl = reflection(reflect(V, n));
+
         // moonlight + sky shading so faces read as solid volumes
-        float shade = 0.62 + 0.38 * clamp(dot(vN, normalize(vec3(-0.55, 0.45, 0.7))), 0.0, 1.0);
+        float shade = 0.62 + 0.38 * clamp(dot(n, normalize(vec3(-0.55, 0.45, 0.7))), 0.0, 1.0);
         vec3 col;
-        if (abs(vN.y) > 0.5) {
-          col = wall * (vN.y > 0.0 ? 0.5 : 0.3);  // roofs
+        if (abs(n.y) > 0.5) {
+          col = wall * (n.y > 0.0 ? 0.5 : 0.3);  // roofs
         } else {
-          float u = abs(vN.x) > 0.5 ? vPos.z : vPos.x;
+          vec3 uAxis = abs(n.x) > 0.5 ? vec3(0.0, 0.0, -sign(n.x)) : vec3(sign(n.z), 0.0, 0.0);
+          float u = dot(vPos, uAxis);
           vec2 g = vec2(u / colW, vPos.y / rowH);
           vec2 cell = floor(g);
           vec2 f = fract(g);
           float win = step(x0, f.x) * step(f.x, x1) * step(y0, f.y) * step(f.y, y1);
-          float isLit = step(1.0 - lit, hash(cell + vSeed * 97.3));
+          float hl = hash(cell + vSeed * 97.3);
+          float isLit = step(1.0 - lit, hl);
+          // a few rooms switch their lights on and off every so often
+          if (hash(cell * 3.7 + vSeed * 5.1) < 0.05) isLit = step(0.45, hash(cell + floor(uTime / (7.0 + 12.0 * hl) + hl * 10.0)));
           float bright = 0.55 + 0.45 * hash(cell * 2.17 + 3.3);
-          vec3 lc = roomLight(hash(cell * 1.31 + vSeed * 7.7));
+          float lh = hash(cell * 1.31 + vSeed * 7.7);
+          vec3 lc = roomLight(lh);
+          if (lh >= 0.95) bright *= 0.6 + 0.4 * hash(vec2(floor(uTime * 7.0), cell.x + cell.y * 31.0)); // TV flicker
           #if TINTED
-          lc = mix(uTint, vec3(1.0), 0.3 * hash(cell * 1.9));
+          lc = mix(uTint, roomLight(lh), 0.35 + 0.4 * hash(cell * 1.9));
           #endif
-          // unlit glass reflects the night sky: darker low, bluer high, panels vary slightly
-          vec3 glass = mix(vec3(0.03, 0.045, 0.08), vec3(0.11, 0.13, 0.24), clamp(vPos.y / 70.0, 0.0, 1.0));
-          glass += vec3(0.015, 0.025, 0.04) * hash(vec2(cell.x * 3.1, floor(cell.y / 3.0)));
-          vec3 winCol = mix(glass, lc * bright * (0.85 + 0.15 * sin(f.x * 3.14159)), isLit);
+          vec3 winCol;
+          #if INTERIORS
+          vec3 d = vec3(dot(V, uAxis) / colW, V.y / rowH, dot(V, -n) / (colW * 1.3));
+          winCol = room(f, d, cell, isLit, lc * bright, style);
+          #else
+          winCol = mix(vec3(0.03, 0.045, 0.08), lc * bright * (0.85 + 0.15 * sin(f.x * 3.14159)), isLit);
+          #endif
+          // glass: tinted, reflecting the sky/city more at grazing angles
+          float gf = mix(fres, min(1.0, fres * 1.5 + 0.1), step(0.5, 1.0 - isLit));
+          winCol = mix(winCol, refl, gf * (style == 0 ? 0.95 : 0.8));
           col = mix(wall * shade, winCol, win);
+          if (style == 0) col = mix(col, refl * 0.6, (1.0 - win) * fres * 0.6); // glass spandrels
           col *= 1.0 - 0.35 * (1.0 - smoothstep(0.0, 0.05, f.y));      // floor slab line
           if (style == 0) col = mix(col, vec3(0.13, 0.15, 0.19) * shade, step(fract(u / colW), 0.035) * 0.85); // mullions
 
@@ -104,7 +180,17 @@ export function facadeMaterial({ instanced = false, fog, density, tint = null, s
             float shop = step(0.7, vPos.y) * step(vPos.y, 3.0) * step(0.08, fx) * step(fx, 0.92) * step(0.3, hash(vec2(seg, vSeed * 11.0)));
             vec3 sc = mix(vec3(1.0, 0.82, 0.58), vec3(0.45, 0.9, 1.0), step(0.62, hash(vec2(seg, vSeed * 13.0))));
             sc = mix(sc, vec3(1.0, 0.45, 0.72), step(0.88, hash(vec2(seg * 1.7, vSeed * 7.0))));
-            col = mix(col, sc, shop);
+            vec3 shopCol;
+            #if INTERIORS
+            // a lit shop interior behind the display window, split by mullions
+            vec2 sf = vec2(fx, (vPos.y - 0.7) / 2.3);
+            vec3 sd = vec3(dot(V, uAxis) / 4.0, V.y / 2.3, dot(V, -n) / 5.0);
+            shopCol = room(sf, sd, vec2(seg, 91.0), 1.0, sc * 0.9, 1);
+            shopCol *= 1.0 - 0.7 * step(abs(fract(fx * 3.0) - 0.5), 0.02);
+            #else
+            shopCol = sc * (0.75 + 0.25 * smoothstep(0.7, 2.6, vPos.y));
+            #endif
+            col = mix(col, mix(shopCol, refl, fres * 0.5), shop);
             col = mix(col, vec3(0.06), step(3.0, vPos.y) * step(vPos.y, 3.4)); // awning line
           }
           col *= 0.72 + 0.28 * smoothstep(0.0, 20.0, vPos.y);
