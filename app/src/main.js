@@ -1,6 +1,7 @@
 import './style.css';
 import { PROJECTS, CATEGORIES, EXPERIENCE, EDUCATION, SKILL_GROUPS } from './data.js';
 import { initSkillGlobe, initTilt, initCoverflow } from './effects3d.js';
+import { initChatbot } from './chatbot.js';
 
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const $ = (id) => document.getElementById(id);
@@ -70,27 +71,56 @@ function renderFeatured() {
   initCoverflow($('featured-list'), slides, { reducedMotion });
 }
 
-function renderGrid(filter) {
-  const list = $('project-list');
-  queueMicrotask(() => list.querySelectorAll('.reveal').forEach(observeReveal));
-  list.replaceChildren(
-    ...PROJECTS.filter((p) => filter === 'All' || p.category === filter).map((p, i) =>
+// Flip cards: front = image + title, back = details. Click/tap (or the button) flips; links still work.
+function projectCard(p, i, animate) {
+  const flipBtn = el('button', { type: 'button', class: 'flip-btn', 'aria-expanded': 'false' }, 'Details ↻');
+  const backBtn = el('button', { type: 'button', class: 'flip-btn' }, '↩ Back');
+  const card = el(
+    'li',
+    { class: `project tilt ${animate ? 'spin-in' : 'reveal'}`, style: `--d:${(i % 3) * 90}ms` },
+    el(
+      'div',
+      { class: 'flip' },
       el(
-        'li',
-        { class: 'card project tilt reveal', style: `--d:${(i % 3) * 90}ms` },
+        'div',
+        { class: 'face front card' },
         el('div', { class: 'project-media' }, img(p, 512, 'project-img')),
-        el(
-          'div',
-          { class: 'project-body' },
-          el('p', { class: 'kicker' }, p.category),
-          el('h4', {}, p.title),
-          el('p', {}, p.brief),
-          tags(p),
-          codeLink(p),
-        ),
+        el('div', { class: 'project-body' }, el('p', { class: 'kicker' }, p.category), el('h4', {}, p.title), el('p', {}, p.brief), flipBtn),
+      ),
+      el(
+        'div',
+        { class: 'face back card', 'aria-hidden': 'true' },
+        el('p', { class: 'kicker' }, p.category),
+        el('h4', {}, p.title),
+        el('p', { class: 'back-desc' }, p.description),
+        tags(p),
+        el('div', { class: 'back-actions' }, codeLink(p), backBtn),
       ),
     ),
   );
+  const front = card.querySelector('.front');
+  const back = card.querySelector('.back');
+  const setFlipped = (on) => {
+    card.classList.toggle('flipped', on);
+    flipBtn.setAttribute('aria-expanded', String(on));
+    back.setAttribute('aria-hidden', String(!on));
+    front.inert = on;
+    back.inert = !on;
+  };
+  back.inert = true;
+  card.addEventListener('click', (e) => {
+    if (e.target.closest('a')) return; // let "View code" open normally
+    const on = !card.classList.contains('flipped');
+    setFlipped(on);
+    if (e.target.closest('.flip-btn')) (on ? backBtn : flipBtn).focus({ preventScroll: true });
+  });
+  return card;
+}
+
+function renderGrid(filter, animate = false) {
+  const list = $('project-list');
+  list.replaceChildren(...PROJECTS.filter((p) => filter === 'All' || p.category === filter).map((p, i) => projectCard(p, i, animate)));
+  if (!animate) queueMicrotask(() => list.querySelectorAll('.reveal').forEach(observeReveal));
 }
 
 function renderFilters() {
@@ -99,7 +129,7 @@ function renderFilters() {
     const b = el('button', { type: 'button', class: 'chip-btn', 'aria-pressed': String(i === 0) }, c);
     b.addEventListener('click', () => {
       wrap.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
-      renderGrid(c);
+      renderGrid(c, !reducedMotion);
     });
     wrap.append(b);
   });
@@ -235,4 +265,5 @@ initTilt('.tilt', { reducedMotion });
 initNav();
 initReveal();
 initContact();
+initChatbot({ reducedMotion });
 initHero();
