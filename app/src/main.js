@@ -1,6 +1,6 @@
 import './style.css';
 import { PROJECTS, CATEGORIES, EXPERIENCE, EDUCATION, SKILL_GROUPS } from './data.js';
-import { initSkillGlobe, initTilt } from './effects3d.js';
+import { initSkillGlobe, initTilt, initCoverflow } from './effects3d.js';
 
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const $ = (id) => document.getElementById(id);
@@ -51,33 +51,33 @@ const codeLink = (p) => el('a', { class: 'link', href: p.link, target: '_blank',
 const tags = (p) => el('ul', { class: 'tags' }, p.tags.map((t) => el('li', {}, t)));
 
 function renderFeatured() {
-  $('featured-list').append(
-    ...PROJECTS.filter((p) => p.featured).map((p) =>
+  const slides = PROJECTS.filter((p) => p.featured).map((p) =>
+    el(
+      'article',
+      { class: 'card feature' },
+      el('div', { class: 'feature-media' }, img(p, 1024, 'feature-img')),
       el(
-        'article',
-        { class: 'card feature tilt reveal' },
-        el('div', { class: 'feature-media' }, img(p, 1024, 'feature-img')),
-        el(
-          'div',
-          { class: 'feature-body' },
-          el('p', { class: 'kicker' }, p.category),
-          el('h3', {}, p.title),
-          el('p', {}, p.description),
-          tags(p),
-          codeLink(p),
-        ),
+        'div',
+        { class: 'feature-body' },
+        el('p', { class: 'kicker' }, p.category),
+        el('h3', {}, p.title),
+        el('p', {}, p.description),
+        tags(p),
+        codeLink(p),
       ),
     ),
   );
+  initCoverflow($('featured-list'), slides, { reducedMotion });
 }
 
 function renderGrid(filter) {
   const list = $('project-list');
+  queueMicrotask(() => list.querySelectorAll('.reveal').forEach(observeReveal));
   list.replaceChildren(
-    ...PROJECTS.filter((p) => filter === 'All' || p.category === filter).map((p) =>
+    ...PROJECTS.filter((p) => filter === 'All' || p.category === filter).map((p, i) =>
       el(
         'li',
-        { class: 'card project tilt' },
+        { class: 'card project tilt reveal', style: `--d:${(i % 3) * 90}ms` },
         el('div', { class: 'project-media' }, img(p, 512, 'project-img')),
         el(
           'div',
@@ -142,23 +142,26 @@ function initNav() {
 }
 
 // ---------- reveal on scroll (content stays visible without JS / with reduced motion) ----------
+let revealIO = null;
+function observeReveal(node) {
+  if (!revealIO) node.classList.add('in');
+  else revealIO.observe(node);
+}
 function initReveal() {
-  const items = document.querySelectorAll('.reveal');
-  if (reducedMotion || !('IntersectionObserver' in window)) {
-    items.forEach((i) => i.classList.add('in'));
-    return;
-  }
-  const io = new IntersectionObserver(
-    (entries) =>
-      entries.forEach((en) => {
-        if (en.isIntersecting) {
+  if (!reducedMotion && 'IntersectionObserver' in window) {
+    revealIO = new IntersectionObserver(
+      (entries) =>
+        entries.forEach((en) => {
+          if (!en.isIntersecting) return;
           en.target.classList.add('in');
-          io.unobserve(en.target);
-        }
-      }),
-    { rootMargin: '0px 0px -8% 0px' },
-  );
-  items.forEach((i) => io.observe(i));
+          revealIO.unobserve(en.target);
+          // drop the stagger delay once shown so hover/tilt responses stay instant
+          setTimeout(() => en.target.style.removeProperty('--d'), 1200);
+        }),
+      { rootMargin: '0px 0px -8% 0px' },
+    );
+  }
+  document.querySelectorAll('.reveal').forEach(observeReveal);
 }
 
 // ---------- contact form (Web3Forms) ----------
