@@ -1,6 +1,7 @@
 import './city.css';
 import { PROFILE, PROJECTS, EXPERIENCE, EDUCATION, SKILL_GROUPS } from '../data.js';
 import { initChatbot } from '../chatbot.js';
+import { createAmbience } from './audio.js';
 
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const $ = (id) => document.getElementById(id);
@@ -140,6 +141,26 @@ function showProject(i) {
   renderPanel();
 }
 
+// ---------- rain and sound toggles ----------
+function initTools() {
+  const rainBtn = $('c-rain');
+  const soundBtn = $('c-sound');
+  if (!city.setRain) return; // the Google 3D mode has no weather
+  const ambience = createAmbience();
+  const setRain = (on) => {
+    city.setRain(on);
+    ambience.setRain(on);
+    rainBtn.setAttribute('aria-pressed', String(on));
+  };
+  setRain(city.raining);
+  rainBtn.addEventListener('click', () => setRain(!city.raining));
+  soundBtn.addEventListener('click', async () => {
+    const on = await ambience.toggle();
+    soundBtn.setAttribute('aria-pressed', String(on));
+    soundBtn.firstChild.textContent = on ? '🔊 ' : '🔇 ';
+  });
+}
+
 // ---------- boot ----------
 function webglOk() {
   try {
@@ -196,6 +217,7 @@ async function boot() {
     },
   });
   if (city.ready) await city.ready;
+  initTools();
   $('c-loading').hidden = true;
   $('c-enter').disabled = false;
 
