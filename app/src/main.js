@@ -1,5 +1,6 @@
 import './style.css';
 import { PROJECTS, CATEGORIES, EXPERIENCE, EDUCATION, SKILL_GROUPS } from './data.js';
+import { initSkillGlobe, initTilt } from './effects3d.js';
 
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const $ = (id) => document.getElementById(id);
@@ -35,7 +36,7 @@ function renderTimeline(list, target) {
 function renderSkills() {
   $('skills-list').append(
     ...SKILL_GROUPS.map((g) =>
-      el('div', { class: 'card skill-group reveal' }, el('h3', {}, g.name), el('ul', { class: 'chips' }, g.items.map((i) => el('li', {}, i)))),
+      el('div', { class: 'card skill-group tilt reveal' }, el('h3', {}, g.name), el('ul', { class: 'chips' }, g.items.map((i) => el('li', {}, i)))),
     ),
   );
 }
@@ -54,7 +55,7 @@ function renderFeatured() {
     ...PROJECTS.filter((p) => p.featured).map((p) =>
       el(
         'article',
-        { class: 'card feature reveal' },
+        { class: 'card feature tilt reveal' },
         el('div', { class: 'feature-media' }, img(p, 1024, 'feature-img')),
         el(
           'div',
@@ -76,7 +77,7 @@ function renderGrid(filter) {
     ...PROJECTS.filter((p) => filter === 'All' || p.category === filter).map((p) =>
       el(
         'li',
-        { class: 'card project' },
+        { class: 'card project tilt' },
         el('div', { class: 'project-media' }, img(p, 512, 'project-img')),
         el(
           'div',
@@ -226,6 +227,8 @@ renderTimeline(EDUCATION, $('education-list'));
 renderSkills();
 renderFeatured();
 renderFilters();
+initSkillGlobe($('skill-globe'), SKILL_GROUPS.filter((g) => g.name !== 'Languages').flatMap((g) => g.items), { reducedMotion });
+initTilt('.tilt', { reducedMotion });
 initNav();
 initReveal();
 initContact();
