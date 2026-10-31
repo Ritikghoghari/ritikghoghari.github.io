@@ -5,7 +5,7 @@ import { wetRoad, wetRoadMaterialOptions } from './road.js';
 const KERB = 0.25; // sidewalk height
 
 // Roads, sidewalks, crossings and street lamps. Everything repeated is instanced.
-export function buildStreets(scene, { BLOCK_X, BLOCK_Z, AVENUE_HALF, fog, density, mirror }) {
+export function buildStreets(scene, { BLOCK_X, BLOCK_Z, AVENUE_HALF, fog, density, mirror, mirrorScale }) {
   const m4 = new THREE.Matrix4();
   const q = new THREE.Quaternion();
   const v = new THREE.Vector3();
@@ -54,10 +54,10 @@ export function buildStreets(scene, { BLOCK_X, BLOCK_Z, AVENUE_HALF, fog, densit
   const LAMPS = [zEnd - 4, 16, AVENUE_HALF - 0.8, 8]; // street-lamp layout for analytic reflections
   const aveGeo = new THREE.PlaneGeometry(AVENUE_HALF * 2, LEN);
   const roadOpts = { map: aveTex, repeat: new THREE.Vector2(1, LEN / 12), fog, density, lamps: LAMPS };
-  // desktop: real mirror reflections; it falls back to the cheap version if the device is slow
+  // real mirror reflections (lower resolution on phones); falls back to the cheap version if the device is slow
   const plain = wetRoad(aveGeo, { ...roadOpts, mirror: false });
   const avenues = [plain];
-  if (mirror) avenues.push(wetRoad(aveGeo, { ...roadOpts, mirror: true }));
+  if (mirror) avenues.push(wetRoad(aveGeo, { ...roadOpts, mirror: true, mirrorScale }));
   for (const a of avenues) {
     a.rotation.x = -Math.PI / 2;
     a.position.set(0, 0.02, zMid);

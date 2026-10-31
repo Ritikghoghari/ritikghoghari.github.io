@@ -125,11 +125,11 @@ export function wetRoadMaterialOptions({ map, repeat, fog, density, lamps, mirro
   };
 }
 
-// The wet avenue. Returns the mesh; on desktop it is a Reflector rendering at half resolution.
+// The wet avenue. Returns the mesh; with `mirror` it is a Reflector rendering at `mirrorScale` of the screen size.
 export function wetRoad(geometry, opts) {
   const shader = wetRoadMaterialOptions(opts);
   if (opts.mirror) {
-    const scale = 0.5 * Math.min(window.devicePixelRatio || 1, 1.5);
+    const scale = (opts.mirrorScale ?? 0.5) * Math.min(window.devicePixelRatio || 1, 1.5);
     const mesh = new Reflector(geometry, {
       shader,
       textureWidth: Math.round(window.innerWidth * scale),

@@ -13,8 +13,9 @@ export const PROFILE = {
 export const PROJECTS = [
   {
     id: 'greenwashing',
-    category: 'AI & NLP',
+    category: 'AI & ML',
     featured: true,
+    thesis: true,
     title: 'Catching Greenwashing From Space',
     brief: 'NLP claims vs. satellite forest loss.',
     description:
@@ -26,7 +27,7 @@ export const PROJECTS = [
   },
   {
     id: 'jobmarketai',
-    category: 'AI & NLP',
+    category: 'RAG & GenAI',
     featured: true,
     title: 'JobMarketAI Agent Crew',
     brief: 'Multi-agent career assistant.',
@@ -39,7 +40,7 @@ export const PROJECTS = [
   },
   {
     id: 'energy',
-    category: 'Machine Learning',
+    category: 'AI & ML',
     featured: false,
     title: 'German Energy Forecast',
     brief: 'Price prediction via time series.',
@@ -52,7 +53,7 @@ export const PROJECTS = [
   },
   {
     id: 'recruit',
-    category: 'AI & NLP',
+    category: 'RAG & GenAI',
     featured: false,
     title: 'Smart Recruit Assistant',
     brief: 'AI-driven candidate screening.',
@@ -65,7 +66,7 @@ export const PROJECTS = [
   },
   {
     id: 'fakejob',
-    category: 'AI & NLP',
+    category: 'RAG & GenAI',
     featured: true,
     title: 'Fake Job Detector',
     brief: 'Fraud detection with an explainable reasoning engine.',
@@ -78,7 +79,7 @@ export const PROJECTS = [
   },
   {
     id: 'ai-trainer',
-    category: 'Computer Vision',
+    category: 'AI & ML',
     featured: true,
     title: 'Personal AI Trainer',
     brief: 'Real-time CV workout tracker.',
@@ -91,7 +92,7 @@ export const PROJECTS = [
   },
   {
     id: 'primax-test',
-    category: 'AI & NLP',
+    category: 'RAG & GenAI',
     featured: false,
     title: 'Invoice Data Extractor',
     brief: 'Gemini-powered invoice parsing.',
@@ -104,7 +105,7 @@ export const PROJECTS = [
   },
   {
     id: 'airbnb',
-    category: 'Data Analytics',
+    category: 'Data Analysis',
     featured: false,
     title: 'Airbnb Analysis',
     brief: 'Pricing strategy & optimisation.',
@@ -116,7 +117,7 @@ export const PROJECTS = [
   },
   {
     id: 'book',
-    category: 'Data Analytics',
+    category: 'Data Analysis',
     featured: false,
     title: 'Book Sales Analysis',
     brief: 'Market insights via EDA.',
@@ -128,7 +129,7 @@ export const PROJECTS = [
   },
   {
     id: 'hr',
-    category: 'Data Analytics',
+    category: 'Data Analysis',
     featured: false,
     title: 'HR Data Analysis',
     brief: 'Retention metrics dashboard.',
@@ -140,7 +141,7 @@ export const PROJECTS = [
   },
   {
     id: 'churn',
-    category: 'Data Analytics',
+    category: 'Data Analysis',
     featured: false,
     title: 'Bank Customer Churn',
     brief: 'Retention analytics dashboard.',
@@ -152,7 +153,7 @@ export const PROJECTS = [
   },
   {
     id: 'heart',
-    category: 'Machine Learning',
+    category: 'AI & ML',
     featured: false,
     title: 'Heart Disease Analysis',
     brief: 'Medical diagnosis prediction.',
@@ -164,7 +165,7 @@ export const PROJECTS = [
   },
   {
     id: 'logistics-it',
-    category: 'Data Analytics',
+    category: 'Data Analysis',
     featured: false,
     title: 'Logistics IT Support Analysis',
     brief: 'Operational insights from IT support data.',
@@ -176,7 +177,7 @@ export const PROJECTS = [
   },
   {
     id: 'car-price',
-    category: 'Machine Learning',
+    category: 'AI & ML',
     featured: false,
     title: 'Car Price Prediction',
     brief: 'Predicting used-car prices.',
@@ -189,7 +190,7 @@ export const PROJECTS = [
   },
   {
     id: 'iris-flower',
-    category: 'Machine Learning',
+    category: 'AI & ML',
     featured: false,
     title: 'Iris Flower Classification',
     brief: 'Classic ML classification.',
@@ -202,7 +203,7 @@ export const PROJECTS = [
   },
   {
     id: 'fabric-defect',
-    category: 'Computer Vision',
+    category: 'AI & ML',
     featured: false,
     title: 'Fabric Defect Classification',
     brief: 'Detecting manufacturing defects.',
@@ -214,7 +215,7 @@ export const PROJECTS = [
   },
   {
     id: 'movie-rec',
-    category: 'Machine Learning',
+    category: 'AI & ML',
     featured: false,
     title: 'Movie Recommendation System',
     brief: 'Personalised movie suggestions.',
@@ -226,7 +227,28 @@ export const PROJECTS = [
   },
 ];
 
-export const CATEGORIES = ['All', 'AI & NLP', 'Machine Learning', 'Computer Vision', 'Data Analytics'];
+export const CATEGORIES = ['All', 'AI & ML', 'RAG & GenAI', 'Data Analysis'];
+
+// Master's thesis (facts from the thesis repository README).
+export const THESIS = {
+  projectId: 'greenwashing',
+  title: 'Catching Greenwashing from Space',
+  subtitle: 'Verifying palm-oil zero-deforestation claims using satellite data and natural language processing',
+  degree: "M.Sc. Data Science, AI & Digital Business · Master's thesis",
+  org: 'GISMA University of Applied Sciences, Berlin',
+  supervisor: 'Prof. Mohamad Hoseini',
+  year: '2026',
+  summary:
+    'A multi-modal auditing framework that checks what companies say against what satellites see. NLP models extract and score zero-deforestation claims from 21 sustainability reports; Google Earth Engine and Hansen Global Forest Change data measure real forest clearance around every supplier mill. A weighted mismatch score ranks where the words and the forest disagree most.',
+  stats: [
+    ['11', 'palm-oil companies audited'],
+    ['290', 'supply-chain mills mapped'],
+    ['890,168 ha', 'post-2020 tree-cover loss found within 10 km of mills'],
+    ['65.6', 'highest mismatch score (KLK)'],
+  ],
+  method: ['ClimateBERT', 'FinBERT', 'Google Earth Engine', 'Hansen GFC v1.13', 'Sentinel-2', 'Python', '23 automated tests'],
+  link: 'https://github.com/Ritikghoghari/catching-greenwashing-from-space',
+};
 
 export const EXPERIENCE = [
   {

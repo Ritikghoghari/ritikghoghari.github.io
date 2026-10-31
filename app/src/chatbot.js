@@ -1,8 +1,8 @@
 // Small portfolio assistant. Answers from the site's own data with keyword matching:
 // no AI service, no API key, nothing leaves the browser.
-import { PROFILE, PROJECTS, EXPERIENCE, EDUCATION, SKILL_GROUPS } from './data.js';
+import { PROFILE, PROJECTS, THESIS, EXPERIENCE, EDUCATION, SKILL_GROUPS } from './data.js';
 
-const SUGGESTIONS = ['Skills', 'Top projects', 'Experience', 'Education', 'How to contact?', 'Is he available?'];
+const SUGGESTIONS = ["Master's thesis", 'Top projects', 'Skills', 'Experience', 'How to contact?', 'Is he available?'];
 
 function el(tag, attrs = {}, ...children) {
   const node = document.createElement(tag);
@@ -61,6 +61,14 @@ function answer(raw) {
   if (hasWord(q, ['thank you', 'thanks', 'thx', 'danke', 'great', 'cool', 'nice']))
     return [el('p', {}, "You're welcome! Anything else I can tell you about Ritik?")];
 
+  if (has(q, ['thesis', 'masterarbeit', 'dissertation', 'research', 'greenwash', 'main project']))
+    return [
+      el('p', {}, el('strong', {}, `${THESIS.title}`), " (Ritik's Master's thesis)"),
+      el('p', {}, THESIS.summary),
+      el('ul', {}, THESIS.stats.map(([a, b]) => el('li', {}, `${a}: ${b}`))),
+      el('p', {}, `${THESIS.org}, supervised by ${THESIS.supervisor}. `, link(THESIS.link, 'View the repository ↗')),
+    ];
+
   const named = projectNamed(q);
   if (named)
     return [
@@ -92,10 +100,9 @@ function answer(raw) {
     return [el('ul', {}, EDUCATION.map((x) => el('li', {}, el('strong', {}, x.title), ` · ${x.org}, ${x.when}`)))];
 
   const CATEGORY_WORDS = {
-    'AI & NLP': ['ai', 'nlp', 'genai', 'llm', 'gen ai', 'agent'],
-    'Machine Learning': ['machine learning', 'ml', 'prediction', 'predictive'],
-    'Computer Vision': ['computer vision', 'vision', 'image'],
-    'Data Analytics': ['analytics', 'analysis', 'dashboard', 'eda'],
+    'RAG & GenAI': ['rag', 'genai', 'gen ai', 'llm', 'agent', 'agents', 'gpt', 'gemini', 'langchain'],
+    'AI & ML': ['ai', 'ml', 'machine learning', 'prediction', 'predictive', 'computer vision', 'vision', 'nlp', 'deep learning'],
+    'Data Analysis': ['analytics', 'analysis', 'analyst', 'dashboard', 'eda', 'data analysis'],
   };
   const asksProjects = has(q, ['project', 'projects', 'portfolio', 'built', 'build', 'made', 'work', 'github', 'top', 'best']);
   const category = asksProjects && Object.keys(CATEGORY_WORDS).find((c) => hasWord(q, CATEGORY_WORDS[c]));

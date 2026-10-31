@@ -1,5 +1,5 @@
 import './style.css';
-import { PROJECTS, CATEGORIES, EXPERIENCE, EDUCATION, SKILL_GROUPS } from './data.js';
+import { PROJECTS, CATEGORIES, THESIS, EXPERIENCE, EDUCATION, SKILL_GROUPS } from './data.js';
 import { initSkillGlobe, initTilt, initCoverflow } from './effects3d.js';
 import { initChatbot } from './chatbot.js';
 
@@ -51,6 +51,36 @@ const img = (p, size, cls) =>
 const codeLink = (p) => el('a', { class: 'link', href: p.link, target: '_blank', rel: 'noopener' }, 'View code ↗');
 const tags = (p) => el('ul', { class: 'tags' }, p.tags.map((t) => el('li', {}, t)));
 
+const kicker = (p) => (p.thesis ? el('p', { class: 'kicker kicker-thesis' }, "🎓 Master's thesis") : el('p', { class: 'kicker' }, p.category));
+
+// The Master's thesis gets its own spotlight above the other projects.
+function renderThesis() {
+  const t = THESIS;
+  $('thesis').replaceChildren(
+    el(
+      'article',
+      { class: 'card thesis reveal', 'aria-labelledby': 'thesis-title' },
+      el(
+        'div',
+        { class: 'thesis-head' },
+        el('span', { class: 'thesis-badge' }, "🎓 Master's thesis · main project"),
+        el('h3', { id: 'thesis-title' }, t.title),
+        el('p', { class: 'thesis-sub' }, t.subtitle),
+        el('p', { class: 'thesis-meta' }, `${t.org} · Supervisor: ${t.supervisor} · ${t.year}`),
+      ),
+      el('p', { class: 'thesis-summary' }, t.summary),
+      el('dl', { class: 'thesis-stats' }, t.stats.map(([a, b]) => el('div', {}, el('dt', {}, a), el('dd', {}, b)))),
+      el('ul', { class: 'tags' }, t.method.map((m) => el('li', {}, m))),
+      el(
+        'div',
+        { class: 'thesis-actions' },
+        el('a', { class: 'btn', href: t.link, target: '_blank', rel: 'noopener' }, 'View thesis repository ↗'),
+        el('a', { class: 'btn btn-ghost', href: '/city/#projects' }, 'See it in the 3D city'),
+      ),
+    ),
+  );
+}
+
 function renderFeatured() {
   const slides = PROJECTS.filter((p) => p.featured).map((p) =>
     el(
@@ -60,7 +90,7 @@ function renderFeatured() {
       el(
         'div',
         { class: 'feature-body' },
-        el('p', { class: 'kicker' }, p.category),
+        kicker(p),
         el('h3', {}, p.title),
         el('p', {}, p.description),
         tags(p),
@@ -85,12 +115,12 @@ function projectCard(p, i, animate) {
         'div',
         { class: 'face front card' },
         el('div', { class: 'project-media' }, img(p, 512, 'project-img')),
-        el('div', { class: 'project-body' }, el('p', { class: 'kicker' }, p.category), el('h4', {}, p.title), el('p', {}, p.brief), flipBtn),
+        el('div', { class: 'project-body' }, kicker(p), el('h4', {}, p.title), el('p', {}, p.brief), flipBtn),
       ),
       el(
         'div',
         { class: 'face back card', 'aria-hidden': 'true' },
-        el('p', { class: 'kicker' }, p.category),
+        kicker(p),
         el('h4', {}, p.title),
         el('p', { class: 'back-desc' }, p.description),
         tags(p),
@@ -126,7 +156,8 @@ function renderGrid(filter, animate = false) {
 function renderFilters() {
   const wrap = $('filters');
   CATEGORIES.forEach((c, i) => {
-    const b = el('button', { type: 'button', class: 'chip-btn', 'aria-pressed': String(i === 0) }, c);
+    const n = c === 'All' ? PROJECTS.length : PROJECTS.filter((p) => p.category === c).length;
+    const b = el('button', { type: 'button', class: 'chip-btn', 'aria-pressed': String(i === 0) }, c, el('span', { class: 'chip-count' }, String(n)));
     b.addEventListener('click', () => {
       wrap.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
       renderGrid(c, !reducedMotion);
@@ -258,6 +289,7 @@ function initHero() {
 renderTimeline(EXPERIENCE, $('experience-list'));
 renderTimeline(EDUCATION, $('education-list'));
 renderSkills();
+renderThesis();
 renderFeatured();
 renderFilters();
 initSkillGlobe($('skill-globe'), SKILL_GROUPS.filter((g) => g.name !== 'Languages').flatMap((g) => g.items), { reducedMotion });
