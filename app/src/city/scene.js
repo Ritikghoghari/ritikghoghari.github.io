@@ -126,14 +126,14 @@ export function createCity(canvas, { reducedMotion, projects, onPick }) {
   ground.rotation.x = -Math.PI / 2;
   ground.position.z = -40;
   scene.add(ground);
-  const streets = buildStreets(scene, { BLOCK_X, BLOCK_Z, AVENUE_HALF, fog: FOG, density: FOG_DENSITY, mirror: !reducedMotion, mirrorScale: quality === 'high' ? 0.5 : 0.32 });
+  const streets = buildStreets(scene, { BLOCK_X, BLOCK_Z, AVENUE_HALF, fog: FOG, density: FOG_DENSITY, mirror: true, mirrorScale: quality === 'high' ? 0.5 : 0.32 });
   const KERB = streets.kerb;
   const zebraBusy = new Uint8Array(BLOCK_Z.length); // crossings where people are on the zebra (cars wait)
   const traffic = buildTraffic(scene, { rand, BLOCK_Z, AVENUE_HALF, KERB, quality, zebraBusy });
   const people = buildPeople(scene, { rand, BLOCK_Z, AVENUE_HALF, KERB, quality, stops: STOPS, zebraBusy });
   buildProps(scene, { rand, BLOCK_Z, AVENUE_HALF, KERB, quality, parks: PARK_BLOCKS.map((k) => k.split(',').map(Number)) });
   const rain = buildRain(scene, { quality });
-  let raining = !reducedMotion;
+  let raining = true;
   rain.setOn(raining);
   streets.setRain(raining);
 
@@ -635,7 +635,7 @@ export function createCity(canvas, { reducedMotion, projects, onPick }) {
 
   // ---------- glow (bloom) on capable desktops ----------
   let composer = null;
-  let bloomOn = !coarse && !reducedMotion;
+  let bloomOn = !coarse;
   if (bloomOn)
     Promise.all([
         import('three/addons/postprocessing/EffectComposer.js'),
@@ -688,7 +688,7 @@ export function createCity(canvas, { reducedMotion, projects, onPick }) {
     const t = clock.elapsedTime;
 
     if (aerial) {
-      aerialAngle += dt * (reducedMotion ? 0 : 0.05);
+      aerialAngle += dt * (reducedMotion ? 0.015 : 0.05);
       camPos.set(Math.sin(aerialAngle) * 260, 150, -30 + Math.cos(aerialAngle) * 260);
       camLook.set(0, 0, -30);
     } else if (travel) {
@@ -715,7 +715,8 @@ export function createCity(canvas, { reducedMotion, projects, onPick }) {
     if (!aerial && !travel && !reducedMotion) camera.position.y += Math.sin(t * 0.8) * 0.08; // gentle idle sway
     camera.lookAt(lookAt);
 
-    if (!reducedMotion) {
+    {
+      // ambient city life runs for everyone; reduced motion only removes camera flights and sway
       cityTime.value = t;
       traffic.update(dt, t);
       people.update(dt, t + 4);
@@ -726,8 +727,6 @@ export function createCity(canvas, { reducedMotion, projects, onPick }) {
         s.position.set(18 + Math.cos(a) * 5.2, s.userData.y + Math.sin(t + s.userData.a) * 0.3, -28 + Math.sin(a) * 5.2);
       });
       if (beacon) beacon.material.color.setScalar(0.55 + 0.45 * (0.5 + 0.5 * Math.sin(t * 3)));
-    } else if (!holoSigns[0].position.lengthSq()) {
-      holoSigns.forEach((s) => s.position.set(18 + Math.cos(s.userData.a) * 5.2, s.userData.y, -28 + Math.sin(s.userData.a) * 5.2));
     }
     billboards.forEach((b, i) => {
       b.frame.material.emissiveIntensity = i === focusIndex ? 0.6 + 0.25 * Math.sin(t * 4) : 0.12;
