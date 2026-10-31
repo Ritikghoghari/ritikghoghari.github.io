@@ -48,11 +48,12 @@ export function initSkillGlobe(container, words, { reducedMotion }) {
   container.addEventListener('pointerleave', () => { ax = 0.0016; ay = 0.0032; });
 
   draw();
-  if (reducedMotion) return;
+  // reduced motion: same globe, drifting at a calmer speed
+  const calm = reducedMotion ? 0.4 : 1;
   let raf = 0;
   let last = 0;
   const frame = (now) => {
-    const k = last ? Math.min(3, (now - last) / 16.7) : 1;
+    const k = (last ? Math.min(3, (now - last) / 16.7) : 1) * calm;
     last = now;
     rotX += ax * k;
     rotY += ay * k;
