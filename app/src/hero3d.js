@@ -123,31 +123,29 @@ export function startHero(canvas, { reducedMotion }) {
   const frame = (now) => {
     const dt = Math.min(0.05, (now - last) / 1000);
     last = now;
-    time += dt;
+    // reduced-motion visitors get a calm version: slow rotation, no breathing, no mouse parallax
+    const k = reducedMotion ? 0.3 : 1;
+    if (!reducedMotion) time += dt;
     mat.uniforms.uTime.value = time;
-    sphere.rotation.y += dt * 0.12;
-    ringA.rotation.y += dt * 0.35;
-    ringB.rotation.y -= dt * 0.25;
+    sphere.rotation.y += dt * 0.12 * k;
+    ringA.rotation.y += dt * 0.35 * k;
+    ringB.rotation.y -= dt * 0.25 * k;
     orb.rotation.x += (target.x - orb.rotation.x) * 0.05;
     orb.rotation.y += (target.y - orb.rotation.y) * 0.05;
     renderer.render(scene, camera);
     raf = visible && !document.hidden ? requestAnimationFrame(frame) : 0;
   };
   const play = () => {
-    if (raf || reducedMotion) return;
+    if (raf) return;
     last = performance.now();
     raf = requestAnimationFrame(frame);
   };
 
-  if (reducedMotion) {
-    renderer.render(scene, camera); // one still frame
-  } else {
-    new IntersectionObserver(([e]) => {
-      visible = e.isIntersecting;
-      if (visible) play();
-    }).observe(canvas);
-    document.addEventListener('visibilitychange', () => !document.hidden && visible && play());
-    play();
-  }
+  new IntersectionObserver(([e]) => {
+    visible = e.isIntersecting;
+    if (visible) play();
+  }).observe(canvas);
+  document.addEventListener('visibilitychange', () => !document.hidden && visible && play());
+  play();
   canvas.classList.add('ready');
 }
