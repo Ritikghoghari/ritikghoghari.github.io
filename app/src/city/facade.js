@@ -203,23 +203,39 @@ export function facadeMaterial({ instanced = false, fog, density, tint = null, s
   });
 }
 
-// Gradient night sky with a warm city glow on the horizon.
+// Night sky: gradient with a warm light-pollution glow on the horizon and slow-moving clouds lit from below by the city.
 export function skyDome() {
   const mat = new THREE.ShaderMaterial({
     side: THREE.BackSide,
     depthWrite: false,
     fog: false,
+    uniforms: { uTime: cityTime },
     vertexShader: /* glsl */ `
       varying vec3 vDir;
       void main() { vDir = normalize(position); gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
     fragmentShader: /* glsl */ `
+      uniform float uTime;
       varying vec3 vDir;
+      float hash(vec2 p) { vec3 p3 = fract(vec3(p.xyx) * 0.1031); p3 += dot(p3, p3.yzx + 33.33); return fract((p3.x + p3.y) * p3.z); }
+      float noise(vec2 p) {
+        vec2 i = floor(p); vec2 f = fract(p); f = f * f * (3.0 - 2.0 * f);
+        return mix(mix(hash(i), hash(i + vec2(1, 0)), f.x), mix(hash(i + vec2(0, 1)), hash(i + vec2(1, 1)), f.x), f.y);
+      }
+      float fbm(vec2 p) { float v = 0.0, a = 0.5; for (int i = 0; i < 5; i++) { v += a * noise(p); p *= 2.03; a *= 0.5; } return v; }
       void main() {
         float h = clamp(vDir.y, -0.1, 1.0);
         vec3 zenith = vec3(0.012, 0.018, 0.05);
         vec3 horizon = vec3(0.09, 0.08, 0.17);
         vec3 col = mix(horizon, zenith, smoothstep(0.0, 0.55, h));
         col += vec3(0.35, 0.16, 0.10) * exp(-max(h, 0.0) * 14.0) * 0.55; // city light pollution
+        if (h > 0.02) {
+          // clouds on a flat layer above the city: project the view ray onto it
+          vec2 uv = vDir.xz / (h + 0.12) * 1.6 + vec2(uTime * 0.012, uTime * 0.004);
+          float c = smoothstep(0.48, 0.78, fbm(uv));
+          float under = exp(-h * 4.0); // lower clouds catch more of the orange city glow
+          vec3 cloud = mix(vec3(0.05, 0.055, 0.09), vec3(0.32, 0.2, 0.15), under * 0.8);
+          col = mix(col, cloud, c * smoothstep(0.02, 0.12, h) * 0.85);
+        }
         gl_FragColor = vec4(pow(col, vec3(2.2)), 1.0);
         #include <colorspace_fragment>
       }`,

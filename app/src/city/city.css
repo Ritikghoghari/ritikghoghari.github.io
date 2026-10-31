@@ -64,6 +64,7 @@ ul, ol { list-style: none; }
 .c-panel.show { opacity: 1; transform: none; }
 .c-panel[hidden] { display: none; }
 .c-panel-inner { display: grid; gap: 12px; }
+.c-sheet-handle { display: none; }
 .c-panel h2 { font: 600 1.45rem/1.25 var(--head); letter-spacing: -0.01em; }
 .c-panel h3 { font: 600 1.02rem/1.3 var(--head); }
 .c-panel p { color: #c6ccd8; font-size: 0.94rem; }
@@ -84,6 +85,8 @@ ul, ol { list-style: none; }
 .c-thumb { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 12px; border: 1px solid var(--line); }
 .c-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 4px; }
 .c-link { color: var(--teal); font-weight: 500; font-size: 0.92rem; }
+.c-badge { justify-self: start; font-size: 0.75rem !important; font-weight: 600; color: #0b0d12 !important; background: var(--grad); padding: 4px 10px; border-radius: 999px; }
+.c-inline { background: none; border: 0; padding: 0; cursor: pointer; font: inherit; }
 .c-link:hover { text-decoration: underline; text-underline-offset: 3px; }
 
 /* stop navigation */
@@ -111,6 +114,12 @@ ul, ol { list-style: none; }
   }
   .c-panel.show { transform: none; }
   .c-panel h2 { font-size: 1.2rem; }
+  .c-panel { padding-top: 0; transition: opacity 0.5s ease, transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1), max-height 0.35s ease; }
+  .c-panel.collapsed { max-height: 25vh; max-height: 25svh; overflow: hidden; cursor: pointer; }
+  .c-panel.collapsed::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 46px; background: linear-gradient(rgba(18, 21, 29, 0), var(--surface)); pointer-events: none; border-radius: 0 0 18px 18px; }
+  .c-panel.expanded { max-height: 64vh; max-height: 64svh; }
+  .c-sheet-handle { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 100%; padding: 8px 0 10px; position: sticky; top: 0; z-index: 1; background: var(--surface); font-size: 0.72rem; color: var(--muted); }
+  .c-grip { width: 40px; height: 4px; border-radius: 2px; background: #3a4154; }
   .c-nav { bottom: 12px; max-width: calc(100vw - 96px); left: 12px; transform: none; }
   .c-hint { bottom: auto; top: 64px; }
   .c-top { padding: 12px 14px; }

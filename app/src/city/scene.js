@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { facadeMaterial, skyDome, glowTexture, STYLE, cityTime } from './facade.js';
 import { buildStreets } from './streets.js';
 import { buildTraffic } from './traffic.js';
@@ -125,7 +126,7 @@ export function createCity(canvas, { reducedMotion, projects, onPick }) {
   ground.rotation.x = -Math.PI / 2;
   ground.position.z = -40;
   scene.add(ground);
-  const streets = buildStreets(scene, { BLOCK_X, BLOCK_Z, AVENUE_HALF, fog: FOG, density: FOG_DENSITY, mirror: quality === 'high' && !reducedMotion });
+  const streets = buildStreets(scene, { BLOCK_X, BLOCK_Z, AVENUE_HALF, fog: FOG, density: FOG_DENSITY, mirror: !reducedMotion, mirrorScale: quality === 'high' ? 0.5 : 0.32 });
   const KERB = streets.kerb;
   const zebraBusy = new Uint8Array(BLOCK_Z.length); // crossings where people are on the zebra (cars wait)
   const traffic = buildTraffic(scene, { rand, BLOCK_Z, AVENUE_HALF, KERB, quality, zebraBusy });
@@ -140,10 +141,10 @@ export function createCity(canvas, { reducedMotion, projects, onPick }) {
   const parts = []; // { x, z, w, d, h, y, style, seed }
   const roofs = []; // tops that receive rooftop clutter
   const antennas = [];
-  function addBuilding(x, z, w, d, h, style) {
+  function addBuilding(x, z, w, d, h, style, out = null) {
     const seed = rand();
     const y0 = KERB;
-    parts.push({ x, z, w, d, h, y: y0, style, seed });
+    parts.push({ x, z, w, d, h, y: y0, style, seed, out });
     let top = { x, z, w, d, y: y0 + h };
     if (h > 30 && rand() < 0.75) {
       // skyscraper setbacks
@@ -180,7 +181,7 @@ export function createCity(canvas, { reducedMotion, projects, onPick }) {
             ? rand() < 0.7 ? STYLE.GLASS : STYLE.OFFICE
             : h > 18 ? rand() < 0.5 ? STYLE.OFFICE : STYLE.RESIDENTIAL
               : rand() < 0.55 ? STYLE.BRICK : STYLE.RESIDENTIAL;
-          addBuilding(bx + ox, bz + oz, 6.6 + rand() * 1.7, 6.6 + rand() * 1.7, h, style);
+          addBuilding(bx + ox, bz + oz, 6.6 + rand() * 1.7, 6.6 + rand() * 1.7, h, style, Math.abs(bx) <= 42 ? [Math.sign(ox), Math.sign(oz)] : null);
         }
       }
     }
@@ -209,6 +210,101 @@ export function createCity(canvas, { reducedMotion, projects, onPick }) {
   bGeo.setAttribute('aStyle', new THREE.InstancedBufferAttribute(styles, 1));
   buildings.frustumCulled = false; // instances span the whole map
   scene.add(buildings);
+
+  // ---------- facade details on the street-facing sides: balconies, shop awnings, cornices ----------
+  // Positions follow the facade shader's window grid and shop pattern, so balconies sit under real windows
+  // and awnings over lit shops.
+  {
+    const fract = (v) => v - Math.floor(v);
+    const hash = (px, py) => {
+      // same sin-free hash as the shader
+      let a = fract(px * 0.1031);
+      let b = fract(py * 0.1031);
+      let c = fract(px * 0.1031);
+      const dd = a * (b + 33.33) + b * (c + 33.33) + c * (a + 33.33);
+      a += dd;
+      b += dd;
+      c += dd;
+      return fract((a + b) * c);
+    };
+    const balconies = [];
+    const awnings = [];
+    const cornices = [];
+    for (const p of parts) {
+      if (!p.out) continue;
+      const faces = [
+        { nx: p.out[0], nz: 0, len: p.d },
+        { nx: 0, nz: p.out[1], len: p.w },
+      ];
+      for (const f of faces) {
+        if (!f.nx && !f.nz) continue;
+        // face centre and the shader's u axis (u = dot(position, uAxis))
+        const fx = p.x + f.nx * (p.w / 2);
+        const fz = p.z + f.nz * (p.d / 2);
+        const ux = f.nx ? 0 : f.nz;
+        const uz = f.nx ? -f.nx : 0;
+        const uC = fx * ux + fz * uz;
+        const u0 = uC - f.len / 2;
+        const u1 = uC + f.len / 2;
+        const rot = Math.atan2(f.nx, f.nz); // local +z points out of the face
+        const at = (u) => [fx + ux * (u - uC), fz + uz * (u - uC)];
+        if (p.style === STYLE.RESIDENTIAL && p.h > 9) {
+          const colW = 2.3;
+          const rowH = 2.9;
+          for (let c = Math.ceil(u0 / colW); c + 1 <= Math.floor(u1 / colW); c++) {
+            if (hash(c * 3.1, p.seed * 17) < 0.45) continue; // not every flat has a balcony
+            const [bxp, bzp] = at((c + 0.5) * colW);
+            for (let row = 2; (row + 1) * rowH < p.y + p.h - 1; row++) balconies.push([bxp, row * rowH, bzp, rot]);
+          }
+        }
+        if (p.style !== STYLE.GLASS) {
+          for (let seg = Math.ceil(u0 / 4); seg + 1 <= Math.floor(u1 / 4); seg++) {
+            if (hash(seg, p.seed * 11) < 0.3) continue; // no shop here in the shader either
+            const [axp, azp] = at((seg + 0.5) * 4);
+            awnings.push([axp, azp, rot, hash(seg * 1.7, p.seed * 5)]);
+          }
+        }
+      }
+      if (p.style === STYLE.BRICK || p.style === STYLE.RESIDENTIAL) cornices.push(p);
+    }
+    const q = new THREE.Quaternion();
+    const pos = new THREE.Vector3();
+    const scl = new THREE.Vector3(1, 1, 1);
+    const place = (mesh, i, x, y, z, rot, sx = 1, sy = 1, sz = 1) => {
+      q.setFromAxisAngle(THREE.Object3D.DEFAULT_UP, rot);
+      mesh.setMatrixAt(i, m4.compose(pos.set(x, y, z), q, scl.set(sx, sy, sz)));
+    };
+    // balcony: concrete slab + dark metal railing on three sides
+    const slab = new THREE.BoxGeometry(1.7, 0.14, 0.85).translate(0, 0.07, 0.43);
+    const rail = [
+      new THREE.BoxGeometry(1.7, 0.9, 0.04).translate(0, 0.55, 0.84),
+      new THREE.BoxGeometry(0.04, 0.9, 0.85).translate(-0.83, 0.55, 0.43),
+      new THREE.BoxGeometry(0.04, 0.9, 0.85).translate(0.83, 0.55, 0.43),
+    ];
+    const balcSlabs = new THREE.InstancedMesh(slab, new THREE.MeshStandardMaterial({ color: 0x5b5752, roughness: 0.9 }), balconies.length);
+    const balcRails = new THREE.InstancedMesh(mergeGeometries(rail), new THREE.MeshStandardMaterial({ color: 0x15171c, metalness: 0.6, roughness: 0.4, transparent: true, opacity: 0.85 }), balconies.length);
+    balconies.forEach(([x, y, z, rot], i) => {
+      place(balcSlabs, i, x, y + 0.05, z, rot);
+      place(balcRails, i, x, y + 0.05, z, rot);
+    });
+    // awning: sloped fabric canopy over each shop window
+    const awnGeo = new THREE.BoxGeometry(3.3, 0.06, 1.15).translate(0, 0, 0.55).rotateX(0.32);
+    const awnMesh = new THREE.InstancedMesh(awnGeo, new THREE.MeshStandardMaterial({ roughness: 0.85 }), awnings.length);
+    const AWN = [0x7a1c1c, 0x1f4a33, 0x1b2c55, 0xb59a6a, 0x3a3a3a, 0x8a4a12];
+    const col = new THREE.Color();
+    awnings.forEach(([x, z, rot, h], i) => {
+      place(awnMesh, i, x, KERB + 3.25, z, rot);
+      awnMesh.setColorAt(i, col.set(AWN[Math.floor(h * AWN.length) % AWN.length]));
+    });
+    // cornice: a ledge just below the roofline of older buildings
+    const corMesh = new THREE.InstancedMesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshStandardMaterial({ color: 0x4a4540, roughness: 0.9 }), cornices.length * 2);
+    cornices.forEach((p, i) => {
+      corMesh.setMatrixAt(i * 2, m4.makeScale(p.w + 0.45, 0.32, p.d + 0.45).setPosition(p.x, p.y + p.h - 0.55, p.z));
+      corMesh.setMatrixAt(i * 2 + 1, m4.makeScale(p.w + 0.2, 0.16, p.d + 0.2).setPosition(p.x, p.y + 3.42, p.z)); // band above the shops
+    });
+    for (const m of [balcSlabs, balcRails, awnMesh, corMesh]) m.frustumCulled = false;
+    scene.add(balcSlabs, balcRails, awnMesh, corMesh);
+  }
 
   // rooftop equipment: parapets, AC units, water tanks, antennas
   let aviation = null;
@@ -269,8 +365,9 @@ export function createCity(canvas, { reducedMotion, projects, onPick }) {
   }
 
   // ---------- landmarks ----------
-  const landmarkMat = (color) =>
-    new THREE.MeshStandardMaterial({ color: 0x0d1324, emissive: color, emissiveIntensity: 0.18, metalness: 0.3, roughness: 0.5, envMapIntensity: 0.25 });
+  // landmarks: real materials (concrete/stone) with a neon accent glow, instead of flat glowing blocks
+  const landmarkMat = (color, base = 0x2c313b) =>
+    new THREE.MeshStandardMaterial({ color: base, emissive: color, emissiveIntensity: 0.07, metalness: 0.15, roughness: 0.75, envMapIntensity: 0.35 });
   const edges = (mesh, color) => {
     const l = new THREE.LineSegments(new THREE.EdgesGeometry(mesh.geometry), new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.9 }));
     l.position.copy(mesh.position);
@@ -292,7 +389,7 @@ export function createCity(canvas, { reducedMotion, projects, onPick }) {
 
   // 0 · City gate arch
   landmark(0, (g) => {
-    const mat = landmarkMat(0x5eead4);
+    const mat = landmarkMat(0x5eead4, 0x8c877d);
     for (const x of [-9, 9]) {
       const p = new THREE.Mesh(new THREE.BoxGeometry(2, 16, 2), mat);
       p.position.set(x, 8, 150);
@@ -409,10 +506,12 @@ export function createCity(canvas, { reducedMotion, projects, onPick }) {
           screenMat.needsUpdate = true;
         });
       } else {
-        screenMat.map = textTexture(['🌍', p.title], { w: 1024, h: 614, font: '700 160px "Space Grotesk", sans-serif', color: '#5eead4', bg: '#0b2b3a' });
+        screenMat.map = p.thesis
+          ? textTexture(["MASTER'S THESIS", p.title, 'NLP × satellite data · 11 companies · 290 mills'], { w: 1024, h: 614, font: '700 92px "Space Grotesk", sans-serif', color: '#5eead4', bg: '#0b2b3a' })
+          : textTexture(['🌍', p.title], { w: 1024, h: 614, font: '700 160px "Space Grotesk", sans-serif', color: '#5eead4', bg: '#0b2b3a' });
         screenMat.color.set(0xffffff);
       }
-      const cap = sign(p.title.toUpperCase(), 15, { h: 192, font: '700 64px "Space Grotesk", sans-serif' });
+      const cap = sign(p.thesis ? `🎓 THESIS · ${p.title.toUpperCase()}` : p.title.toUpperCase(), 15, { h: 192, font: `700 ${p.thesis ? 52 : 64}px "Space Grotesk", sans-serif` });
       cap.scale.y = 0.75;
       cap.position.set(x - side * 0.4, 8.4, z);
       cap.rotation.y = faceAvenue(side);
@@ -551,6 +650,7 @@ export function createCity(canvas, { reducedMotion, projects, onPick }) {
         resize();
       }).catch(() => (bloomOn = false));
   let slowFrames = 0;
+  let mirrorDropped = false;
   const keepBloom = params.has('forcebloom'); // for visual checks on slow machines
 
   // ---------- resize ----------
@@ -633,12 +733,16 @@ export function createCity(canvas, { reducedMotion, projects, onPick }) {
       b.frame.material.emissiveIntensity = i === focusIndex ? 0.6 + 0.25 * Math.sin(t * 4) : 0.12;
     });
 
-    // drop the glow if this device can't keep ~40 fps
-    if (composer && bloomOn) {
-      slowFrames = dt > 1 / 38 ? slowFrames + 1 : Math.max(0, slowFrames - 1);
-      if (slowFrames > 90 && !keepBloom) {
-        bloomOn = false;
-        streets.dropMirror();
+    // keep it smooth: if the device can't hold ~35 fps, drop the glow first, then the mirror reflections
+    if (!keepBloom && !mirrorDropped && t > 2) {
+      slowFrames = dt > 1 / 35 ? slowFrames + 1 : Math.max(0, slowFrames - 1);
+      if (slowFrames > 90) {
+        slowFrames = 0;
+        if (composer && bloomOn) bloomOn = false;
+        else {
+          streets.dropMirror();
+          mirrorDropped = true;
+        }
       }
     }
     if (composer && bloomOn) composer.render();

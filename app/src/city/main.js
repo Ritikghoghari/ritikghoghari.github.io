@@ -1,5 +1,5 @@
 import './city.css';
-import { PROFILE, PROJECTS, EXPERIENCE, EDUCATION, SKILL_GROUPS } from '../data.js';
+import { PROFILE, PROJECTS, THESIS, EXPERIENCE, EDUCATION, SKILL_GROUPS } from '../data.js';
 import { initChatbot } from '../chatbot.js';
 import { createAmbience } from './audio.js';
 
@@ -54,10 +54,11 @@ const CONTENT = [
   ],
   () => [
     el('p', { class: 'c-kicker' }, 'Education'),
-    ...EDUCATION.flatMap((x) => [
+    ...EDUCATION.flatMap((x, i) => [
       el('h3', {}, x.title),
       el('p', { class: 'c-muted' }, `${x.org} · ${x.when}`),
       el('p', {}, x.points[0]),
+      i === 0 ? el('p', {}, "🎓 Master's thesis: ", el('strong', {}, THESIS.title), ` (supervisor ${THESIS.supervisor}). `, button('See it on Projects Avenue →', () => go(5), 'c-link c-inline')) : null,
     ]),
   ],
   () => [
@@ -69,9 +70,11 @@ const CONTENT = [
     const p = featured[projectIndex];
     return [
       el('p', { class: 'c-kicker' }, `Projects Avenue · ${projectIndex + 1} / ${featured.length}`),
+      p.thesis ? el('p', { class: 'c-badge' }, "🎓 Master's thesis · main project") : null,
       p.image ? el('img', { class: 'c-thumb', src: `/img/${p.image}-512.webp`, alt: '' }) : null,
       el('h2', {}, p.title),
-      el('p', {}, p.description),
+      el('p', {}, p.thesis ? THESIS.summary : p.description),
+      p.thesis ? el('dl', { class: 'c-facts' }, THESIS.stats.map(([a, b]) => el('div', {}, el('dt', {}, a), el('dd', {}, b)))) : null,
       chips(p.tags),
       el(
         'div',
@@ -108,9 +111,28 @@ function button(text, onClick, cls, disabled = false) {
 // ---------- navigation ----------
 let STOPS = [];
 const panel = $('c-panel');
+// Phones: the card is a small bottom sheet so the city stays visible; tap the handle (or the card) to read more.
+const sheetMQ = window.matchMedia('(max-width: 760px), (max-aspect-ratio: 9/10)');
+let sheetHandle = null;
+function setSheet(open) {
+  const isSheet = sheetMQ.matches;
+  panel.classList.toggle('collapsed', isSheet && !open);
+  panel.classList.toggle('expanded', isSheet && open);
+  if (sheetHandle) {
+    sheetHandle.setAttribute('aria-expanded', String(open));
+    sheetHandle.lastChild.textContent = open ? 'Show less' : 'Show more';
+  }
+  if (!open) panel.scrollTop = 0;
+}
 function renderPanel() {
   const place = STOPS[current]?.place;
-  panel.replaceChildren(el('div', { class: 'c-panel-inner' }, place ? el('p', { class: 'c-place' }, `📍 ${place}, Berlin`) : null, CONTENT[current]()));
+  sheetHandle = el('button', { type: 'button', class: 'c-sheet-handle', 'aria-controls': 'c-panel' }, el('span', { class: 'c-grip', 'aria-hidden': 'true' }), el('span', {}, 'Show more'));
+  sheetHandle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    setSheet(!panel.classList.contains('expanded'));
+  });
+  panel.replaceChildren(sheetHandle, el('div', { class: 'c-panel-inner' }, place ? el('p', { class: 'c-place' }, `📍 ${place}, Berlin`) : null, CONTENT[current]()));
+  setSheet(false);
   panel.dataset.side = STOPS[current]?.side > 0 ? 'left' : 'right'; // keep the card opposite the landmark
   panel.hidden = false;
   panel.classList.remove('show');
@@ -197,6 +219,11 @@ async function boot() {
       return el('li', {}, b);
     }),
   );
+  panel.addEventListener('click', (e) => {
+    if (panel.classList.contains('collapsed') && !e.target.closest('a, button')) setSheet(true);
+  });
+  $('city-canvas').addEventListener('pointerdown', () => panel.classList.contains('expanded') && setSheet(false));
+  sheetMQ.addEventListener?.('change', () => setSheet(false));
   $('c-prev').addEventListener('click', () => go(current - 1));
   $('c-next').addEventListener('click', () => go(current + 1));
   document.addEventListener('keydown', (e) => {
