@@ -14,8 +14,8 @@ const TYPES = {
   hatch: { L: 4.05, W: 1.78, r: 0.32, wb: 1.28, belt: 0.96, hood: 0.86, roof: 1.48, cab: [-1.85, -1.72, 0.1, 0.9] },
   suv: { L: 4.75, W: 1.94, r: 0.38, wb: 1.42, belt: 1.12, hood: 1.04, roof: 1.74, cab: [-2.22, -2.08, 0.35, 1.15] },
   van: { L: 5.2, W: 2.0, r: 0.36, wb: 1.65, belt: 1.12, hood: 1.06, roof: 2.15, cab: [-2.5, -2.5, 1.3, 2.05] },
-  taxi: { L: 4.6, W: 1.84, r: 0.33, wb: 1.38, belt: 0.98, hood: 0.88, roof: 1.44, cab: [-1.55, -0.95, 0.25, 1.05], trunk: true, sign: true, paint: 0xf2b705 },
-  bus: { L: 11.5, W: 2.5, r: 0.5, wb: 3.6, belt: 1.3, hood: 1.3, roof: 2.65, cab: [-5.55, -5.55, 5.6, 5.65], bus: true, paint: 0xf4f4f0 },
+  taxi: { L: 4.6, W: 1.84, r: 0.33, wb: 1.38, belt: 0.98, hood: 0.88, roof: 1.44, cab: [-1.55, -0.95, 0.25, 1.05], trunk: true, sign: true, paint: 0xe9dfc4 }, // German taxis are ivory
+  bus: { L: 11.5, W: 2.5, r: 0.5, wb: 3.6, belt: 1.3, hood: 1.3, roof: 2.65, cab: [-5.55, -5.55, 5.6, 5.65], bus: true, paint: 0xc8102e }, // red Hamburg city bus
 };
 const PAINTS = [0xe8e8ea, 0xe8e8ea, 0x15161a, 0x15161a, 0x9aa0a8, 0x9aa0a8, 0x5a5f68, 0x1d2f5a, 0x7a1018, 0x3b4a3a, 0xc9bfa6, 0x2a4c7a];
 
@@ -107,6 +107,14 @@ function buildType(t) {
       for (const g of [tyre, rim]) parts2.push(g.translate(sx * (W / 2 - tw / 2 - 0.02), r, -wz));
     }
   }
+  // EU licence plates front and back: white plate with the blue strip on the left
+  const plateY = [Math.max(0.42, hood - 0.42), t.bus ? 0.62 : Math.max(0.45, belt - 0.45)];
+  [-1, 1].forEach((end, k) => {
+    const z = end * (L / 2 + 0.035);
+    const face = -end; // the strip sits on the driver's left as seen from outside
+    parts2.push(colorize(new THREE.BoxGeometry(0.52, 0.12, 0.02).translate(0, plateY[k], z), [0.92, 0.92, 0.9]));
+    parts2.push(colorize(new THREE.BoxGeometry(0.06, 0.12, 0.022).translate(face * 0.23, plateY[k], z), [0.1, 0.2, 0.65]));
+  });
   const wheelGeo = mergeGeometries(parts2);
   return { ...t, bodyGeo, wheelGeo, glassGeo: glass, headGeo: mergeGeometries(headParts.map((g) => g.toNonIndexed())), tailGeo };
 }

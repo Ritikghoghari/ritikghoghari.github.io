@@ -6,6 +6,7 @@ import { buildTraffic } from './traffic.js';
 import { buildPeople } from './people.js';
 import { buildProps } from './props.js';
 import { buildRain } from './weather.js';
+import { buildHamburg, RIVER_NORTH } from './hamburg.js';
 
 // ---------------------------------------------------------------------------
 // Layout: one main avenue runs along -z. Landmarks sit beside it; everything
@@ -28,7 +29,8 @@ export const STOPS = [
   { id: 'contact', label: 'Contact Tower', cam: [0, 6, -150], look: [0, 22, -196] },
 ];
 const PARK_BLOCKS = ['-18,140', '18,92', '-18,44', '18,-4']; // open space in front of landmarks so they can be seen
-const LANDMARK_BLOCKS = new Set(['-18,116', '18,68', '-18,20', '18,-28', '-18,-76', '18,-76', '-18,-124', '18,-124', ...PARK_BLOCKS]);
+const MICHEL_BLOCK = [-66, -172]; // Hamburg's St. Michaelis church stands on this block
+const LANDMARK_BLOCKS = new Set(['-18,116', '18,68', '-18,20', '18,-28', '-18,-76', '18,-76', '-18,-124', '18,-124', MICHEL_BLOCK.join(','), ...PARK_BLOCKS]);
 
 // ---------- small helpers ----------
 const rand = (() => {
@@ -122,9 +124,10 @@ export function createCity(canvas, { reducedMotion, projects, onPick }) {
   const pickables = [];
 
   // ---------- ground and streets ----------
-  const ground = new THREE.Mesh(new THREE.PlaneGeometry(1400, 1400), new THREE.MeshStandardMaterial({ color: 0x0b0c11, roughness: 1 }));
+  // the city's ground ends at the Elbe (hamburg.js adds the river, the harbour and the far bank)
+  const ground = new THREE.Mesh(new THREE.PlaneGeometry(1400, 660 - RIVER_NORTH), new THREE.MeshStandardMaterial({ color: 0x0b0c11, roughness: 1 }));
   ground.rotation.x = -Math.PI / 2;
-  ground.position.z = -40;
+  ground.position.z = (660 + RIVER_NORTH) / 2;
   scene.add(ground);
   const streets = buildStreets(scene, { BLOCK_X, BLOCK_Z, AVENUE_HALF, fog: FOG, density: FOG_DENSITY, mirror: true, mirrorScale: quality === 'high' ? 0.5 : 0.32 });
   const KERB = streets.kerb;
@@ -132,15 +135,18 @@ export function createCity(canvas, { reducedMotion, projects, onPick }) {
   const traffic = buildTraffic(scene, { rand, BLOCK_Z, AVENUE_HALF, KERB, quality, zebraBusy });
   const people = buildPeople(scene, { rand, BLOCK_Z, AVENUE_HALF, KERB, quality, stops: STOPS, zebraBusy });
   buildProps(scene, { rand, BLOCK_Z, AVENUE_HALF, KERB, quality, parks: PARK_BLOCKS.map((k) => k.split(',').map(Number)) });
+  const hamburg = buildHamburg(scene, { rand, fog: FOG, density: FOG_DENSITY, KERB, AVENUE_HALF, michel: MICHEL_BLOCK });
   const rain = buildRain(scene, { quality });
   let raining = true;
   rain.setOn(raining);
   streets.setRain(raining);
+  people.setRain(raining);
 
   // ---------- buildings: 4 facade styles, setback tiers, rooftop equipment; all instanced ----------
   const parts = []; // { x, z, w, d, h, y, style, seed }
   const roofs = []; // tops that receive rooftop clutter
   const antennas = [];
+  const gables = []; // pitched roofs on brick buildings
   function addBuilding(x, z, w, d, h, style, out = null) {
     const seed = rand();
     const y0 = KERB;
@@ -159,6 +165,10 @@ export function createCity(canvas, { reducedMotion, projects, onPick }) {
         top = { x, z, w: w2 * 0.6, d: d2 * 0.6, y: top.y + h3 };
       }
       antennas.push({ x, z, y: top.y, h: 6 + rand() * 10 });
+    } else if (style === STYLE.BRICK && rand() < 0.7) {
+      // Hamburg gabled roof (slate or green copper); no rooftop clutter on it
+      gables.push({ ...top, copper: rand() < 0.3, alongX: w >= d });
+      return;
     } else if (h > 14 && rand() < 0.35) {
       const h2 = 3 + rand() * 5;
       parts.push({ x: x + (rand() - 0.5) * w * 0.2, z, w: w * 0.7, d: d * 0.7, h: h2, y: y0 + h, style, seed });
@@ -175,12 +185,12 @@ export function createCity(canvas, { reducedMotion, projects, onPick }) {
         for (const oz of [-4.6, 4.6]) {
           if (rand() < 0.06) continue;
           const r = rand();
-          const tall = r < (downtown ? 0.16 : 0.07);
+          const tall = r < (downtown ? 0.1 : 0.04); // Hamburg is mostly mid-rise brick
           const h = tall ? 34 + rand() * 38 : (nearAvenue ? 9 : 6) + rand() * (nearAvenue ? 22 : 16);
           const style = tall
             ? rand() < 0.7 ? STYLE.GLASS : STYLE.OFFICE
-            : h > 18 ? rand() < 0.5 ? STYLE.OFFICE : STYLE.RESIDENTIAL
-              : rand() < 0.55 ? STYLE.BRICK : STYLE.RESIDENTIAL;
+            : h > 18 ? [STYLE.BRICK, STYLE.OFFICE, STYLE.RESIDENTIAL][Math.floor(rand() * 3)]
+              : rand() < 0.72 ? STYLE.BRICK : STYLE.RESIDENTIAL;
           addBuilding(bx + ox, bz + oz, 6.6 + rand() * 1.7, 6.6 + rand() * 1.7, h, style, Math.abs(bx) <= 42 ? [Math.sign(ox), Math.sign(oz)] : null);
         }
       }
@@ -191,6 +201,7 @@ export function createCity(canvas, { reducedMotion, projects, onPick }) {
     const a = (i / 140) * Math.PI * 2 + rand() * 0.03;
     const r = 260 + rand() * 120;
     const h = 20 + rand() * rand() * 110;
+    if (-40 + Math.sin(a) * r < RIVER_NORTH - 4) continue; // that part of the horizon is the river and harbour
     parts.push({ x: Math.cos(a) * r, z: -40 + Math.sin(a) * r, w: 10 + rand() * 14, d: 10 + rand() * 14, h, y: 0, style: rand() < 0.5 ? STYLE.GLASS : STYLE.OFFICE, seed: rand() });
   }
 
@@ -304,6 +315,100 @@ export function createCity(canvas, { reducedMotion, projects, onPick }) {
     });
     for (const m of [balcSlabs, balcRails, awnMesh, corMesh]) m.frustumCulled = false;
     scene.add(balcSlabs, balcRails, awnMesh, corMesh);
+
+    // lit German shop signs above every shop front (one atlas texture, one draw call)
+    const SHOPS = [
+      ['Bäckerei', '#7a3e12', '#ffe2a8'], ['Apotheke', '#c8102e', '#ffffff'], ['Fischbrötchen', '#0f3d63', '#ffffff'], ['Café Elbblick', '#2d2a26', '#f4d8a6'],
+      ['Döner Kebab', '#b8321b', '#ffe066'], ['Kiosk', '#1f5e3b', '#ffffff'], ['Blumen', '#6b2a5a', '#ffd6ec'], ['Buchhandlung', '#24304a', '#e8dcc0'],
+      ['Friseur', '#111111', '#f2f2f2'], ['Pizzeria', '#1d6b35', '#ffffff'], ['Supermarkt', '#e2a400', '#1a1a1a'], ['Optiker', '#e8e8e8', '#1b2a44'],
+      ['Hafen-Imbiss', '#0b4f6c', '#ffe9a8'], ['Franzbrötchen', '#8a5a2b', '#fff3d6'], ['Eiscafé', '#f2a7c3', '#3a1a2a'], ['Weinhandel', '#4a1424', '#f2d7a1'],
+    ];
+    const CW = 512;
+    const CH = 112;
+    const atlas = document.createElement('canvas');
+    atlas.width = CW * 2;
+    atlas.height = CH * SHOPS.length;
+    const g2 = atlas.getContext('2d');
+    SHOPS.forEach(([name, bg, fg], i) => {
+      for (const variant of [0, 1]) {
+        const x0 = variant * CW;
+        const y0 = i * CH;
+        g2.fillStyle = variant ? fg : bg; // variant 1: inverted colours
+        g2.fillRect(x0, y0, CW, CH);
+        g2.strokeStyle = variant ? bg : fg;
+        g2.lineWidth = 6;
+        g2.strokeRect(x0 + 8, y0 + 8, CW - 16, CH - 16);
+        g2.fillStyle = variant ? bg : fg;
+        let size = 64;
+        g2.font = `700 ${size}px "Space Grotesk Variable", sans-serif`;
+        while (g2.measureText(name).width > CW - 60 && size > 30) g2.font = `700 ${(size -= 4)}px "Space Grotesk Variable", sans-serif`;
+        g2.textAlign = 'center';
+        g2.textBaseline = 'middle';
+        g2.fillText(name, x0 + CW / 2, y0 + CH / 2 + 3);
+      }
+    });
+    const atlasTex = new THREE.CanvasTexture(atlas);
+    atlasTex.colorSpace = THREE.SRGBColorSpace;
+    atlasTex.anisotropy = 8;
+    const signGeo = new THREE.PlaneGeometry(2.9, 2.9 * (CH / CW));
+    const cell = new Float32Array(awnings.length);
+    awnings.forEach(([, , , h], i) => (cell[i] = Math.floor(h * 997) % (SHOPS.length * 2)));
+    signGeo.setAttribute('aCell', new THREE.InstancedBufferAttribute(cell, 1));
+    const signMat = new THREE.ShaderMaterial({
+      uniforms: { uMap: { value: atlasTex }, uFog: { value: FOG }, uDensity: { value: FOG_DENSITY }, uRows: { value: SHOPS.length } },
+      vertexShader: /* glsl */ `
+        attribute float aCell;
+        uniform float uRows;
+        varying vec2 vUv; varying float vDepth;
+        void main() {
+          float col = mod(aCell, 2.0);
+          float row = floor(aCell / 2.0);
+          vUv = vec2((uv.x + col) / 2.0, 1.0 - (row + 1.0 - uv.y) / uRows);
+          vec4 mv = viewMatrix * modelMatrix * instanceMatrix * vec4(position, 1.0);
+          vDepth = -mv.z;
+          gl_Position = projectionMatrix * mv;
+        }`,
+      fragmentShader: /* glsl */ `
+        uniform sampler2D uMap; uniform vec3 uFog; uniform float uDensity;
+        varying vec2 vUv; varying float vDepth;
+        void main() {
+          vec3 c = texture2D(uMap, vUv).rgb * 1.25; // back-lit light box
+          float fog = 1.0 - exp(-uDensity * uDensity * vDepth * vDepth);
+          gl_FragColor = vec4(mix(c, uFog, fog), 1.0);
+          #include <colorspace_fragment>
+        }`,
+    });
+    const signs = new THREE.InstancedMesh(signGeo, signMat, awnings.length);
+    awnings.forEach(([x, z, rot], i) => {
+      // just in front of the facade, above the awning
+      place(signs, i, x + Math.sin(rot) * 0.1, KERB + 4.05, z + Math.cos(rot) * 0.1, rot);
+    });
+    signs.frustumCulled = false;
+    scene.add(signs);
+  }
+
+  // gabled roofs: a triangular prism per building, ridge along the longer side
+  {
+    const tri = new THREE.Shape();
+    tri.moveTo(-0.5, 0);
+    tri.lineTo(0.5, 0);
+    tri.lineTo(0, 1);
+    tri.closePath();
+    const prism = new THREE.ExtrudeGeometry(tri, { depth: 1, bevelEnabled: false }).translate(0, 0, -0.5); // ridge along z
+    const gMesh = new THREE.InstancedMesh(prism, new THREE.MeshStandardMaterial({ roughness: 0.7, metalness: 0.25 }), gables.length);
+    const gc = new THREE.Color();
+    const qq = new THREE.Quaternion();
+    const pv = new THREE.Vector3();
+    const sv = new THREE.Vector3();
+    gables.forEach((g, i) => {
+      const span = g.alongX ? g.d : g.w; // the triangle spans the short side
+      const len = g.alongX ? g.w : g.d;
+      qq.setFromAxisAngle(THREE.Object3D.DEFAULT_UP, g.alongX ? Math.PI / 2 : 0);
+      gMesh.setMatrixAt(i, m4.compose(pv.set(g.x, g.y, g.z), qq, sv.set(span + 0.3, Math.min(5.5, span * 0.6), len + 0.3)));
+      gMesh.setColorAt(i, gc.set(g.copper ? 0x3f8a73 : 0x2a2d35).multiplyScalar(0.85 + rand() * 0.3));
+    });
+    gMesh.frustumCulled = false;
+    scene.add(gMesh);
   }
 
   // rooftop equipment: parapets, AC units, water tanks, antennas
@@ -720,6 +825,7 @@ export function createCity(canvas, { reducedMotion, projects, onPick }) {
       cityTime.value = t;
       traffic.update(dt, t);
       people.update(dt, t + 4);
+      hamburg.update(t);
       if (raining) rain.update(camera);
       if (aviation) aviation.material.opacity = Math.sin(t * 2.4) > 0.2 ? 1 : 0.15;
       holoSigns.forEach((s) => {
@@ -764,6 +870,7 @@ export function createCity(canvas, { reducedMotion, projects, onPick }) {
       raining = on;
       rain.setOn(on);
       streets.setRain(on);
+      people.setRain(on);
     },
     enter(onDone) {
       aerial = false;
