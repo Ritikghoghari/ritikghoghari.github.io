@@ -53,6 +53,29 @@ const tags = (p) => el('ul', { class: 'tags' }, p.tags.map((t) => el('li', {}, t
 
 const kicker = (p) => (p.thesis ? el('p', { class: 'kicker kicker-thesis' }, "🎓 Master's thesis") : el('p', { class: 'kicker' }, p.category));
 
+// ---------- bento overview tiles ----------
+function renderBento() {
+  const t = THESIS;
+  $('bento-thesis').replaceChildren(
+    el('p', { class: 'tile-label' }, "🎓 Master's thesis"),
+    el('strong', { class: 'thesis-tile-title' }, t.title),
+    el('p', { class: 'big-num' }, t.stats[2][0]),
+    el('p', { class: 'tile-note' }, 'forest loss found near 290 supplier mills of 11 palm-oil companies'),
+    el('span', { class: 'tile-go' }, 'Read more →'),
+  );
+  $('bento-total').textContent = String(PROJECTS.length);
+  const cats = CATEGORIES.filter((c) => c !== 'All').map((c) => [c, PROJECTS.filter((p) => p.category === c).length]);
+  const max = Math.max(...cats.map(([, n]) => n));
+  $('bento-cats').replaceChildren(
+    ...cats.map(([c, n]) => el('li', {}, el('span', {}, c), el('i', { style: `--w:${(n / max) * 100}%` }), el('b', {}, String(n)))),
+  );
+  // two rows of tech chips scrolling in opposite directions (duplicated for a seamless loop)
+  const items = SKILL_GROUPS.filter((g) => g.name !== 'Languages').flatMap((g) => g.items);
+  const half = Math.ceil(items.length / 2);
+  const row = (list, rev) => el('div', { class: `marquee-row${rev ? ' rev' : ''}` }, el('div', { class: 'marquee-track' }, [...list, ...list].map((x) => el('span', {}, x))));
+  $('bento-stack').replaceChildren(row(items.slice(0, half), false), row(items.slice(half), true));
+}
+
 // The Master's thesis gets its own spotlight above the other projects.
 function renderThesis() {
   const t = THESIS;
@@ -289,6 +312,7 @@ function initHero() {
 renderTimeline(EXPERIENCE, $('experience-list'));
 renderTimeline(EDUCATION, $('education-list'));
 renderSkills();
+renderBento();
 renderThesis();
 renderFeatured();
 renderFilters();
