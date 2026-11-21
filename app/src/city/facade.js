@@ -122,7 +122,7 @@ export function facadeMaterial({ instanced = false, fog, density, tint = null, s
         } else if (style == 2) { // residential
           wall = vec3(0.23, 0.21, 0.19); colW = 2.3; rowH = 2.9; x0 = 0.28; x1 = 0.72; y0 = 0.30; y1 = 0.80; lit = 0.5;
         } else {                 // brick low-rise
-          wall = vec3(0.30, 0.15, 0.10); colW = 2.0; rowH = 3.0; x0 = 0.30; x1 = 0.70; y0 = 0.24; y1 = 0.76; lit = 0.55;
+          wall = vec3(0.34, 0.12, 0.08); colW = 2.0; rowH = 3.0; x0 = 0.30; x1 = 0.70; y0 = 0.24; y1 = 0.76; lit = 0.55; // Hamburg red clinker
         }
         wall *= 0.8 + 0.4 * vSeed;
         if (uLit >= 0.0) lit = uLit;
@@ -168,7 +168,19 @@ export function facadeMaterial({ instanced = false, fog, density, tint = null, s
           // glass: tinted, reflecting the sky/city more at grazing angles
           float gf = mix(fres, min(1.0, fres * 1.5 + 0.1), step(0.5, 1.0 - isLit));
           winCol = mix(winCol, refl, gf * (style == 0 ? 0.95 : 0.8));
-          col = mix(wall * shade, winCol, win);
+          vec3 wallCol = wall * shade;
+          if (style == 3) {
+            // clinker bricks: staggered courses, light mortar, slight colour variation per brick
+            float course = floor(vPos.y * 4.0);
+            float bx = u * 2.2 + 0.5 * mod(course, 2.0);
+            float mortar = max(step(fract(vPos.y * 4.0), 0.11), step(fract(bx), 0.05));
+            wallCol *= 0.82 + 0.3 * hash(vec2(floor(bx), course));
+            wallCol = mix(wallCol, vec3(0.2, 0.17, 0.15) * shade, mortar * 0.55);
+            // white-painted window frames
+            float fr = step(x0 - 0.05, f.x) * step(f.x, x1 + 0.05) * step(y0 - 0.05, f.y) * step(f.y, y1 + 0.05) * (1.0 - win);
+            wallCol = mix(wallCol, vec3(0.62, 0.6, 0.56) * shade, fr);
+          }
+          col = mix(wallCol, winCol, win);
           if (style == 0) col = mix(col, refl * 0.6, (1.0 - win) * fres * 0.6); // glass spandrels
           col *= 1.0 - 0.35 * (1.0 - smoothstep(0.0, 0.05, f.y));      // floor slab line
           if (style == 0) col = mix(col, vec3(0.13, 0.15, 0.19) * shade, step(fract(u / colW), 0.035) * 0.85); // mullions
