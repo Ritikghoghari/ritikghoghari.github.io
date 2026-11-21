@@ -54,8 +54,8 @@ export function startHero(canvas, { reducedMotion }) {
       void main() {
         float d = length(gl_PointCoord - 0.5);
         if (d > 0.5) discard;
-        vec3 a = vec3(0.37, 0.92, 0.83); // teal
-        vec3 b = vec3(0.49, 0.61, 1.0);  // indigo
+        vec3 a = vec3(0.71, 0.61, 1.0);  // violet
+        vec3 b = vec3(1.0, 0.48, 0.66);  // pink
         gl_FragColor = vec4(mix(b, a, vMix), (1.0 - d * 2.0) * (0.25 + 0.75 * vFade));
       }`,
   });
@@ -93,11 +93,21 @@ export function startHero(canvas, { reducedMotion }) {
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
-    // Desktop: sphere sits to the right of the text. Narrow screens: centred, further back.
-    const wide = w / h > 1.1;
-    const aspect = w / h;
-    orb.scale.setScalar(wide ? 0.78 : 0.95);
-    orb.position.set(wide ? 1.45 * Math.min(1.7, aspect) : 0, wide ? 0 : 0.6, wide ? 0 : -1.5);
+    // Centre the sphere on the portrait and size it so it orbits around the photo.
+    const portrait = document.getElementById('hero-portrait');
+    const halfH = Math.tan((camera.fov * Math.PI) / 360) * camera.position.z; // world half-height at z = 0
+    const pxPerUnit = h / 2 / halfH;
+    if (portrait) {
+      const c = canvas.getBoundingClientRect();
+      const p = portrait.getBoundingClientRect();
+      const px = p.left + p.width / 2 - c.left;
+      const py = p.top + p.height / 2 - c.top;
+      orb.position.set((px - w / 2) / pxPerUnit, -(py - h / 2) / pxPerUnit, 0);
+      orb.scale.setScalar((p.width * 0.5 * 1.7) / pxPerUnit / 1.85);
+    } else {
+      orb.position.set(0, 0, 0);
+      orb.scale.setScalar(0.9);
+    }
   }
   let lastW = 0;
   const ro = new ResizeObserver(() => {
@@ -106,6 +116,9 @@ export function startHero(canvas, { reducedMotion }) {
     resize();
   });
   ro.observe(canvas);
+  const portraitEl = document.getElementById('hero-portrait');
+  if (portraitEl) new ResizeObserver(resize).observe(portraitEl);
+  document.fonts?.ready.then(resize); // text reflow after web fonts load can move the portrait
   resize();
 
   const target = { x: 0, y: 0 };
