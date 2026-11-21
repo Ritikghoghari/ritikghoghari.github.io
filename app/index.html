@@ -52,65 +52,40 @@
     </header>
 
     <main id="main">
-      <!-- BENTO OVERVIEW -->
-      <section class="bento-wrap" id="top">
-        <div class="container bento">
-          <article class="tile t-intro">
-            <canvas id="hero-canvas" aria-hidden="true"></canvas>
-            <div class="intro-text">
-              <p class="eyebrow"><span class="dot"></span> Open to internships &amp; working-student roles</p>
-              <h1>Hi, I'm Ritik Ghoghari.<br /><span class="grad">I turn data into decisions.</span></h1>
-              <p class="lead">
-                M.Sc. Data Science &amp; AI student in Germany, building machine-learning, GenAI and analytics
-                solutions that solve real business problems.
-              </p>
-              <div class="hero-cta">
-                <a class="btn" href="#projects">View projects</a>
-                <a class="btn btn-ghost" href="/Resume_11.pdf" download>Download CV</a>
-              </div>
+      <!-- HERO -->
+      <section class="hero" id="top">
+        <canvas id="hero-canvas" aria-hidden="true"></canvas>
+        <div class="container hero-inner">
+          <div class="hero-text">
+            <p class="eyebrow"><span class="dot"></span> Open to internships &amp; working-student roles</p>
+            <h1>Ritik Ghoghari</h1>
+            <p class="hero-role"><span class="grad">Data Scientist &amp; AI Developer</span></p>
+            <p class="lead">
+              M.Sc. Data Science &amp; AI student in Germany. I turn messy business data into models, GenAI assistants and
+              dashboards that people actually use.
+            </p>
+            <div class="hero-cta">
+              <a class="btn" href="#projects">View projects</a>
+              <a class="btn btn-ghost" href="/Resume_11.pdf" download>Download CV</a>
             </div>
-            <div class="hero-portrait" id="hero-portrait">
-              <div class="portrait-ring"><img src="/img/avatar-460.webp" alt="Ritik Ghoghari" width="460" height="460" fetchpriority="high" /></div>
-            </div>
-          </article>
-
-          <a class="tile t-thesis" href="#thesis" id="bento-thesis" aria-label="Master's thesis"></a>
-
-          <a class="tile t-count" href="#projects" aria-label="Projects by category">
-            <p class="tile-label">Projects on GitHub</p>
-            <p class="big-num" id="bento-total"></p>
-            <ul class="cat-bars" id="bento-cats"></ul>
-          </a>
-
-          <a class="tile t-city" href="/city/">
-            <span class="tile-label">Interactive</span>
-            <strong>Walk through my 3D city</strong>
-            <span class="tile-go">Enter →</span>
-          </a>
-
-          <div class="tile t-exp">
-            <p class="tile-label">Experience</p>
-            <p class="exp-org">Accenture North America</p>
-            <p class="exp-role">Data Analytics &amp; Process Optimization Intern</p>
-            <p class="exp-kpi"><span>−30%</span> manual reporting time</p>
+            <ul class="hero-meta">
+              <li>📍 Peine, Germany · Remote-ready</li>
+              <li><a href="https://www.linkedin.com/in/ritikghoghari/" target="_blank" rel="noopener">LinkedIn ↗</a></li>
+              <li><a href="https://github.com/Ritikghoghari" target="_blank" rel="noopener">GitHub ↗</a></li>
+            </ul>
           </div>
-
-          <div class="tile t-stack" aria-label="Tech stack">
-            <p class="tile-label">Tech stack</p>
-            <div class="marquee" id="bento-stack" aria-hidden="true"></div>
-          </div>
-
-          <div class="tile t-loc">
-            <p class="tile-label">Based in</p>
-            <p class="loc-main">📍 Peine, Germany</p>
-            <p class="loc-sub">Remote-ready · English C1 · German A2</p>
-          </div>
-
-          <a class="tile t-contact" href="#contact">
-            <p class="tile-label">Say hello</p>
-            <strong>Let's work together</strong>
-            <span class="tile-go">Contact →</span>
-          </a>
+          <figure class="hero-photo" id="hero-portrait">
+            <span class="photo-halo" aria-hidden="true"></span>
+            <img src="/img/portrait-cutout.webp" alt="Ritik Ghoghari" width="406" height="416" fetchpriority="high" />
+          </figure>
+        </div>
+        <div class="container">
+          <dl class="stats">
+            <div><dt>17</dt><dd>projects on GitHub</dd></div>
+            <div><dt>M.Sc.</dt><dd>Data Science, AI &amp; Digital Business</dd></div>
+            <div><dt>890,168 ha</dt><dd>forest loss uncovered in my thesis</dd></div>
+            <div><dt>−30%</dt><dd>reporting time at Accenture</dd></div>
+          </dl>
         </div>
       </section>
 
