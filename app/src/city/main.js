@@ -1,3 +1,5 @@
+import '@fontsource-variable/inter';
+import '@fontsource-variable/space-grotesk';
 import './city.css';
 import { PROFILE, PROJECTS, THESIS, EXPERIENCE, EDUCATION, SKILL_GROUPS } from '../data.js';
 import { initChatbot } from '../chatbot.js';
@@ -211,6 +213,8 @@ async function boot() {
     document.body.classList.add('real-city');
     $('c-loading').textContent = 'Loading real Berlin in 3D…';
   }
+  // the city paints its signs with the site fonts, so make sure they are loaded first
+  await Promise.all(['700 64px "Space Grotesk Variable"', '700 52px "Inter Variable"'].map((f) => document.fonts.load(f).catch(() => null)));
   const { createCity, STOPS: stops } = useGoogle ? await import('./google.js') : await import('./scene.js');
   STOPS = stops;
   $('c-stops').append(

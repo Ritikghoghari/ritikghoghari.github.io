@@ -7,7 +7,7 @@ export const PROFILE = {
   email: 'ritikghoghari.ds@gmail.com',
   github: 'https://github.com/Ritikghoghari',
   linkedin: 'https://www.linkedin.com/in/ritikghoghari/',
-  resume: '/Resume_11.pdf',
+  resume: '/Ritik_Ghoghari_CV.pdf',
 };
 
 export const PROJECTS = [
@@ -24,6 +24,11 @@ export const PROJECTS = [
     techStack: 'Python, ClimateBERT, FinBERT, Google Earth Engine, Hansen GFC',
     image: null,
     link: 'https://github.com/Ritikghoghari/catching-greenwashing-from-space',
+    de: {
+      brief: 'NLP-Aussagen vs. Waldverlust aus dem Satelliten.',
+      description:
+        'Erkennt Greenwashing bei Palmöl, indem NLP-basierte Extraktion von Unternehmensaussagen (ClimateBERT, FinBERT) mit Daten des Hansen Global Forest Change v1.13 über Google Earth Engine kombiniert wird. Für 11 Unternehmen und 290 Mühlen entsteht ein Mismatch-Score zwischen Null-Entwaldungs-Versprechen und gemessenem Waldverlust.',
+    },
   },
   {
     id: 'jobmarketai',
@@ -37,6 +42,11 @@ export const PROJECTS = [
     techStack: 'Python, CrewAI, Streamlit, Google Gemini, LangChain',
     image: 'thumb_job_market_ai',
     link: 'https://github.com/Ritikghoghari/JobMarketAI',
+    de: {
+      brief: 'Multi-Agenten-Karriereassistent.',
+      description:
+        'Ein Multi-Agenten-System auf Basis von Google Gemini und CrewAI. Ein Team aus KI-Agenten (Recruiter, Security Officer, Career Coach) analysiert Lebensläufe, erkennt gefälschte Stellenanzeigen und erstellt passende Bewerbungsstrategien.',
+    },
   },
   {
     id: 'energy',
@@ -50,6 +60,11 @@ export const PROJECTS = [
     techStack: 'Python, Time Series, LSTM, Prophet, Pandas',
     image: 'thumb_energy_forecast',
     link: 'https://github.com/Ritikghoghari/German-Energy-Price-Forecasting',
+    de: {
+      brief: 'Strompreisprognose mit Zeitreihen.',
+      description:
+        'Prognose der Strompreise im deutschen Energiemarkt mit Zeitreihenverfahren (ARIMA, Prophet, LSTM) und Analyse, wie Wind- und Solarstrom den Preis beeinflussen.',
+    },
   },
   {
     id: 'recruit',
@@ -63,6 +78,11 @@ export const PROJECTS = [
     techStack: 'Python, RAG, LangChain, GPT-4, Streamlit',
     image: 'thumb_smart_recruit',
     link: 'https://github.com/Ritikghoghari/Smart-Recruit-Assistant',
+    de: {
+      brief: 'KI-gestützte Kandidatenvorauswahl.',
+      description:
+        'KI-gestütztes Recruiting-System mit RAG, LangChain und GPT-4 für intelligentes Lebenslauf-Screening und das Matching von Kandidaten und Stellen.',
+    },
   },
   {
     id: 'fakejob',
@@ -76,6 +96,11 @@ export const PROJECTS = [
     techStack: 'Python, LightGBM, GPT-4o, RAG, Streamlit',
     image: 'fake_job',
     link: 'https://github.com/Ritikghoghari/Fake-Job-Detection-With-Reasoning',
+    de: {
+      brief: 'Betrugserkennung mit erklärender KI.',
+      description:
+        'Hybrides Betrugserkennungssystem: LightGBM bewertet Stellenanzeigen nach Betrugswahrscheinlichkeit, eine GPT-4o-Reasoning-Engine erklärt, warum eine Anzeige verdächtig wirkt, und prüft das Unternehmen per Echtzeit-Websuche. Umgesetzt als Streamlit-Dashboard.',
+    },
   },
   {
     id: 'ai-trainer',
@@ -89,6 +114,11 @@ export const PROJECTS = [
     techStack: 'Python, OpenCV, MediaPipe, Computer Vision',
     image: 'thumb_ai_trainer',
     link: 'https://github.com/Ritikghoghari/Personal-AI-Trainer',
+    de: {
+      brief: 'Echtzeit-Workout-Tracker mit Computer Vision.',
+      description:
+        'Eine Echtzeit-Computer-Vision-Anwendung mit Python, OpenCV und MediaPipe, die die Körperhaltung erkennt, Gelenkwinkel berechnet und Wiederholungen automatisch zählt.',
+    },
   },
   {
     id: 'primax-test',
@@ -102,6 +132,11 @@ export const PROJECTS = [
     techStack: 'Python, Google Gemini, PDF Processing, LLM',
     image: 'thumb_invoice_extractor',
     link: 'https://github.com/Ritikghoghari/primax-test-project',
+    de: {
+      brief: 'Rechnungsauslesung mit Gemini.',
+      description:
+        'Ein Python-KI-Prototyp, der mit Google Gemini B2B-Rechnungsdaten aus PDFs in strukturiertes JSON für die ERP-Integration extrahiert.',
+    },
   },
   {
     id: 'airbnb',
@@ -114,6 +149,11 @@ export const PROJECTS = [
     techStack: 'Python, Pandas, Visualization',
     image: 'thumb_airbnb',
     link: 'https://github.com/Ritikghoghari/Airbnb-EDA---Analysis',
+    de: {
+      brief: 'Preisstrategie & Optimierung.',
+      description:
+        'Explorative Datenanalyse von Airbnb-Inseraten: Markttrends und Optimierung der Preisstrategie.',
+    },
   },
   {
     id: 'book',
@@ -126,6 +166,11 @@ export const PROJECTS = [
     techStack: 'Python, Pandas, Seaborn, Matplotlib',
     image: 'thumb_book',
     link: 'https://github.com/Ritikghoghari/Book-Sales-Data-Analyst-EDA-',
+    de: {
+      brief: 'Markteinblicke per EDA.',
+      description:
+        'Explorative Datenanalyse von Buchverkaufstrends, um Markteinblicke zu gewinnen.',
+    },
   },
   {
     id: 'hr',
@@ -138,6 +183,11 @@ export const PROJECTS = [
     techStack: 'Power BI, Data Visualization',
     image: 'thumb_hr',
     link: 'https://github.com/Ritikghoghari/HR-Data-Analysis-Project---Power-BI-Dashboard',
+    de: {
+      brief: 'Dashboard zur Mitarbeiterbindung.',
+      description:
+        'Power-BI-Dashboard mit Kennzahlen zur Mitarbeiterbindung.',
+    },
   },
   {
     id: 'churn',
@@ -150,6 +200,11 @@ export const PROJECTS = [
     techStack: 'Power BI, Data Analysis',
     image: 'thumb_churn',
     link: 'https://github.com/Ritikghoghari/Bank-Customer-Churn-Analysis---Power-BI-Dashboard',
+    de: {
+      brief: 'Analyse der Kundenabwanderung.',
+      description:
+        'Power-BI-Dashboard zur Analyse der Kundenabwanderung einer Bank als Grundlage für Kundenbindungsstrategien.',
+    },
   },
   {
     id: 'heart',
@@ -162,6 +217,11 @@ export const PROJECTS = [
     techStack: 'Python, Scikit-learn, Pandas, Data Visualization',
     image: 'thumb_heart_analysis',
     link: 'https://github.com/Ritikghoghari/Heart_Disease-Analysis',
+    de: {
+      brief: 'Vorhersage von Herzerkrankungen.',
+      description:
+        'Analyse und Vorhersage von Indikatoren für Herzerkrankungen mit Machine-Learning-Methoden.',
+    },
   },
   {
     id: 'logistics-it',
@@ -174,6 +234,11 @@ export const PROJECTS = [
     techStack: 'Python, Data Analysis',
     image: 'thumb_logistics',
     link: 'https://github.com/Ritikghoghari/Logistics-IT-Support-Analysis',
+    de: {
+      brief: 'Einblicke aus IT-Support-Daten.',
+      description:
+        'Datenanalyse von IT-Support-Kennzahlen in der Logistik, um zentrale operative Erkenntnisse zu gewinnen.',
+    },
   },
   {
     id: 'car-price',
@@ -187,6 +252,11 @@ export const PROJECTS = [
     techStack: 'Python, Pandas, Scikit-learn, Matplotlib',
     image: 'thumb_car_price',
     link: 'https://github.com/Ritikghoghari/CodeAlpha_Car-Price-Prediction',
+    de: {
+      brief: 'Preisvorhersage für Gebrauchtwagen.',
+      description:
+        'Machine-Learning-Projekt zur Vorhersage von Gebrauchtwagenpreisen mit linearer und Lasso-Regression, umgesetzt mit Pandas, Scikit-learn, Matplotlib und Seaborn.',
+    },
   },
   {
     id: 'iris-flower',
@@ -200,6 +270,11 @@ export const PROJECTS = [
     techStack: 'Python, Random Forest, Scikit-learn',
     image: 'thumb_iris_flower',
     link: 'https://github.com/Ritikghoghari/CodeAlpha_Iris-Flower-Classification',
+    de: {
+      brief: 'Klassische ML-Klassifikation.',
+      description:
+        'Random-Forest-Klassifikator, der Iris Setosa, Versicolor und Virginica unterscheidet; erreicht 100 % Genauigkeit auf dem Testdatensatz.',
+    },
   },
   {
     id: 'fabric-defect',
@@ -212,6 +287,11 @@ export const PROJECTS = [
     techStack: 'Python, Machine Learning, Computer Vision',
     image: 'thumb_fabric_defect',
     link: 'https://github.com/Ritikghoghari/Fabric-Defect-Classification',
+    de: {
+      brief: 'Erkennung von Produktionsfehlern.',
+      description:
+        'Bildklassifikationssystem, das die Qualitätskontrolle automatisiert, indem es Stofffehler kategorisiert; erreicht 71 % Genauigkeit und reduziert manuelle Prüfungen.',
+    },
   },
   {
     id: 'movie-rec',
@@ -224,6 +304,11 @@ export const PROJECTS = [
     techStack: 'Python, Recommendation Engine, Machine Learning',
     image: 'thumb_movie_rec',
     link: 'https://github.com/Ritikghoghari/Movie-Recommendation-System',
+    de: {
+      brief: 'Personalisierte Filmempfehlungen.',
+      description:
+        'Ein Empfehlungssystem, das Filme auf Basis von Sehgewohnheiten und Bewertungen vorschlägt.',
+    },
   },
 ];
 
@@ -246,6 +331,39 @@ export const THESIS = {
     ['890,168 ha', 'post-2020 tree-cover loss found within 10 km of mills'],
     ['65.6', 'highest mismatch score (KLK)'],
   ],
+  // how the mismatch score is built (weights from the thesis)
+  weights: [
+    ['Forest loss', 35],
+    ['Claim specificity', 35],
+    ['Sentiment', 15],
+    ['Spatial match', 15],
+  ],
+  // two companies with similar forest loss but very different scores: the wording of the claims matters
+  compare: [
+    { name: 'KLK', score: 65.6, rank: 1, loss: '92,209 ha across 30 mills', note: 'very assertive zero-deforestation claims' },
+    { name: 'Astra Agro', score: 17.6, rank: 11, loss: '87,198 ha', note: 'cautious, procedural reporting language' },
+  ],
+  de: {
+    subtitle: 'Überprüfung von Null-Entwaldungs-Versprechen der Palmölindustrie mit Satellitendaten und Natural Language Processing',
+    summary:
+      'Ein multimodales Prüf-Framework, das vergleicht, was Unternehmen sagen, mit dem, was Satelliten sehen. NLP-Modelle extrahieren und bewerten Null-Entwaldungs-Aussagen aus 21 Nachhaltigkeitsberichten; Google Earth Engine und Hansen-Global-Forest-Change-Daten messen die tatsächliche Waldrodung rund um jede Lieferantenmühle. Ein gewichteter Mismatch-Score zeigt, wo Worte und Wald am stärksten auseinanderliegen.',
+    stats: [
+      ['11', 'geprüfte Palmöl-Unternehmen'],
+      ['290', 'kartierte Mühlen in der Lieferkette'],
+      ['890.168 ha', 'Baumverlust seit 2020 im 10-km-Umkreis der Mühlen'],
+      ['65,6', 'höchster Mismatch-Score (KLK)'],
+    ],
+    weights: [
+      ['Waldverlust', 35],
+      ['Konkretheit der Aussagen', 35],
+      ['Tonalität', 15],
+      ['Räumliche Übereinstimmung', 15],
+    ],
+    compare: [
+      { name: 'KLK', score: 65.6, rank: 1, loss: '92.209 ha in 30 Mühlen', note: 'sehr selbstbewusste Null-Entwaldungs-Versprechen' },
+      { name: 'Astra Agro', score: 17.6, rank: 11, loss: '87.198 ha', note: 'vorsichtige, prozessorientierte Berichtssprache' },
+    ],
+  },
   method: ['ClimateBERT', 'FinBERT', 'Google Earth Engine', 'Hansen GFC v1.13', 'Sentinel-2', 'Python', '23 automated tests'],
   link: 'https://github.com/Ritikghoghari/catching-greenwashing-from-space',
 };
@@ -262,6 +380,17 @@ export const EXPERIENCE = [
       'Automated repetitive data-cleaning workflows, reducing processing time from 2 hours to 40 minutes.',
       'Translated technical findings into actionable insights for cross-functional teams.',
     ],
+    de: {
+      title: 'Praktikant – Data Analytics & Prozessoptimierung',
+      where: 'Remote',
+      when: 'Okt. 2024 – Nov. 2024',
+      points: [
+        'Große Datensätze analysiert, um digitale Marketingstrategien zu validieren; Datenzuverlässigkeit um 25 % verbessert.',
+        'Interaktive Power-BI-Dashboards zur KPI-Verfolgung erstellt; manuelle Reporting-Zeit um 30 % reduziert.',
+        'Wiederkehrende Datenbereinigung automatisiert; Bearbeitungszeit von 2 Stunden auf 40 Minuten gesenkt.',
+        'Technische Ergebnisse in umsetzbare Erkenntnisse für bereichsübergreifende Teams übersetzt.',
+      ],
+    },
   },
 ];
 
@@ -272,6 +401,7 @@ export const EDUCATION = [
     where: 'Potsdam, Germany',
     when: 'Oct 2024 – Present',
     points: ['Focus: Business Intelligence, Digital Business Processes, Data Quality Management.'],
+    de: { when: 'Okt. 2024 – heute', where: 'Potsdam, Deutschland', points: ['Schwerpunkte: Business Intelligence, digitale Geschäftsprozesse, Datenqualitätsmanagement.'] },
   },
   {
     title: 'Bachelor of Computer Applications',
@@ -279,14 +409,15 @@ export const EDUCATION = [
     where: 'Surat, India',
     when: 'Jun 2019 – Aug 2022',
     points: ['Focus: Database Management (SQL), Structured Programming, Web Technologies.'],
+    de: { when: 'Juni 2019 – Aug. 2022', where: 'Surat, Indien', points: ['Schwerpunkte: Datenbankmanagement (SQL), strukturierte Programmierung, Webtechnologien.'] },
   },
 ];
 
 export const SKILL_GROUPS = [
-  { name: 'AI & Machine Learning', items: ['Predictive Analytics', 'LightGBM', 'Scikit-learn', 'TensorFlow', 'NLP', 'GenAI (GPT-4o, Gemini)', 'LangChain', 'CrewAI', 'RAG'] },
-  { name: 'Data & Analytics', items: ['Python', 'Pandas', 'NumPy', 'SQL', 'Data Cleaning', 'Time Series', 'Process Optimization'] },
-  { name: 'Visualization & BI', items: ['Power BI', 'Tableau', 'Excel (Advanced)', 'Matplotlib', 'Seaborn'] },
-  { name: 'Computer Vision', items: ['OpenCV', 'MediaPipe', 'Image Processing'] },
-  { name: 'Tools & Web', items: ['Streamlit', 'Git', 'HTML / CSS / JavaScript', 'Three.js'] },
-  { name: 'Languages', items: ['English (C1)', 'German (A2)'] },
+  { name: 'AI & Machine Learning', de: { name: 'KI & Machine Learning' }, items: ['Predictive Analytics', 'LightGBM', 'Scikit-learn', 'TensorFlow', 'NLP', 'GenAI (GPT-4o, Gemini)', 'LangChain', 'CrewAI', 'RAG'] },
+  { name: 'Data & Analytics', de: { name: 'Daten & Analytics' }, items: ['Python', 'Pandas', 'NumPy', 'SQL', 'Data Cleaning', 'Time Series', 'Process Optimization'] },
+  { name: 'Visualization & BI', de: { name: 'Visualisierung & BI' }, items: ['Power BI', 'Tableau', 'Excel (Advanced)', 'Matplotlib', 'Seaborn'] },
+  { name: 'Computer Vision', de: { name: 'Computer Vision' }, items: ['OpenCV', 'MediaPipe', 'Image Processing'] },
+  { name: 'Tools & Web', de: { name: 'Tools & Web' }, items: ['Streamlit', 'Git', 'HTML / CSS / JavaScript', 'Three.js'] },
+  { name: 'Languages', items: ['English (C1)', 'German (A2)'], de: { name: 'Sprachen', items: ['Englisch (C1)', 'Deutsch (A2)'] } },
 ];
