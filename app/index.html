@@ -20,12 +20,26 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:image" content="https://ritik.ritikghoghari.com/og.png" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Ritik Ghoghari",
+        "url": "https://ritik.ritikghoghari.com/",
+        "image": "https://ritik.ritikghoghari.com/og.png",
+        "jobTitle": "Data Scientist & AI Developer",
+        "description": "M.Sc. Data Science, AI & Digital Business student in Germany working on machine learning, GenAI/RAG and data analytics.",
+        "address": { "@type": "PostalAddress", "addressLocality": "Peine", "addressCountry": "DE" },
+        "alumniOf": [
+          { "@type": "CollegeOrUniversity", "name": "GISMA University of Applied Sciences" },
+          { "@type": "CollegeOrUniversity", "name": "Veer Narmad South Gujarat University" }
+        ],
+        "knowsAbout": ["Machine Learning", "Generative AI", "Retrieval-Augmented Generation", "NLP", "Python", "SQL", "Power BI", "Data Analytics"],
+        "knowsLanguage": ["en", "de"],
+        "sameAs": ["https://www.linkedin.com/in/ritikghoghari/", "https://github.com/Ritikghoghari"]
+      }
+    </script>
+    <link rel="canonical" href="https://ritik.ritikghoghari.com/" />
     <script>document.documentElement.classList.add('js');</script>
   </head>
   <body>
@@ -36,13 +50,14 @@
         <a class="brand" href="#top">Ritik<span>.</span></a>
         <nav aria-label="Primary">
           <ul id="nav-links">
-            <li><a href="#about">About</a></li>
-            <li><a href="#experience">Experience</a></li>
-            <li><a href="#skills">Skills</a></li>
-            <li><a href="#projects">Projects</a></li>
-            <li><a href="#contact">Contact</a></li>
-            <li><a href="/city/" class="nav-city">3D City</a></li>
-            <li><a class="btn btn-sm" href="/Resume_11.pdf" target="_blank" rel="noopener">Resume</a></li>
+            <li><a href="#about" data-i18n="nav.about">About</a></li>
+            <li><a href="#experience" data-i18n="nav.experience">Experience</a></li>
+            <li><a href="#skills" data-i18n="nav.skills">Skills</a></li>
+            <li><a href="#projects" data-i18n="nav.projects">Projects</a></li>
+            <li><a href="#contact" data-i18n="nav.contact">Contact</a></li>
+            <li><a href="/city/" class="nav-city" data-i18n="nav.city">3D City</a></li>
+            <li><button type="button" class="lang-btn" id="lang-btn">DE</button></li>
+            <li><a class="btn btn-sm" href="/Ritik_Ghoghari_CV.pdf" target="_blank" rel="noopener" data-i18n="nav.resume">Resume</a></li>
           </ul>
         </nav>
         <button id="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="nav-links">
@@ -57,19 +72,19 @@
         <canvas id="hero-canvas" aria-hidden="true"></canvas>
         <div class="container hero-inner">
           <div class="hero-text">
-            <p class="eyebrow"><span class="dot"></span> Open to internships &amp; working-student roles</p>
+            <p class="eyebrow"><span class="dot"></span> <span data-i18n="hero.eyebrow">Open to internships &amp; working-student roles</span></p>
             <h1>Ritik Ghoghari</h1>
-            <p class="hero-role"><span class="grad">Data Scientist &amp; AI Developer</span></p>
-            <p class="lead">
+            <p class="hero-role"><span class="grad" data-i18n="hero.role">Data Scientist &amp; AI Developer</span></p>
+            <p class="lead" data-i18n="hero.lead">
               M.Sc. Data Science &amp; AI student in Germany. I turn messy business data into models, GenAI assistants and
               dashboards that people actually use.
             </p>
             <div class="hero-cta">
-              <a class="btn" href="#projects">View projects</a>
-              <a class="btn btn-ghost" href="/Resume_11.pdf" download>Download CV</a>
+              <a class="btn" href="#projects" data-i18n="hero.projects">View projects</a>
+              <a class="btn btn-ghost" href="/Ritik_Ghoghari_CV.pdf" download="Ritik_Ghoghari_CV.pdf" data-i18n="hero.cv">Download CV</a>
             </div>
             <ul class="hero-meta">
-              <li>📍 Peine, Germany · Remote-ready</li>
+              <li data-i18n="hero.loc">📍 Peine, Germany · Remote-ready</li>
               <li><a href="https://www.linkedin.com/in/ritikghoghari/" target="_blank" rel="noopener">LinkedIn ↗</a></li>
               <li><a href="https://github.com/Ritikghoghari" target="_blank" rel="noopener">GitHub ↗</a></li>
             </ul>
@@ -81,10 +96,10 @@
         </div>
         <div class="container">
           <dl class="stats">
-            <div><dt>17</dt><dd>projects on GitHub</dd></div>
-            <div><dt>M.Sc.</dt><dd>Data Science, AI &amp; Digital Business</dd></div>
-            <div><dt>890,168 ha</dt><dd>forest loss uncovered in my thesis</dd></div>
-            <div><dt>−30%</dt><dd>reporting time at Accenture</dd></div>
+            <div><dt>17</dt><dd data-i18n="stats.projects">projects on GitHub</dd></div>
+            <div><dt>M.Sc.</dt><dd data-i18n="stats.degree">Data Science, AI &amp; Digital Business</dd></div>
+            <div><dt data-i18n="stats.thesis.num">890,168 ha</dt><dd data-i18n="stats.thesis">forest loss uncovered in my thesis</dd></div>
+            <div><dt>−30%</dt><dd data-i18n="stats.accenture">reporting time at Accenture</dd></div>
           </dl>
         </div>
       </section>
@@ -92,23 +107,23 @@
       <!-- ABOUT -->
       <section class="section" id="about">
         <div class="container">
-          <h2 class="section-title reveal"><span>01</span>About me</h2>
+          <h2 class="section-title reveal"><span>01</span><span class="st" data-i18n="about.title">About me</span></h2>
           <div class="about-grid">
             <div class="tile about-text reveal">
-              <p>
+              <p data-i18n-html="about.p1">
                 I'm a Master's student in <strong>Data Science, AI &amp; Digital Business</strong> at Gisma University
                 of Applied Sciences, with a background in computer applications. I enjoy taking messy business problems,
                 finding the signal in the data, and shipping something people can actually use: a dashboard, a model or
                 an AI assistant.
               </p>
-              <p>
+              <p data-i18n-html="about.p2">
                 My Master's thesis checks palm-oil companies' zero-deforestation claims against satellite data. I'm
                 looking for an internship or working-student role near Peine or remote.
               </p>
             </div>
-            <div class="tile what reveal"><span class="what-icon">🧠</span><h3>Machine learning</h3><p>Forecasting, classification and recommendation models with Python and scikit-learn.</p></div>
-            <div class="tile what reveal"><span class="what-icon">🤖</span><h3>GenAI &amp; RAG</h3><p>LLM agents and retrieval-augmented apps with LangChain, CrewAI, GPT-4o and Gemini.</p></div>
-            <div class="tile what reveal"><span class="what-icon">📊</span><h3>Analytics &amp; BI</h3><p>Clean data, clear KPIs and Power BI dashboards that save teams time.</p></div>
+            <div class="tile what reveal"><span class="what-icon">🧠</span><h3 data-i18n="what.ml.h">Machine learning</h3><p data-i18n="what.ml.p">Forecasting, classification and recommendation models with Python and scikit-learn.</p></div>
+            <div class="tile what reveal"><span class="what-icon">🤖</span><h3 data-i18n="what.rag.h">GenAI &amp; RAG</h3><p data-i18n="what.rag.p">LLM agents and retrieval-augmented apps with LangChain, CrewAI, GPT-4o and Gemini.</p></div>
+            <div class="tile what reveal"><span class="what-icon">📊</span><h3 data-i18n="what.bi.h">Analytics &amp; BI</h3><p data-i18n="what.bi.p">Clean data, clear KPIs and Power BI dashboards that save teams time.</p></div>
           </div>
         </div>
       </section>
@@ -116,14 +131,14 @@
       <!-- EXPERIENCE + EDUCATION -->
       <section class="section" id="experience">
         <div class="container">
-          <h2 class="section-title reveal"><span>02</span>Experience &amp; Education</h2>
+          <h2 class="section-title reveal"><span>02</span><span class="st" data-i18n="exp.title">Experience &amp; Education</span></h2>
           <div class="timeline-grid">
             <div class="tile">
-              <h3 class="col-title">Experience</h3>
+              <h3 class="col-title" data-i18n="exp.col">Experience</h3>
               <ol class="timeline" id="experience-list"></ol>
             </div>
             <div class="tile">
-              <h3 class="col-title">Education</h3>
+              <h3 class="col-title" data-i18n="edu.col">Education</h3>
               <ol class="timeline" id="education-list"></ol>
             </div>
           </div>
@@ -133,7 +148,7 @@
       <!-- SKILLS -->
       <section class="section" id="skills">
         <div class="container">
-          <h2 class="section-title reveal"><span>03</span>Skills</h2>
+          <h2 class="section-title reveal"><span>03</span><span class="st" data-i18n="skills.title">Skills</span></h2>
           <div class="skills-wrap">
             <div class="tile globe-tile reveal"><div class="skill-globe" id="skill-globe" aria-hidden="true"></div></div>
             <div class="skills" id="skills-list"></div>
@@ -144,13 +159,13 @@
       <!-- PROJECTS -->
       <section class="section" id="projects">
         <div class="container">
-          <h2 class="section-title reveal"><span>04</span>Projects</h2>
+          <h2 class="section-title reveal"><span>04</span><span class="st" data-i18n="projects.title">Projects</span></h2>
           <div id="thesis"></div>
-          <div class="more-head reveal"><h3>Featured projects</h3></div>
+          <div class="more-head reveal"><h3 data-i18n="projects.featured">Featured projects</h3></div>
           <div class="featured" id="featured-list"></div>
 
           <div class="more-head reveal">
-            <h3>All projects</h3>
+            <h3 data-i18n="projects.all">All projects</h3>
             <div class="filters" role="group" aria-label="Filter projects" id="filters"></div>
           </div>
           <ul class="project-grid" id="project-list"></ul>
@@ -161,8 +176,8 @@
       <section class="section" id="contact">
         <div class="container contact">
           <div class="tile contact-intro reveal">
-            <h2 class="section-title"><span>05</span>Let's work together</h2>
-            <p>
+            <h2 class="section-title"><span>05</span><span class="st" data-i18n="contact.title">Let's work together</span></h2>
+            <p data-i18n="contact.p">
               Have a role, a project or just a question? Send a message and I'll get back to you, or reach me directly.
             </p>
             <ul class="contact-links">
@@ -172,14 +187,14 @@
             </ul>
           </div>
           <form id="contact-form" class="tile form reveal" novalidate>
-            <label>Name<input type="text" name="name" autocomplete="name" required /></label>
+            <label><span data-i18n="form.name">Name</span><input type="text" name="name" autocomplete="name" required /></label>
             <span class="err" data-for="name"></span>
-            <label>Email<input type="email" name="email" autocomplete="email" required /></label>
+            <label><span data-i18n="form.email">Email</span><input type="email" name="email" autocomplete="email" required /></label>
             <span class="err" data-for="email"></span>
-            <label>Message<textarea name="message" rows="5" required></textarea></label>
+            <label><span data-i18n="form.message">Message</span><textarea name="message" rows="5" required></textarea></label>
             <span class="err" data-for="message"></span>
             <input type="text" name="company" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
-            <button class="btn" type="submit">Send message</button>
+            <button class="btn" type="submit" data-i18n="form.send">Send message</button>
             <p class="form-status" role="status"></p>
           </form>
         </div>
@@ -187,7 +202,7 @@
     </main>
 
     <footer class="footer">
-      <div class="container">© 2026 Ritik Ghoghari · Built with Three.js</div>
+      <div class="container footer-inner"><span>© 2026 Ritik Ghoghari · Built with Three.js</span><a href="/privacy/" data-i18n="footer.privacy">Privacy / Datenschutz</a></div>
     </footer>
 
     <script type="module" src="/src/main.js"></script>

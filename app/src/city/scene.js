@@ -36,7 +36,7 @@ const rand = (() => {
   return () => ((s = (s * 16807) % 2147483647) - 1) / 2147483646;
 })();
 
-function textTexture(lines, { w = 1024, h = 256, color = '#5eead4', bg = 'rgba(6,10,20,0.85)', font = '700 96px "Space Grotesk", sans-serif', glow = true } = {}) {
+function textTexture(lines, { w = 1024, h = 256, color = '#5eead4', bg = 'rgba(6,10,20,0.85)', font = '700 96px "Space Grotesk Variable", sans-serif', glow = true } = {}) {
   const c = document.createElement('canvas');
   c.width = w;
   c.height = h;
@@ -467,7 +467,7 @@ export function createCity(canvas, { reducedMotion, projects, onPick }) {
     g.add(s);
   });
   ['Python', 'SQL', 'Machine Learning', 'LangChain', 'Power BI', 'OpenCV', 'GenAI', 'Tableau'].forEach((name, i, arr) => {
-    const tex = textTexture(name, { w: 512, h: 128, font: '700 64px "Space Grotesk", sans-serif', color: '#f9a8d4', bg: 'rgba(30,8,24,0.55)' });
+    const tex = textTexture(name, { w: 512, h: 128, font: '700 64px "Space Grotesk Variable", sans-serif', color: '#f9a8d4', bg: 'rgba(30,8,24,0.55)' });
     const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthWrite: false, toneMapped: false }));
     sp.scale.set(5.2, 1.3, 1);
     sp.userData = { a: (i / arr.length) * Math.PI * 2, y: 3 + (i % 3) * 3.4 };
@@ -507,11 +507,11 @@ export function createCity(canvas, { reducedMotion, projects, onPick }) {
         });
       } else {
         screenMat.map = p.thesis
-          ? textTexture(["MASTER'S THESIS", p.title, 'NLP × satellite data · 11 companies · 290 mills'], { w: 1024, h: 614, font: '700 92px "Space Grotesk", sans-serif', color: '#5eead4', bg: '#0b2b3a' })
-          : textTexture(['🌍', p.title], { w: 1024, h: 614, font: '700 160px "Space Grotesk", sans-serif', color: '#5eead4', bg: '#0b2b3a' });
+          ? textTexture(["MASTER'S THESIS", p.title, 'NLP × satellite data · 11 companies · 290 mills'], { w: 1024, h: 614, font: '700 92px "Space Grotesk Variable", sans-serif', color: '#5eead4', bg: '#0b2b3a' })
+          : textTexture(['🌍', p.title], { w: 1024, h: 614, font: '700 160px "Space Grotesk Variable", sans-serif', color: '#5eead4', bg: '#0b2b3a' });
         screenMat.color.set(0xffffff);
       }
-      const cap = sign(p.thesis ? `🎓 THESIS · ${p.title.toUpperCase()}` : p.title.toUpperCase(), 15, { h: 192, font: `700 ${p.thesis ? 52 : 64}px "Space Grotesk", sans-serif` });
+      const cap = sign(p.thesis ? `🎓 THESIS · ${p.title.toUpperCase()}` : p.title.toUpperCase(), 15, { h: 192, font: `700 ${p.thesis ? 52 : 64}px "Space Grotesk Variable", sans-serif` });
       cap.scale.y = 0.75;
       cap.position.set(x - side * 0.4, 8.4, z);
       cap.rotation.y = faceAvenue(side);

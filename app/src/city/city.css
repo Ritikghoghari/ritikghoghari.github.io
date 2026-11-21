@@ -8,8 +8,8 @@
   --accent-2: #ff7aa8;
   --grad: linear-gradient(90deg, #b69cff, #ff7aa8 60%, #ffb36b);
   --surface-2: #171b25;
-  --head: 'Space Grotesk', system-ui, sans-serif;
-  --body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --head: 'Space Grotesk Variable', 'Space Grotesk', system-ui, sans-serif;
+  --body: 'Inter Variable', 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
   color-scheme: dark;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }

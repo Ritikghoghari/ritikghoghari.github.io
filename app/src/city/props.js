@@ -82,7 +82,7 @@ function adTexture(lines, hue) {
   g.fillRect(0, 0, 256, 512);
   g.fillStyle = 'rgba(255,255,255,0.9)';
   g.textAlign = 'center';
-  g.font = '700 34px "Space Grotesk", sans-serif';
+  g.font = '700 34px "Space Grotesk Variable", sans-serif';
   lines.forEach((l, i) => g.fillText(l, 128, 190 + i * 46));
   g.fillStyle = 'rgba(255,255,255,0.25)';
   g.beginPath();
@@ -104,7 +104,7 @@ function bladeTexture(text) {
   g.lineWidth = 5;
   g.strokeRect(6, 6, 500, 84);
   g.fillStyle = '#ffffff';
-  g.font = '700 52px "Inter", sans-serif';
+  g.font = '700 52px "Inter Variable", sans-serif';
   g.textAlign = 'center';
   g.textBaseline = 'middle';
   g.fillText(text, 256, 50);

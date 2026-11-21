@@ -1,7 +1,12 @@
+import '@fontsource-variable/inter';
+import '@fontsource-variable/space-grotesk';
 import './style.css';
 import { PROJECTS, CATEGORIES, THESIS, EXPERIENCE, EDUCATION, SKILL_GROUPS } from './data.js';
 import { initSkillGlobe, initTilt, initCoverflow } from './effects3d.js';
 import { initChatbot } from './chatbot.js';
+import { t, L, applyStatic, initLangToggle } from './i18n.js';
+
+const tr = t; // alias for places where `t` is a local variable
 
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const $ = (id) => document.getElementById(id);
@@ -24,10 +29,10 @@ function renderTimeline(list, target) {
       el(
         'li',
         { class: 'reveal' },
-        el('p', { class: 'when' }, `${item.when} · ${item.where}`),
-        el('h4', {}, item.title),
+        el('p', { class: 'when' }, `${L(item, 'when')} · ${L(item, 'where')}`),
+        el('h4', {}, L(item, 'title')),
         el('p', { class: 'org' }, item.org),
-        el('ul', {}, item.points.map((p) => el('li', {}, p))),
+        el('ul', {}, L(item, 'points').map((p) => el('li', {}, p))),
       ),
     ),
   );
@@ -37,7 +42,7 @@ function renderTimeline(list, target) {
 function renderSkills() {
   $('skills-list').append(
     ...SKILL_GROUPS.map((g) =>
-      el('div', { class: 'card skill-group tilt reveal' }, el('h3', {}, g.name), el('ul', { class: 'chips' }, g.items.map((i) => el('li', {}, i)))),
+      el('div', { class: 'card skill-group tilt reveal' }, el('h3', {}, L(g, 'name')), el('ul', { class: 'chips' }, L(g, 'items').map((i) => el('li', {}, i)))),
     ),
   );
 }
@@ -48,10 +53,10 @@ const img = (p, size, cls) =>
     ? el('img', { src: `/img/${p.image}-${size}.webp`, alt: '', loading: 'lazy', decoding: 'async', width: 512, height: 512, class: cls })
     : el('div', { class: `${cls} placeholder`, 'aria-hidden': 'true' }, '🌍');
 
-const codeLink = (p) => el('a', { class: 'link', href: p.link, target: '_blank', rel: 'noopener' }, 'View code ↗');
+const codeLink = (p) => el('a', { class: 'link', href: p.link, target: '_blank', rel: 'noopener' }, t('card.code'));
 const tags = (p) => el('ul', { class: 'tags' }, p.tags.map((t) => el('li', {}, t)));
 
-const kicker = (p) => (p.thesis ? el('p', { class: 'kicker kicker-thesis' }, "🎓 Master's thesis") : el('p', { class: 'kicker' }, p.category));
+const kicker = (p) => (p.thesis ? el('p', { class: 'kicker kicker-thesis' }, t('thesis.kicker')) : el('p', { class: 'kicker' }, t(`cat.${p.category}`)));
 
 // The Master's thesis gets its own spotlight above the other projects.
 function renderThesis() {
@@ -63,19 +68,49 @@ function renderThesis() {
       el(
         'div',
         { class: 'thesis-head' },
-        el('span', { class: 'thesis-badge' }, "🎓 Master's thesis · main project"),
+        el('span', { class: 'thesis-badge' }, tr('thesis.badge')),
         el('h3', { id: 'thesis-title' }, t.title),
-        el('p', { class: 'thesis-sub' }, t.subtitle),
-        el('p', { class: 'thesis-meta' }, `${t.org} · Supervisor: ${t.supervisor} · ${t.year}`),
+        el('p', { class: 'thesis-sub' }, L(t, 'subtitle')),
+        el('p', { class: 'thesis-meta' }, `${t.org} · ${tr('thesis.supervisor')}: ${t.supervisor} · ${t.year}`),
       ),
-      el('p', { class: 'thesis-summary' }, t.summary),
-      el('dl', { class: 'thesis-stats' }, t.stats.map(([a, b]) => el('div', {}, el('dt', {}, a), el('dd', {}, b)))),
+      el('p', { class: 'thesis-summary' }, L(t, 'summary')),
+      el('dl', { class: 'thesis-stats' }, L(t, 'stats').map(([a, b]) => el('div', {}, el('dt', {}, a), el('dd', {}, b)))),
+      el(
+        'div',
+        { class: 'thesis-explain' },
+        el(
+          'div',
+          { class: 'tx-block' },
+          el('h4', {}, tr('thesis.how')),
+          el('div', { class: 'weights', role: 'img', 'aria-label': L(t, 'weights').map(([n, w]) => `${n} ${w}%`).join(', ') }, L(t, 'weights').map(([n, w], i) => el('span', { class: `w${i}`, style: `flex:${w}` }, `${w}%`))),
+          el('ul', { class: 'weights-legend' }, L(t, 'weights').map(([n], i) => el('li', {}, el('i', { class: `w${i}` }), n))),
+        ),
+        el(
+          'div',
+          { class: 'tx-block' },
+          el('h4', {}, tr('thesis.same')),
+          el(
+            'ul',
+            { class: 'compare' },
+            L(t, 'compare').map((c) =>
+              el(
+                'li',
+                {},
+                el('div', { class: 'cmp-head' }, el('strong', {}, c.name), el('span', {}, el('b', {}, c.score.toLocaleString(document.documentElement.lang)), ` · ${tr('thesis.rank')} ${c.rank}`)),
+                el('div', { class: 'cmp-bar' }, el('i', { style: `width:${c.score}%` })),
+                el('p', {}, `${c.loss} · ${c.note}`),
+              ),
+            ),
+          ),
+          el('p', { class: 'tx-note' }, tr('thesis.note')),
+        ),
+      ),
       el('ul', { class: 'tags' }, t.method.map((m) => el('li', {}, m))),
       el(
         'div',
         { class: 'thesis-actions' },
-        el('a', { class: 'btn', href: t.link, target: '_blank', rel: 'noopener' }, 'View thesis repository ↗'),
-        el('a', { class: 'btn btn-ghost', href: '/city/#projects' }, 'See it in the 3D city'),
+        el('a', { class: 'btn', href: t.link, target: '_blank', rel: 'noopener' }, tr('thesis.repo')),
+        el('a', { class: 'btn btn-ghost', href: '/city/#projects' }, tr('thesis.city')),
       ),
     ),
   );
@@ -92,7 +127,7 @@ function renderFeatured() {
         { class: 'feature-body' },
         kicker(p),
         el('h3', {}, p.title),
-        el('p', {}, p.description),
+        el('p', {}, L(p, 'description')),
         tags(p),
         codeLink(p),
       ),
@@ -103,8 +138,8 @@ function renderFeatured() {
 
 // Flip cards: front = image + title, back = details. Click/tap (or the button) flips; links still work.
 function projectCard(p, i, animate) {
-  const flipBtn = el('button', { type: 'button', class: 'flip-btn', 'aria-expanded': 'false' }, 'Details ↻');
-  const backBtn = el('button', { type: 'button', class: 'flip-btn' }, '↩ Back');
+  const flipBtn = el('button', { type: 'button', class: 'flip-btn', 'aria-expanded': 'false' }, t('card.details'));
+  const backBtn = el('button', { type: 'button', class: 'flip-btn' }, t('card.back'));
   const card = el(
     'li',
     { class: `project tilt ${animate ? 'spin-in' : 'reveal'}`, style: `--d:${(i % 3) * 90}ms` },
@@ -115,14 +150,14 @@ function projectCard(p, i, animate) {
         'div',
         { class: 'face front card' },
         el('div', { class: 'project-media' }, img(p, 512, 'project-img')),
-        el('div', { class: 'project-body' }, kicker(p), el('h4', {}, p.title), el('p', {}, p.brief), flipBtn),
+        el('div', { class: 'project-body' }, kicker(p), el('h4', {}, p.title), el('p', {}, L(p, 'brief')), flipBtn),
       ),
       el(
         'div',
         { class: 'face back card', 'aria-hidden': 'true' },
         kicker(p),
         el('h4', {}, p.title),
-        el('p', { class: 'back-desc' }, p.description),
+        el('p', { class: 'back-desc' }, L(p, 'description')),
         tags(p),
         el('div', { class: 'back-actions' }, codeLink(p), backBtn),
       ),
@@ -157,7 +192,7 @@ function renderFilters() {
   const wrap = $('filters');
   CATEGORIES.forEach((c, i) => {
     const n = c === 'All' ? PROJECTS.length : PROJECTS.filter((p) => p.category === c).length;
-    const b = el('button', { type: 'button', class: 'chip-btn', 'aria-pressed': String(i === 0) }, c, el('span', { class: 'chip-count' }, String(n)));
+    const b = el('button', { type: 'button', class: 'chip-btn', 'aria-pressed': String(i === 0) }, t(`cat.${c}`), el('span', { class: 'chip-count' }, String(n)));
     b.addEventListener('click', () => {
       wrap.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
       renderGrid(c, !reducedMotion);
@@ -233,9 +268,9 @@ function initContact() {
   const status = form.querySelector('.form-status');
   const btn = form.querySelector('button');
   const rules = {
-    name: (v) => (v ? '' : 'Please enter your name.'),
-    email: (v) => (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? '' : 'Please enter a valid email.'),
-    message: (v) => (v ? '' : 'Please write a short message.'),
+    name: (v) => (v ? '' : t('form.err.name')),
+    email: (v) => (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? '' : t('form.err.email')),
+    message: (v) => (v ? '' : t('form.err.message')),
   };
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -250,18 +285,18 @@ function initContact() {
     if (!ok) return;
     btn.disabled = true;
     status.className = 'form-status';
-    status.textContent = 'Sending…';
+    status.textContent = t('form.sending');
     const body = new FormData();
     body.append('access_key', WEB3FORMS_ACCESS_KEY);
     for (const k of Object.keys(rules)) body.append(k, form[k].value.trim());
     try {
       const data = await (await fetch('https://api.web3forms.com/submit', { method: 'POST', body })).json();
       if (!data.success) throw new Error(data.message);
-      status.textContent = "Thanks! I'll get back to you soon.";
+      status.textContent = t('form.ok');
       status.classList.add('ok');
       form.reset();
     } catch {
-      status.textContent = 'Could not send. Please email me directly instead.';
+      status.textContent = t('form.fail');
       status.classList.add('bad');
     } finally {
       btn.disabled = false;
@@ -286,6 +321,8 @@ function initHero() {
   else setTimeout(start, 200);
 }
 
+applyStatic();
+initLangToggle($('lang-btn'));
 renderTimeline(EXPERIENCE, $('experience-list'));
 renderTimeline(EDUCATION, $('education-list'));
 renderSkills();
